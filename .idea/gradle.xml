@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/api" />
+            <option value="$PROJECT_DIR$/bedrock" />
+            <option value="$PROJECT_DIR$/bedrock/floodgate" />
+            <option value="$PROJECT_DIR$/bedrock/geyser" />
+            <option value="$PROJECT_DIR$/dist" />
+            <option value="$PROJECT_DIR$/modelengine" />
+            <option value="$PROJECT_DIR$/modelengine/current" />
+            <option value="$PROJECT_DIR$/modelengine/legacy" />
+            <option value="$PROJECT_DIR$/nms" />
+            <option value="$PROJECT_DIR$/nms/v1_19_R3" />
+            <option value="$PROJECT_DIR$/nms/v1_20_R1" />
+            <option value="$PROJECT_DIR$/nms/v1_20_R2" />
+            <option value="$PROJECT_DIR$/nms/v1_20_R3" />
+            <option value="$PROJECT_DIR$/nms/v1_20_R4" />
+            <option value="$PROJECT_DIR$/scheduler" />
+            <option value="$PROJECT_DIR$/scheduler/folia" />
+            <option value="$PROJECT_DIR$/scheduler/standard" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

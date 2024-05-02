@@ -1,0 +1,19 @@
+main: kr.toxicity.healthbar.BetterHealthBarImpl
+name: BetterHealthBar
+version: "${version}"
+api-version: 1.19
+author: toxicity
+description: Make mob has greater health bar!
+load: POSTWORLD
+libraries:
+  - "net.kyori:adventure-api:${adventure}"
+  - "net.kyori:adventure-platform-bukkit:${platform}"
+commands:
+  healthbar:
+    aliases: hb
+    description: BetterHealthBar's reload command.
+    usage: /<command>
+permissions:
+  betterhealthbar.reload:
+    description: Access to reload command.
+    default: op

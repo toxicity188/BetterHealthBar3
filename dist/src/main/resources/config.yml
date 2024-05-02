@@ -1,0 +1,7 @@
+debug: false
+pack-type: folder
+namespace: "betterhealthbar"
+default-duration: 60
+build-folder: "BetterHealthBar/build"
+default-height: 1
+look-degree: 20
