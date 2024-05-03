@@ -5,6 +5,7 @@ api-version: 1.19
 author: toxicity
 description: Make mob has greater health bar!
 load: POSTWORLD
+folia-supported: true
 libraries:
   - "net.kyori:adventure-api:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
