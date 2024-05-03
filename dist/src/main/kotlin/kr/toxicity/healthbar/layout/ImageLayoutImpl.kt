@@ -10,6 +10,7 @@ import kr.toxicity.healthbar.api.image.HealthBarImage
 import kr.toxicity.healthbar.api.layout.ImageLayout
 import kr.toxicity.healthbar.api.listener.HealthBarListener
 import kr.toxicity.healthbar.api.renderer.ImageRenderer
+import kr.toxicity.healthbar.data.BitmapData
 import kr.toxicity.healthbar.manager.ImageManagerImpl
 import kr.toxicity.healthbar.manager.ListenerManagerImpl
 import kr.toxicity.healthbar.pack.PackResource
@@ -38,20 +39,19 @@ class ImageLayoutImpl(
     override fun duration(): Int = duration
 
     fun build(resource: PackResource, count: Int, jsonArray: JsonArray) {
-        val componentMap = HashMap<Int, WidthComponent>()
+        val componentMap = HashMap<BitmapData, WidthComponent>()
         for (i in 0..<count) {
             image.images().forEach {
                 val y = (y() + groupY() * i)
-                components.add(componentMap.computeIfAbsent(y) { _ ->
-                    val dir = "${parent.name}/${layer()}/${it.name}"
+                val dir = "${parent.name}/${layer()}/${it.name}"
+                val newHeight = (it.image.image.height * scale()).roundToInt()
+                val div = newHeight / it.image.image.height.toDouble()
+
+                components.add(componentMap.computeIfAbsent(BitmapData(dir, y, newHeight)) { _ ->
                     resource.textures.add(dir) {
                         it.image.image.withOpacity(layer()).toByteArray()
                     }
                     val component = (parent.index++).parseChar()
-
-                    val newHeight = (it.image.image.height * scale()).roundToInt()
-                    val div = newHeight / it.image.image.height.toDouble()
-
                     jsonArray.add(JsonObject().apply {
                         addProperty("type", "bitmap")
                         addProperty("file", "$NAMESPACE:$dir")
