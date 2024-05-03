@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -55,48 +54,50 @@ public class PlaceholderContainer<T> {
     public static final PlaceholderContainer<Boolean> BOOL = new PlaceholderContainer<>(
             Boolean.class,
             "boolean",
-            Boolean::parseBoolean,
+            s -> switch (s) {
+                case "true" -> true;
+                case "false" -> false;
+                default -> null;
+            },
             s -> Boolean.toString(s)
     );
 
-    private final Map<String, Function<List<String>, HealthBarPlaceholder<T>>> map = new HashMap<>();
+    private final Map<String, PlaceholderBuilder<T>> map = new HashMap<>();
     
     public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarPair, T> function) {
-        map.put(name, string -> new HealthBarPlaceholder<>() {
-            @NotNull
+        map.put(name, new PlaceholderBuilder<>() {
             @Override
-            public T value(@NotNull HealthBarPair player) {
-                return function.apply(player);
+            public int requiredArgsCount() {
+                return 0;
             }
 
-            @NotNull
             @Override
-            public Class<T> type() {
-                return clazz;
+            public HealthBarPlaceholder<T> build(@NotNull List<String> strings) {
+                return new HealthBarPlaceholder<>() {
+                    @NotNull
+                    @Override
+                    public T value(@NotNull HealthBarPair player) {
+                        return function.apply(player);
+                    }
+
+                    @NotNull
+                    @Override
+                    public Class<T> type() {
+                        return clazz;
+                    }
+                };
             }
         });
     }
-    public void addPlaceholder(@NotNull String name, @NotNull BiFunction<List<String>, HealthBarPair, T> function) {
-        map.put(name, string -> new HealthBarPlaceholder<>() {
-            @NotNull
-            @Override
-            public T value(@NotNull HealthBarPair player) {
-                return function.apply(string, player);
-            }
-
-            @NotNull
-            @Override
-            public Class<T> type() {
-                return clazz;
-            }
-        });
+    public void addPlaceholder(@NotNull String name, @NotNull PlaceholderBuilder<T> builder) {
+        map.put(name, builder);
     }
     private @NotNull FindResult find(@NotNull String name) {
         return new FindResult(name);
     }
 
     private class FindResult {
-        private final Function<List<String>, HealthBarPlaceholder<T>> result;
+        private final PlaceholderBuilder<T> result;
         private FindResult(@NotNull String name) {
             result = map.get(name);
         }
@@ -104,7 +105,7 @@ public class PlaceholderContainer<T> {
         public @NotNull HealthBarPlaceholder<T> value(@NotNull List<String> strings) {
             Objects.requireNonNull(result);
             Objects.requireNonNull(strings);
-            return result.apply(strings);
+            return result.build(strings);
         }
 
         public boolean ifPresented() {
@@ -114,7 +115,7 @@ public class PlaceholderContainer<T> {
         public @NotNull HealthBarPlaceholder<String> stringValue(@NotNull List<String> strings) {
             Objects.requireNonNull(result);
             Objects.requireNonNull(strings);
-            var apply = result.apply(strings);
+            var apply = result.build(strings);
             return new HealthBarPlaceholder<>() {
                 @NotNull
                 @Override
@@ -158,8 +159,10 @@ public class PlaceholderContainer<T> {
         var get = CLASS_MAP.values().stream().map(c -> c.find(name)).filter(f -> f.ifPresented()).findFirst().orElse(null);
         if (get == null) return primitive(name);
 
+
         var argument = matcher.group("argument");
         var list = argument != null ? Arrays.asList(argument.split(",")) : Collections.<String>emptyList();
+        if (get.result.requiredArgsCount() > list.size()) throw new RuntimeException("This placeholder requires argument sized at least " + get.result.requiredArgsCount());
         if (cast != null) {
             var string = get.stringValue(list);
             return new HealthBarPlaceholder<>() {

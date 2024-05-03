@@ -1,0 +1,45 @@
+default_healthbar:
+  triggers:
+    - damage
+    - look
+  groups:
+    - default_layout
+    - mob_effect_absorption
+    - mob_effect_bad_omen
+    - mob_effect_blindness
+    - mob_effect_conduit_power
+    - mob_effect_darkness
+    - mob_effect_dolphins_grace
+    - mob_effect_fire_resistance
+    - mob_effect_glowing
+    - mob_effect_haste
+    - mob_effect_health_boost
+    - mob_effect_hero_of_the_village
+    - mob_effect_hunger
+    - mob_effect_infested
+    - mob_effect_instant_damage
+    - mob_effect_instant_health
+    - mob_effect_invisibility
+    - mob_effect_jump_boost
+    - mob_effect_levitation
+    - mob_effect_luck
+    - mob_effect_mining_fatigue
+    - mob_effect_nausea
+    - mob_effect_night_vision
+    - mob_effect_oozing
+    - mob_effect_poison
+    - mob_effect_raid_omen
+    - mob_effect_regeneration
+    - mob_effect_resistance
+    - mob_effect_saturation
+    - mob_effect_slowness
+    - mob_effect_slow_falling
+    - mob_effect_speed
+    - mob_effect_strength
+    - mob_effect_trial_omen
+    - mob_effect_unluck
+    - mob_effect_water_breathing
+    - mob_effect_weakness
+    - mob_effect_weaving
+    - mob_effect_wind_charged
+    - mob_effect_wither

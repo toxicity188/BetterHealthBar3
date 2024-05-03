@@ -42,15 +42,27 @@ class HealthBarImpl(
         return Renderer(pair)
     }
 
+    private class GroupCount {
+        private var count = 0
+        fun next() = count++
+        fun clear() {
+            count = 0
+        }
+    }
     private inner class Renderer(
         private val pair: HealthBarPair
     ): HealthBarRenderer {
         private var d = 0
-        private val images = groups.map {
-            it.images().map { image ->
+        private val count = groups.mapNotNull {
+            it.group()
+        }.associateWith {
+            GroupCount()
+        }
+        private val renderer = groups.map {
+            it to it.images().map { image ->
                 image.createImageRenderer(pair)
-            }
-        }.sum().toMutableList()
+            }.toMutableList()
+        }.toMutableList()
 
         override fun hasNext(): Boolean {
             return pair.entity.entity().isValid && (duration < 0 || ++d <= duration)
@@ -58,18 +70,29 @@ class HealthBarImpl(
 
         override fun render(): RenderResult {
             var comp = EMPTY_WIDTH_COMPONENT
-            images.removeIf {
-                !it.hasNext()
+            count.values.forEach {
+                it.clear()
+            }
+            renderer.removeIf {
+                it.second.removeIf { element ->
+                    !element.hasNext()
+                }
+                it.second.isEmpty()
             }
             var max = 0
-            images.forEach {
-                val render = it.render()
-                val length = render.pixel + render.component.width
-                if (max < length) max = length
-                comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent()
+            renderer.forEach {
+                val index = it.first.group()?.let { s ->
+                    count[s]?.next()
+                } ?: 0
+                it.second.forEach { image ->
+                    val render = image.render(index)
+                    val length = render.pixel + render.component.width
+                    if (max < length) max = length
+                    comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent()
+                }
             }
             return RenderResult(
-                comp + max.toSpaceComponent(),
+                comp + (max).toSpaceComponent(),
                 pair.entity.entity().location.apply {
                     y += pair.entity.entity().eyeHeight + PLUGIN.modelEngine().getHeight(pair.entity.entity()) + ConfigManagerImpl.defaultHeight()
                 }

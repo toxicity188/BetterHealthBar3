@@ -129,7 +129,7 @@ fun BufferedImage.withOpacity(opacity: Int): BufferedImage {
         for (i1 in 0..<width) {
             for (i2 in 0..<height) {
                 val rgba = getRGB(i1, i2)
-                it.setRGB(i1, i2, (opacity shl 24) or (rgba and 0xFFFFFF))
+                if ((rgba shr 24) and 0xFF > 0) it.setRGB(i1, i2, (opacity shl 24) or (rgba and 0xFFFFFF))
             }
         }
     }

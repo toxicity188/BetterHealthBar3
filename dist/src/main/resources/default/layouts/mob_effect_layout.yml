@@ -1,0 +1,546 @@
+mob_effect_absorption:  
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_absorption
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:absorption"
+          second: true
+          operation: "=="
+mob_effect_bad_omen:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_bad_omen
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:bad_omen"
+          second: true
+          operation: "=="
+mob_effect_blindness:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_blindness
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:blindness"
+          second: true
+          operation: "=="
+mob_effect_conduit_power:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_conduit_power
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:conduit_power"
+          second: true
+          operation: "=="
+mob_effect_darkness:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_darkness
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:darkness"
+          second: true
+          operation: "=="
+mob_effect_dolphins_grace:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_dolphins_grace
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:dolphins_grace"
+          second: true
+          operation: "=="
+mob_effect_fire_resistance:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_fire_resistance
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:fire_resistance"
+          second: true
+          operation: "=="
+mob_effect_glowing:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_glowing
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:glowing"
+          second: true
+          operation: "=="
+mob_effect_haste:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_haste
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:haste"
+          second: true
+          operation: "=="
+mob_effect_health_boost:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_health_boost
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:health_boost"
+          second: true
+          operation: "=="
+mob_effect_hero_of_the_village:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_hero_of_the_village
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:hero_of_the_village"
+          second: true
+          operation: "=="
+mob_effect_hunger:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_hunger
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:hunger"
+          second: true
+          operation: "=="
+mob_effect_infested:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_infested
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:infested"
+          second: true
+          operation: "=="
+mob_effect_instant_damage:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_instant_damage
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:instant_damage"
+          second: true
+          operation: "=="
+mob_effect_instant_health:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_instant_health
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:instant_health"
+          second: true
+          operation: "=="
+mob_effect_invisibility:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_invisibility
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:invisibility"
+          second: true
+          operation: "=="
+mob_effect_jump_boost:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_jump_boost
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:jump_boost"
+          second: true
+          operation: "=="
+mob_effect_levitation:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_levitation
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:levitation"
+          second: true
+          operation: "=="
+mob_effect_luck:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_luck
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:luck"
+          second: true
+          operation: "=="
+mob_effect_mining_fatigue:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_mining_fatigue
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:mining_fatigue"
+          second: true
+          operation: "=="
+mob_effect_nausea:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_nausea
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:nausea"
+          second: true
+          operation: "=="
+mob_effect_night_vision:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_night_vision
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:night_vision"
+          second: true
+          operation: "=="
+mob_effect_oozing:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_oozing
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:oozing"
+          second: true
+          operation: "=="
+mob_effect_poison:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_poison
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:poison"
+          second: true
+          operation: "=="
+mob_effect_raid_omen:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_raid_omen
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:raid_omen"
+          second: true
+          operation: "=="
+mob_effect_regeneration:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_regeneration
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:regeneration"
+          second: true
+          operation: "=="
+mob_effect_resistance:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_resistance
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:resistance"
+          second: true
+          operation: "=="
+mob_effect_saturation:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_saturation
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:saturation"
+          second: true
+          operation: "=="
+mob_effect_slowness:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_slowness
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:slowness"
+          second: true
+          operation: "=="
+mob_effect_slow_falling:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_slow_falling
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:slow_falling"
+          second: true
+          operation: "=="
+mob_effect_speed:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_speed
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:speed"
+          second: true
+          operation: "=="
+mob_effect_strength:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_strength
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:strength"
+          second: true
+          operation: "=="
+mob_effect_trial_omen:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_trial_omen
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:trial_omen"
+          second: true
+          operation: "=="
+mob_effect_unluck:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_unluck
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:unluck"
+          second: true
+          operation: "=="
+mob_effect_water_breathing:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_water_breathing
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:water_breathing"
+          second: true
+          operation: "=="
+mob_effect_weakness:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_weakness
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:weakness"
+          second: true
+          operation: "=="
+mob_effect_weaving:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_weaving
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:weaving"
+          second: true
+          operation: "=="
+mob_effect_wind_charged:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_wind_charged
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:wind_charged"
+          second: true
+          operation: "=="
+mob_effect_wither:
+  group: mob_effect
+  images:
+    1:
+      image: mob_effect_wither
+      group-x: 10
+      y: 10
+      scale: 0.5
+      layer: 254
+      conditions:
+        1:
+          first: "has_potion_effect:wither"
+          second: true
+          operation: "=="

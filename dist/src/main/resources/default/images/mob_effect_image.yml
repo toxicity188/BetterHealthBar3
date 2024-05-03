@@ -1,0 +1,117 @@
+mob_effect_absorption:
+  type: single
+  file: mob_effect/absorption.png
+mob_effect_bad_omen:
+  type: single
+  file: mob_effect/bad_omen.png
+mob_effect_blindness:
+  type: single
+  file: mob_effect/blindness.png
+mob_effect_conduit_power:
+  type: single
+  file: mob_effect/conduit_power.png
+mob_effect_darkness:
+  type: single
+  file: mob_effect/darkness.png
+mob_effect_dolphins_grace:
+  type: single
+  file: mob_effect/dolphins_grace.png
+mob_effect_fire_resistance:
+  type: single
+  file: mob_effect/fire_resistance.png
+mob_effect_glowing:
+  type: single
+  file: mob_effect/glowing.png
+mob_effect_haste:
+  type: single
+  file: mob_effect/haste.png
+mob_effect_health_boost:
+  type: single
+  file: mob_effect/health_boost.png
+mob_effect_hero_of_the_village:
+  type: single
+  file: mob_effect/hero_of_the_village.png
+mob_effect_hunger:
+  type: single
+  file: mob_effect/hunger.png
+mob_effect_infested:
+  type: single
+  file: mob_effect/infested.png
+mob_effect_instant_damage:
+  type: single
+  file: mob_effect/instant_damage.png
+mob_effect_instant_health:
+  type: single
+  file: mob_effect/instant_health.png
+mob_effect_invisibility:
+  type: single
+  file: mob_effect/invisibility.png
+mob_effect_jump_boost:
+  type: single
+  file: mob_effect/jump_boost.png
+mob_effect_levitation:
+  type: single
+  file: mob_effect/levitation.png
+mob_effect_luck:
+  type: single
+  file: mob_effect/luck.png
+mob_effect_mining_fatigue:
+  type: single
+  file: mob_effect/mining_fatigue.png
+mob_effect_nausea:
+  type: single
+  file: mob_effect/nausea.png
+mob_effect_night_vision:
+  type: single
+  file: mob_effect/night_vision.png
+mob_effect_oozing:
+  type: single
+  file: mob_effect/oozing.png
+mob_effect_poison:
+  type: single
+  file: mob_effect/poison.png
+mob_effect_raid_omen:
+  type: single
+  file: mob_effect/raid_omen.png
+mob_effect_regeneration:
+  type: single
+  file: mob_effect/regeneration.png
+mob_effect_resistance:
+  type: single
+  file: mob_effect/resistance.png
+mob_effect_saturation:
+  type: single
+  file: mob_effect/saturation.png
+mob_effect_slowness:
+  type: single
+  file: mob_effect/slowness.png
+mob_effect_slow_falling:
+  type: single
+  file: mob_effect/slow_falling.png
+mob_effect_speed:
+  type: single
+  file: mob_effect/speed.png
+mob_effect_strength:
+  type: single
+  file: mob_effect/strength.png
+mob_effect_trial_omen:
+  type: single
+  file: mob_effect/trial_omen.png
+mob_effect_unluck:
+  type: single
+  file: mob_effect/unluck.png
+mob_effect_water_breathing:
+  type: single
+  file: mob_effect/water_breathing.png
+mob_effect_weakness:
+  type: single
+  file: mob_effect/weakness.png
+mob_effect_weaving:
+  type: single
+  file: mob_effect/weaving.png
+mob_effect_wind_charged:
+  type: single
+  file: mob_effect/wind_charged.png
+mob_effect_wither:
+  type: single
+  file: mob_effect/wither.png

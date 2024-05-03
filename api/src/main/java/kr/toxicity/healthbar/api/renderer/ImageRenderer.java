@@ -5,5 +5,5 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ImageRenderer extends Renderer {
     @NotNull
-    PixelComponent render();
+    PixelComponent render(int groupCount);
 }

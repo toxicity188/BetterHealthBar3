@@ -7,7 +7,7 @@ import kr.toxicity.healthbar.util.forEachSubConfiguration
 import org.bukkit.configuration.ConfigurationSection
 
 abstract class LayoutImpl(
-    private val layer: Int,
+    layer: Int,
     section: ConfigurationSection
 ): Layout {
     private val x = section.getInt("x")
@@ -17,6 +17,7 @@ abstract class LayoutImpl(
     private val scale = section.getDouble("scale", 1.0).apply {
         if (this <= 0) throw RuntimeException("Scale cannot be <= 0.")
     }
+    private val layer = section.getInt("layer", layer).coerceAtLeast(1).coerceAtMost(254)
     private val condition = run {
         var condition = HealthBarCondition.TRUE
         section.getConfigurationSection("conditions")?.forEachSubConfiguration { _, configurationSection ->

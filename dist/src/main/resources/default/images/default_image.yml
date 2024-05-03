@@ -1,0 +1,24 @@
+empty:
+  file: empty.png
+  type: single
+
+first:
+  type: listener
+  file: first.png
+  split-type: left
+  split: 25
+red:
+  type: listener
+  file: red.png
+  split-type: left
+  split: 25
+yellow:
+  type: listener
+  file: yellow.png
+  split-type: left
+  split: 25
+green:
+  type: listener
+  file: green.png
+  split-type: left
+  split: 25
