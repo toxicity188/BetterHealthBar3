@@ -8,29 +8,49 @@ import kr.toxicity.healthbar.util.forEachAllYamlAsync
 import kr.toxicity.healthbar.util.putSync
 import kr.toxicity.healthbar.util.runWithHandleException
 import kr.toxicity.healthbar.util.subFolder
+import java.util.Collections
+import java.util.HashSet
 import java.util.concurrent.ConcurrentHashMap
 
 object LayoutManagerImpl: LayoutManager, BetterHealthBerManager {
 
     private val layoutMap = ConcurrentHashMap<String, LayoutGroupImpl>()
+    private val groupData = ConcurrentHashMap<String, MutableSet<LayoutGroupImpl>>()
 
-    override fun group(name: String): LayoutGroup? {
+    override fun name(name: String): LayoutGroup? {
         return layoutMap[name]
+    }
+
+    override fun group(group: String): List<LayoutGroup> {
+        return groupData[group]?.toList() ?: emptyList()
     }
 
     override fun reload(resource: PackResource) {
         layoutMap.clear()
+        groupData.clear()
+
         resource.dataFolder.subFolder("layouts").forEachAllYamlAsync { file, s, configurationSection ->
             runWithHandleException("Unable to load this layout: $s in ${file.path}") {
                 val layout = LayoutGroupImpl(
                     file.path,
                     s,
-                    resource,
                     configurationSection
                 )
                 layoutMap.putSync("layout", s) {
                     layout
                 }
+            }
+        }
+        layoutMap.forEach {
+            it.value.group()?.let { group ->
+                groupData.computeIfAbsent(group) {
+                    Collections.synchronizedSet(HashSet())
+                }.add(it.value)
+            } ?: it.value.build(resource, 1)
+        }
+        groupData.values.forEach {
+            it.forEach { group ->
+                group.build(resource, it.size)
             }
         }
     }

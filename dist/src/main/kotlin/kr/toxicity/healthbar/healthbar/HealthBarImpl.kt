@@ -22,7 +22,7 @@ class HealthBarImpl(
     private val groups = section.getStringList("groups").ifEmpty {
         throw RuntimeException("'groups' list is empty.")
     }.map {
-        LayoutManagerImpl.group(it).ifNull("Unable to find this layout: $it")
+        LayoutManagerImpl.name(it).ifNull("Unable to find this layout: $it")
     }
     private val triggers = Collections.unmodifiableSet(EnumSet.copyOf(section.getStringList("triggers").ifEmpty {
         throw RuntimeException("'triggers' list is empty.")

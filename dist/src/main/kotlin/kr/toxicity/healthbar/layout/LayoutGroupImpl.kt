@@ -11,26 +11,23 @@ import kr.toxicity.healthbar.util.forEachSubConfigurationIndexed
 import kr.toxicity.healthbar.util.save
 import net.kyori.adventure.key.Key
 import org.bukkit.configuration.ConfigurationSection
-import java.lang.ref.WeakReference
 
 class LayoutGroupImpl(
     private val path: String,
     val name: String,
-    resource: PackResource,
     section: ConfigurationSection
 ): LayoutGroup {
 
-    val jsonArray = WeakReference(JsonArray())
     var index = ADVENTURE_START_INT
 
     private val imageKey = Key.key(NAMESPACE, "$name/images")
+    private val group = section.getString("group")
 
     private val images = ArrayList<ImageLayoutImpl>().apply {
         section.getConfigurationSection("images")?.forEachSubConfigurationIndexed { i, configurationSection ->
             add(
                 ImageLayoutImpl(
                     this@LayoutGroupImpl,
-                    resource,
                     i + 1,
                     configurationSection
                 )
@@ -38,17 +35,33 @@ class LayoutGroupImpl(
         }
     }
 
-    init {
-        jsonArray.get()?.let {
-            resource.font.add("$name/images.json") {
-                JsonObject().apply {
-                    add("providers", it)
-                }.save()
-            }
+    fun build(resource: PackResource, count: Int) {
+        val json = JsonArray()
+        images.forEach {
+            it.build(resource, count, json)
+        }
+        resource.font.add("$name/images.json") {
+            JsonObject().apply {
+                add("providers", json)
+            }.save()
         }
     }
 
+    override fun group(): String? = group
     override fun path(): String = path
     override fun images(): List<ImageLayout> = images
     override fun imageKey(): Key = imageKey
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LayoutGroupImpl
+
+        return name == other.name
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
 }

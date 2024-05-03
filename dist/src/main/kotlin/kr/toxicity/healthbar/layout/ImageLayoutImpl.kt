@@ -19,8 +19,7 @@ import org.bukkit.configuration.ConfigurationSection
 import kotlin.math.roundToInt
 
 class ImageLayoutImpl(
-    parent: LayoutGroupImpl,
-    resource: PackResource,
+    private val parent: LayoutGroupImpl,
     layer: Int,
     section: ConfigurationSection
 ): ImageLayout, LayoutImpl(layer, section) {
@@ -38,35 +37,40 @@ class ImageLayoutImpl(
     override fun listener(): HealthBarListener = listener
     override fun duration(): Int = duration
 
-    init {
-        image.images().forEach {
-            val dir = "${parent.name}/$layer/${it.name}"
-            resource.textures.add(dir) {
-                it.image.image.withOpacity(layer).toByteArray()
-            }
-            parent.jsonArray.get()?.let { array ->
-                val component = (parent.index++).parseChar()
+    fun build(resource: PackResource, count: Int, jsonArray: JsonArray) {
+        val componentMap = HashMap<Int, WidthComponent>()
+        for (i in 0..<count) {
+            image.images().forEach {
+                val y = (y() + groupY() * i)
+                components.add(componentMap.computeIfAbsent(y) { _ ->
+                    val dir = "${parent.name}/${layer()}/${it.name}"
+                    resource.textures.add(dir) {
+                        it.image.image.withOpacity(layer()).toByteArray()
+                    }
+                    val component = (parent.index++).parseChar()
 
-                val newHeight = (it.image.image.height * scale()).roundToInt()
-                val div = newHeight / it.image.image.height.toDouble()
+                    val newHeight = (it.image.image.height * scale()).roundToInt()
+                    val div = newHeight / it.image.image.height.toDouble()
 
-                array.add(JsonObject().apply {
-                    addProperty("type", "bitmap")
-                    addProperty("file", "$NAMESPACE:$dir")
-                    addProperty("ascent", y().toAscent())
-                    addProperty("height", newHeight)
-                    add("chars", JsonArray().apply {
-                        add(component)
+                    jsonArray.add(JsonObject().apply {
+                        addProperty("type", "bitmap")
+                        addProperty("file", "$NAMESPACE:$dir")
+                        addProperty("ascent", y().toAscent())
+                        addProperty("height", newHeight.toHeight())
+                        add("chars", JsonArray().apply {
+                            add(component)
+                        })
                     })
-                })
-                components.add(PixelComponent(x(), WidthComponent((it.image.image.width.toDouble() * div).roundToInt(), Component.text()
-                    .font(parent.imageKey())
-                    .content(component)
-                    .append(NEGATIVE_ONE_SPACE_COMPONENT.component)
-                )))
+                    WidthComponent((it.image.image.width.toDouble() * div).roundToInt(), Component.text()
+                        .font(parent.imageKey())
+                        .content(component)
+                        .append(NEGATIVE_ONE_SPACE_COMPONENT.component)
+                    )
+                }.toPixelComponent(x() + groupX() * i))
             }
         }
     }
+
     override fun iterator(): MutableIterator<PixelComponent> = components.iterator()
 
     override fun createImageRenderer(pair: HealthBarPair): ImageRenderer {

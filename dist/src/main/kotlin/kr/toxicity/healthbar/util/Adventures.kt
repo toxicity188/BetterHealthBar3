@@ -19,6 +19,10 @@ val EMPTY_PIXEL_COMPONENT
     get() = PixelComponent(0, EMPTY_WIDTH_COMPONENT)
 
 fun Int.toAscent() = this - 8192
+fun Int.toHeight() = apply {
+    if (this > 256) throw RuntimeException("Too large height: $this > 256")
+    if (this < 0) throw RuntimeException("Too low height: $this < 0")
+}
 
 fun Int.toSpaceComponent() = WidthComponent(this, Component.text().font(SPACE_KEY).content((ADVENTURE_START_INT + this).parseChar()))
 
@@ -29,3 +33,5 @@ fun Int.parseChar(): String {
         return "${((t ushr 10) + 0xD800).toChar()}${((t and 1023) + 0xDC00).toChar()}"
     }
 }
+
+fun WidthComponent.toPixelComponent(int: Int) = PixelComponent(int, this)

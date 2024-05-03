@@ -7,6 +7,8 @@ public interface Layout {
     int layer();
     int x();
     int y();
+    int groupX();
+    int groupY();
     double scale();
     @NotNull
     HealthBarCondition condition();
