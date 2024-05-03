@@ -1,7 +1,6 @@
 package kr.toxicity.healthbar.api.healthbar;
 
 import kr.toxicity.healthbar.api.configuration.HealthBarConfiguration;
-import kr.toxicity.healthbar.api.entity.HealthBarEntity;
 import kr.toxicity.healthbar.api.layout.LayoutGroup;
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer;
 import org.jetbrains.annotations.NotNull;
@@ -25,5 +24,5 @@ public interface HealthBar extends HealthBarConfiguration {
     int duration();
 
     @NotNull
-    HealthBarRenderer createRenderer(@NotNull HealthBarEntity entity);
+    HealthBarRenderer createRenderer(@NotNull HealthBarPair pair);
 }

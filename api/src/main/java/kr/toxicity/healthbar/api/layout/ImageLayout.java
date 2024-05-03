@@ -1,7 +1,7 @@
 package kr.toxicity.healthbar.api.layout;
 
 import kr.toxicity.healthbar.api.component.PixelComponent;
-import kr.toxicity.healthbar.api.entity.HealthBarEntity;
+import kr.toxicity.healthbar.api.healthbar.HealthBarPair;
 import kr.toxicity.healthbar.api.image.HealthBarImage;
 import kr.toxicity.healthbar.api.listener.HealthBarListener;
 import kr.toxicity.healthbar.api.renderer.ImageRenderer;
@@ -21,5 +21,5 @@ public interface ImageLayout extends Layout, Iterable<PixelComponent> {
     int duration();
 
     @NotNull
-    ImageRenderer createImageRenderer(@NotNull HealthBarEntity entity);
+    ImageRenderer createImageRenderer(@NotNull HealthBarPair entity);
 }

@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.placeholder;
 
-import kr.toxicity.healthbar.api.entity.HealthBarEntity;
+import kr.toxicity.healthbar.api.healthbar.HealthBarPair;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -61,11 +61,11 @@ public class PlaceholderContainer<T> {
 
     private final Map<String, Function<List<String>, HealthBarPlaceholder<T>>> map = new HashMap<>();
     
-    public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarEntity, T> function) {
+    public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarPair, T> function) {
         map.put(name, string -> new HealthBarPlaceholder<>() {
             @NotNull
             @Override
-            public T value(@NotNull HealthBarEntity player) {
+            public T value(@NotNull HealthBarPair player) {
                 return function.apply(player);
             }
 
@@ -76,11 +76,11 @@ public class PlaceholderContainer<T> {
             }
         });
     }
-    public void addPlaceholder(@NotNull String name, @NotNull BiFunction<List<String>, HealthBarEntity, T> function) {
+    public void addPlaceholder(@NotNull String name, @NotNull BiFunction<List<String>, HealthBarPair, T> function) {
         map.put(name, string -> new HealthBarPlaceholder<>() {
             @NotNull
             @Override
-            public T value(@NotNull HealthBarEntity player) {
+            public T value(@NotNull HealthBarPair player) {
                 return function.apply(string, player);
             }
 
@@ -124,7 +124,7 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public String value(@NotNull HealthBarEntity player) {
+                public String value(@NotNull HealthBarPair player) {
                     return stringMapper.apply(apply.value(player));
                 }
             };
@@ -142,7 +142,7 @@ public class PlaceholderContainer<T> {
 
             @NotNull
             @Override
-            public Object value(@NotNull HealthBarEntity player) {
+            public Object value(@NotNull HealthBarPair player) {
                 return v;
             }
         };
@@ -172,7 +172,7 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public Object value(@NotNull HealthBarEntity player) {
+                public Object value(@NotNull HealthBarPair player) {
                     return cast.parser.apply(string.value(player));
                 }
             };

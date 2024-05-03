@@ -14,12 +14,17 @@ object ListenerManagerImpl: ListenerManager, BetterHealthBerManager {
     private val listenerMap = ConcurrentHashMap<String, (ConfigurationSection) -> HealthBarListener>().apply {
         put("health") {
             HealthBarListener {
-                it.entity().health / it.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+                it.entity.entity().health / it.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
             }
         }
         put("health_before") {
             HealthBarListener {
-                (it.entity().health  + it.entity().lastDamage) / it.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+                (it.entity.entity().health  + it.entity.entity().lastDamage) / it.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+            }
+        }
+        put("absorption") {
+            HealthBarListener {
+                (it.entity.entity().absorptionAmount) / it.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
             }
         }
     }

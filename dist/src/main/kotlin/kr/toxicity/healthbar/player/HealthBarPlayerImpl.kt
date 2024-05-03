@@ -10,7 +10,6 @@ import kr.toxicity.healthbar.util.asyncTaskTimer
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 class HealthBarPlayerImpl(
     private val player: Player
@@ -18,10 +17,16 @@ class HealthBarPlayerImpl(
     override fun player(): Player = player
     override fun compareTo(other: HealthBarPlayer): Int = player.uniqueId.compareTo(other.player().uniqueId)
 
-    private val updaterMap = ConcurrentHashMap<UUID, HealthBarUpdaterGroup>()
+    private val updaterMap = HashMap<UUID, HealthBarUpdaterGroup>()
     private val task = asyncTaskTimer(1, 1) {
-        updaterMap.values.removeIf {
-            !it.update()
+        synchronized(updaterMap) {
+            val iterator = updaterMap.values.iterator()
+            synchronized(iterator) {
+                while (iterator.hasNext()) {
+                    val next = iterator.next()
+                    if (!next.update()) iterator.remove()
+                }
+            }
         }
     }
 
@@ -37,9 +42,11 @@ class HealthBarPlayerImpl(
     override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = updaterMap
 
     override fun showHealthBar(healthBar: HealthBar, entity: LivingEntity) {
-        updaterMap.computeIfAbsent(entity.uniqueId) {
-            HealthBarUpdaterGroupImpl(this, HealthBarEntityImpl(PLUGIN.nms().foliaAdapt(entity)))
-        }.addHealthBar(healthBar)
+        synchronized(updaterMap) {
+            updaterMap.computeIfAbsent(entity.uniqueId) {
+                HealthBarUpdaterGroupImpl(this, HealthBarEntityImpl(PLUGIN.nms().foliaAdapt(entity)))
+            }.addHealthBar(healthBar)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

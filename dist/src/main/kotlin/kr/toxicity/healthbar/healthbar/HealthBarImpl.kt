@@ -1,10 +1,9 @@
 package kr.toxicity.healthbar.healthbar
 
-import kr.toxicity.healthbar.api.entity.HealthBarEntity
 import kr.toxicity.healthbar.api.healthbar.HealthBar
+import kr.toxicity.healthbar.api.healthbar.HealthBarPair
 import kr.toxicity.healthbar.api.healthbar.HealthBarTrigger
 import kr.toxicity.healthbar.api.layout.LayoutGroup
-import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer.RenderResult
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
@@ -39,22 +38,22 @@ class HealthBarImpl(
 
     override fun duration(): Int = duration
 
-    override fun createRenderer(entity: HealthBarEntity): HealthBarRenderer {
-        return Renderer(entity)
+    override fun createRenderer(pair: HealthBarPair): HealthBarRenderer {
+        return Renderer(pair)
     }
 
     private inner class Renderer(
-        private val entity: HealthBarEntity
+        private val pair: HealthBarPair
     ): HealthBarRenderer {
         private var d = 0
         private val images = groups.map {
             it.images().map { image ->
-                image.createImageRenderer(entity)
+                image.createImageRenderer(pair)
             }
         }.sum().toMutableList()
 
         override fun hasNext(): Boolean {
-            return entity.entity().isValid && (duration < 0 || ++d <= duration)
+            return pair.entity.entity().isValid && (duration < 0 || ++d <= duration)
         }
 
         override fun render(): RenderResult {
@@ -71,8 +70,8 @@ class HealthBarImpl(
             }
             return RenderResult(
                 comp + max.toSpaceComponent(),
-                entity.entity().location.apply {
-                    y += entity.entity().eyeHeight + PLUGIN.modelEngine().getHeight(entity.entity()) + ConfigManagerImpl.defaultHeight()
+                pair.entity.entity().location.apply {
+                    y += pair.entity.entity().eyeHeight + PLUGIN.modelEngine().getHeight(pair.entity.entity()) + ConfigManagerImpl.defaultHeight()
                 }
             )
         }

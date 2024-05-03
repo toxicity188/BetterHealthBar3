@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.entity.HealthBarEntity
+import kr.toxicity.healthbar.api.healthbar.HealthBarPair
 import kr.toxicity.healthbar.api.image.HealthBarImage
 import kr.toxicity.healthbar.api.layout.ImageLayout
 import kr.toxicity.healthbar.api.listener.HealthBarListener
@@ -68,12 +69,12 @@ class ImageLayoutImpl(
     }
     override fun iterator(): MutableIterator<PixelComponent> = components.iterator()
 
-    override fun createImageRenderer(entity: HealthBarEntity): ImageRenderer {
-        return Renderer(entity)
+    override fun createImageRenderer(pair: HealthBarPair): ImageRenderer {
+        return Renderer(pair)
     }
 
     private inner class Renderer(
-        private val entity: HealthBarEntity
+        private val pair: HealthBarPair
     ): ImageRenderer {
         private var next = 0
         private var d = 0
@@ -83,8 +84,8 @@ class ImageLayoutImpl(
         }
 
         override fun render(): PixelComponent {
-            return if (condition().apply(entity)) {
-                val listen = listener.value(entity).run {
+            return if (condition().apply(pair)) {
+                val listen = listener.value(pair).run {
                     if (isNaN()) 0.0 else this
                 }
                 if (listen >= 0) {
