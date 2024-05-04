@@ -2,8 +2,10 @@ package kr.toxicity.healthbar.api.manager;
 
 import kr.toxicity.healthbar.api.pack.PackType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
+import java.util.Set;
 
 public interface ConfigManager {
     boolean debug();
@@ -17,4 +19,7 @@ public interface ConfigManager {
     double defaultHeight();
     double lookDegree();
     double lookDistance();
+    @NotNull
+    @Unmodifiable
+    Set<String> mergeOtherFolder();
 }

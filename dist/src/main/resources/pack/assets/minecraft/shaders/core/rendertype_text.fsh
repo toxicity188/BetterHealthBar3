@@ -1,7 +1,5 @@
 #version 150
 
-#moj_import <fog.glsl>
-
 uniform sampler2D Sampler0;
 
 uniform vec4 ColorModulator;
@@ -18,17 +16,23 @@ in float applyColor;
 
 out vec4 fragColor;
 
-#define HEIGHT 8192.0 / 40.0
+vec4 betterhealthbar_fog_distance(vec4 inColor, float vertexDistance, float fogStart, float fogEnd, vec4 fogColor) {
+    if (vertexDistance <= fogStart) {
+        return inColor;
+    }
+
+    float fogValue = vertexDistance < fogEnd ? smoothstep(fogStart, fogEnd, vertexDistance) : 1.0;
+    return vec4(mix(inColor.rgb, fogColor.rgb, fogValue * fogColor.a), inColor.a);
+}
 
 void main() {
     vec4 texColor = texture(Sampler0, texCoord0);
     vec4 color = texColor * vertexColor * ColorModulator;
-    if (applyColor > 0) {
-        if (texColor.rgb == vec3(0)) discard;
+    if (applyColor > 0 && texColor.a > 0) {
         color = vec4(texColor.rgb, 1.0) * vertexColor * ColorModulator;
     }
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = betterhealthbar_fog_distance(color, vertexDistance, FogStart, FogEnd, FogColor);
 }

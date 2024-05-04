@@ -19,7 +19,7 @@ object ListenerManagerImpl: ListenerManager, BetterHealthBerManager {
         }
         put("health_before") {
             HealthBarListener {
-                (it.entity.entity().health  + it.entity.entity().lastDamage) / it.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+                (it.entity.entity().health + it.entity.entity().lastDamage) / it.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
             }
         }
         put("absorption") {

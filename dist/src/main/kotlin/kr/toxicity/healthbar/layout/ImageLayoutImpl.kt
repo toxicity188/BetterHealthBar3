@@ -31,6 +31,7 @@ class ImageLayoutImpl(
         ListenerManagerImpl.build(it)
     } ?: HealthBarListener.INVALID
     private val duration = section.getInt("duration", - 1)
+    private val background = section.getBoolean("background", true)
 
     override fun image(): HealthBarImage = image
     override fun listener(): HealthBarListener = listener
@@ -40,7 +41,7 @@ class ImageLayoutImpl(
         val componentMap = HashMap<BitmapData, WidthComponent>()
         image.images().forEach {
             val list = ArrayList<PixelComponent>()
-            val dir = "${parent.name}/${layer()}/${it.name}"
+            val dir = "${parent.name}/image/${layer()}/${it.name}"
             resource.textures.add(dir) {
                 it.image.image.withOpacity(layer()).toByteArray()
             }
@@ -84,18 +85,22 @@ class ImageLayoutImpl(
             return duration < 0 || ++d <= duration
         }
 
+        override fun canRender(): Boolean {
+            return condition().apply(pair)
+        }
+
+        override fun isBackground(): Boolean = background
+
         override fun render(count: Int): PixelComponent {
-            return if (condition().apply(pair)) {
-                val listen = listener.value(pair).run {
-                    if (isNaN()) 0.0 else this
-                }
-                val list = if (listen >= 0) {
-                    components[(listen * components.lastIndex).roundToInt().coerceAtMost(components.lastIndex)]
-                } else {
-                    components[(next++) % components.size]
-                }
-                list[count.coerceAtMost(list.lastIndex)]
-            } else EMPTY_PIXEL_COMPONENT
+            val listen = listener.value(pair).run {
+                if (isNaN()) 0.0 else this
+            }
+            val list = if (listen >= 0) {
+                components[(listen * components.lastIndex).roundToInt().coerceAtMost(components.lastIndex)]
+            } else {
+                components[(next++) % components.size]
+            }
+            return list[count.coerceAtMost(list.lastIndex)]
         }
     }
 }

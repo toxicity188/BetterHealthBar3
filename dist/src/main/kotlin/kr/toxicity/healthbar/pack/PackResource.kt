@@ -33,6 +33,7 @@ class PackResource {
 
     val dataFolder = DATA_FOLDER
 
+    val merge = ListBuilder()
     val textures = ListBuilder()
     val font = ListBuilder().apply {
         add("space.json") {

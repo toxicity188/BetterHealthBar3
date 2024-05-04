@@ -21,6 +21,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     private var defaultHeight = 1.0
     private var lookDegree = 20.0
     private var lookDistance = 20.0
+    private var mergeOtherFolder = emptySet<String>()
 
     override fun preReload() {
         runWithHandleException("Unable to load config.yml") {
@@ -45,8 +46,11 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
             } ?: BetterHealthBar.NAMESPACE
             defaultDuration = config.getInt("default-duration", 60)
             defaultHeight = config.getDouble("default-height", 1.0)
-            lookDegree = Math.toRadians(config.getDouble("look-degree", 20.0))
-            lookDistance = config.getDouble("look-distance", 20.0)
+            lookDegree = Math.toRadians(config.getDouble("look-degree", 20.0).coerceAtLeast(1.0))
+            lookDistance = config.getDouble("look-distance", 15.0).coerceAtLeast(1.0)
+            mergeOtherFolder = config.getStringList("merge-other-folder").map {
+                it.replace('/', File.separatorChar)
+            }.toSet()
         }
     }
 
@@ -61,4 +65,5 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     override fun defaultHeight(): Double = defaultHeight
     override fun lookDegree(): Double = lookDegree
     override fun lookDistance(): Double = lookDistance
+    override fun mergeOtherFolder(): Set<String> = mergeOtherFolder
 }

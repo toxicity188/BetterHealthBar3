@@ -1,4 +1,4 @@
-mob_effect_absorption:  
+mob_effect_absorption:
   group: mob_effect
   images:
     1:
@@ -7,6 +7,7 @@ mob_effect_absorption:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:absorption"
@@ -21,6 +22,7 @@ mob_effect_bad_omen:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:bad_omen"
@@ -35,6 +37,7 @@ mob_effect_blindness:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:blindness"
@@ -49,6 +52,7 @@ mob_effect_conduit_power:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:conduit_power"
@@ -63,6 +67,7 @@ mob_effect_darkness:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:darkness"
@@ -77,6 +82,7 @@ mob_effect_dolphins_grace:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:dolphins_grace"
@@ -91,6 +97,7 @@ mob_effect_fire_resistance:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:fire_resistance"
@@ -105,6 +112,7 @@ mob_effect_glowing:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:glowing"
@@ -119,6 +127,7 @@ mob_effect_haste:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:haste"
@@ -133,6 +142,7 @@ mob_effect_health_boost:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:health_boost"
@@ -147,6 +157,7 @@ mob_effect_hero_of_the_village:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:hero_of_the_village"
@@ -161,6 +172,7 @@ mob_effect_hunger:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:hunger"
@@ -175,6 +187,7 @@ mob_effect_infested:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:infested"
@@ -189,6 +202,7 @@ mob_effect_instant_damage:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:instant_damage"
@@ -203,6 +217,7 @@ mob_effect_instant_health:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:instant_health"
@@ -217,6 +232,7 @@ mob_effect_invisibility:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:invisibility"
@@ -231,6 +247,7 @@ mob_effect_jump_boost:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:jump_boost"
@@ -245,6 +262,7 @@ mob_effect_levitation:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:levitation"
@@ -259,6 +277,7 @@ mob_effect_luck:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:luck"
@@ -273,6 +292,7 @@ mob_effect_mining_fatigue:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:mining_fatigue"
@@ -287,6 +307,7 @@ mob_effect_nausea:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:nausea"
@@ -301,6 +322,7 @@ mob_effect_night_vision:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:night_vision"
@@ -315,6 +337,7 @@ mob_effect_oozing:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:oozing"
@@ -329,6 +352,7 @@ mob_effect_poison:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:poison"
@@ -343,6 +367,7 @@ mob_effect_raid_omen:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:raid_omen"
@@ -357,6 +382,7 @@ mob_effect_regeneration:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:regeneration"
@@ -371,6 +397,7 @@ mob_effect_resistance:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:resistance"
@@ -385,6 +412,7 @@ mob_effect_saturation:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:saturation"
@@ -399,6 +427,7 @@ mob_effect_slowness:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:slowness"
@@ -413,6 +442,7 @@ mob_effect_slow_falling:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:slow_falling"
@@ -427,6 +457,7 @@ mob_effect_speed:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:speed"
@@ -441,6 +472,7 @@ mob_effect_strength:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:strength"
@@ -455,6 +487,7 @@ mob_effect_trial_omen:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:trial_omen"
@@ -469,6 +502,7 @@ mob_effect_unluck:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:unluck"
@@ -483,6 +517,7 @@ mob_effect_water_breathing:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:water_breathing"
@@ -497,6 +532,7 @@ mob_effect_weakness:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:weakness"
@@ -511,6 +547,7 @@ mob_effect_weaving:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:weaving"
@@ -525,6 +562,7 @@ mob_effect_wind_charged:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:wind_charged"
@@ -539,6 +577,7 @@ mob_effect_wither:
       y: 10
       scale: 0.5
       layer: 254
+      background: false
       conditions:
         1:
           first: "has_potion_effect:wither"

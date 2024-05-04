@@ -48,6 +48,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
         ListenerManagerImpl,
         PlaceholderManagerImpl,
         ImageManagerImpl,
+        TextManagerImpl,
         PlayerManagerImpl,
         LayoutManagerImpl,
         HealthBarManagerImpl
@@ -68,6 +69,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
         }
         nms = when (MinecraftVersion.current) {
             MinecraftVersion.version1_20_5, MinecraftVersion.version1_20_6 -> kr.toxicity.healthbar.nms.v1_20_R4.NMSImpl()
+            MinecraftVersion.version1_20_3, MinecraftVersion.version1_20_4 -> kr.toxicity.healthbar.nms.v1_20_R3.NMSImpl()
             else -> {
                 warn(
                     "Unsupported version found: ${MinecraftVersion.current}",
@@ -175,6 +177,8 @@ class BetterHealthBarImpl: BetterHealthBar() {
     override fun layoutManager(): LayoutManager = LayoutManagerImpl
     override fun listenerManager(): ListenerManager = ListenerManagerImpl
     override fun healthBarManager(): HealthBarManager = HealthBarManagerImpl
+    override fun textManager(): TextManager = TextManagerImpl
+    override fun placeholderManager(): PlaceholderManager = PlaceholderManagerImpl
 
     override fun onDisable() {
         runWithHandleException("Error has occurred while disabling.") {

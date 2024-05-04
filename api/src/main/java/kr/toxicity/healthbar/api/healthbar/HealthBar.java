@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.api.healthbar;
 
+import kr.toxicity.healthbar.api.condition.HealthBarCondition;
 import kr.toxicity.healthbar.api.configuration.HealthBarConfiguration;
 import kr.toxicity.healthbar.api.layout.LayoutGroup;
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer;
@@ -25,4 +26,6 @@ public interface HealthBar extends HealthBarConfiguration {
 
     @NotNull
     HealthBarRenderer createRenderer(@NotNull HealthBarPair pair);
+    @NotNull
+    HealthBarCondition condition();
 }

@@ -4,11 +4,9 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.layout.ImageLayout
 import kr.toxicity.healthbar.api.layout.LayoutGroup
+import kr.toxicity.healthbar.api.layout.TextLayout
 import kr.toxicity.healthbar.pack.PackResource
-import kr.toxicity.healthbar.util.ADVENTURE_START_INT
-import kr.toxicity.healthbar.util.NAMESPACE
-import kr.toxicity.healthbar.util.forEachSubConfigurationIndexed
-import kr.toxicity.healthbar.util.save
+import kr.toxicity.healthbar.util.*
 import net.kyori.adventure.key.Key
 import org.bukkit.configuration.ConfigurationSection
 
@@ -23,12 +21,26 @@ class LayoutGroupImpl(
     private val imageKey = Key.key(NAMESPACE, "$name/images")
     private val group = section.getString("group")
 
+    private var i = 0
+
     private val images = ArrayList<ImageLayoutImpl>().apply {
-        section.getConfigurationSection("images")?.forEachSubConfigurationIndexed { i, configurationSection ->
+        section.getConfigurationSection("images")?.forEachSubConfiguration { _, configurationSection ->
             add(
                 ImageLayoutImpl(
                     this@LayoutGroupImpl,
-                    i + 1,
+                    ++i,
+                    configurationSection
+                )
+            )
+        }
+    }
+    private val texts = ArrayList<TextLayoutImpl>().apply {
+        section.getConfigurationSection("texts")?.forEachSubConfiguration { s, configurationSection ->
+            add(
+                TextLayoutImpl(
+                    this@LayoutGroupImpl,
+                    s,
+                    ++i,
                     configurationSection
                 )
             )
@@ -45,12 +57,16 @@ class LayoutGroupImpl(
                 add("providers", json)
             }.save()
         }
+        texts.forEach {
+            it.build(resource, count)
+        }
     }
 
     override fun group(): String? = group
     override fun path(): String = path
     override fun images(): List<ImageLayout> = images
     override fun imageKey(): Key = imageKey
+    override fun texts(): List<TextLayout> = texts
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

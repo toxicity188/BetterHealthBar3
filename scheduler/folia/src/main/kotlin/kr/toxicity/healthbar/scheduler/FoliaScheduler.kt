@@ -5,6 +5,7 @@ import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler
 import kr.toxicity.healthbar.api.scheduler.WrappedTask
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import java.util.concurrent.TimeUnit
 
 class FoliaScheduler: WrappedScheduler {
@@ -14,6 +15,12 @@ class FoliaScheduler: WrappedScheduler {
 
     override fun task(runnable: Runnable): WrappedTask {
         return Bukkit.getGlobalRegionScheduler().run(plugin) {
+            runnable.run()
+        }.wrap()
+    }
+
+    override fun task(location: Location, runnable: Runnable): WrappedTask {
+        return Bukkit.getRegionScheduler().run(plugin, location) {
             runnable.run()
         }.wrap()
     }

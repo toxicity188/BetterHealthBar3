@@ -4,6 +4,7 @@ import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler
 import kr.toxicity.healthbar.api.scheduler.WrappedTask
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.scheduler.BukkitTask
 
 class StandardScheduler: WrappedScheduler {
@@ -15,6 +16,10 @@ class StandardScheduler: WrappedScheduler {
         return Bukkit.getScheduler().runTask(plugin, runnable).wrap()
     }
 
+    override fun task(location: Location, runnable: Runnable): WrappedTask {
+        return task(runnable)
+    }
+
     override fun asyncTask(runnable: Runnable): WrappedTask {
         return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable).wrap()
     }
@@ -23,9 +28,7 @@ class StandardScheduler: WrappedScheduler {
         return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period).wrap()
     }
 
-    private fun BukkitTask.wrap() = object : WrappedTask {
-        override fun cancel() {
-            this@wrap.cancel()
-        }
+    private fun BukkitTask.wrap() = WrappedTask {
+        cancel()
     }
 }

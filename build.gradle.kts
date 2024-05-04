@@ -48,6 +48,7 @@ fun Project.spigot() = also {
     it.dependencies {
         compileOnly("org.spigotmc:spigot-api:$minecraft-R0.1-SNAPSHOT")
         compileOnly("net.kyori:adventure-api:$adventure")
+        compileOnly("net.kyori:adventure-text-minimessage:$adventure")
         compileOnly("net.kyori:adventure-platform-bukkit:$platform")
     }
 }

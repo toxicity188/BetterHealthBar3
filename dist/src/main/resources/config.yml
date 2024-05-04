@@ -5,3 +5,5 @@ default-duration: 60
 build-folder: "BetterHealthBar/build"
 default-height: 1
 look-degree: 20
+look-distance: 15
+merge-other-folder: []

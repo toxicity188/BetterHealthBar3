@@ -2,17 +2,12 @@ package kr.toxicity.healthbar.pack
 
 import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
-import kr.toxicity.healthbar.util.NAMESPACE
-import kr.toxicity.healthbar.util.PLUGIN
-import kr.toxicity.healthbar.util.runWithHandleException
-import kr.toxicity.healthbar.util.subFolder
+import kr.toxicity.healthbar.util.*
 import java.io.File
 import java.io.OutputStream
 import java.security.DigestOutputStream
 import java.security.MessageDigest
-import java.util.Collections
-import java.util.Comparator
-import java.util.TreeMap
+import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -43,6 +38,23 @@ object PackGenerator {
                 }
             }
             append("", "", buildFolder)
+        }
+
+        private val namespace = buildFolder.subFolder(NAMESPACE)
+        private val font = namespace.subFolder("font")
+        private val textures = namespace.subFolder("textures")
+
+        override fun zip(resource: PackResource) {
+            fun save(parent: File, target: PackResource.Builder, remove: String) {
+                (assetsMap.remove(if (remove.isNotEmpty()) "$remove/${target.dir}" else target.dir) ?: File(parent, target.dir.replace('/', separator)).apply {
+                    parentFile.mkdirs()
+                }).outputStream().buffered().use { os ->
+                    os.write(target.supplier())
+                }
+            }
+            resource.merge.forEachAsync {
+                save(parent, it, "")
+            }
             PLUGIN.loadAssets("pack") { s, i ->
                 assetsMap.remove(s)
                 File(parent, s).apply {
@@ -51,26 +63,11 @@ object PackGenerator {
                     i.copyTo(os)
                 }
             }
-        }
-
-        private val namespace = buildFolder.subFolder(NAMESPACE)
-        private val font = namespace.subFolder("font")
-        private val textures = namespace.subFolder("textures")
-
-        override fun zip(resource: PackResource) {
-            fun save(parent: File, target: PackResource.Builder) {
-                assetsMap.remove(target.dir.replace(separator, '/'))
-                File(parent, target.dir.replace('/', separator)).apply {
-                    parentFile.mkdirs()
-                }.outputStream().buffered().use { os ->
-                    os.write(target.supplier())
-                }
-            }
             resource.font.forEachAsync {
-                save(font, it)
+                save(font, it, "assets/$NAMESPACE/font")
             }
             resource.textures.forEachAsync {
-                save(textures, it)
+                save(textures, it, "assets/$NAMESPACE/textures")
             }
         }
         override fun close() {
@@ -97,23 +94,24 @@ object PackGenerator {
             }
             ZipOutputStream(stream)
         }
-        init {
+        override fun zip(resource: PackResource) {
+            fun save(prefix: String, target: PackResource.Builder) {
+                val get = target.supplier()
+                val name = "$prefix/${target.dir}"
+                synchronized(zip) {
+                    zip.putNextEntry(ZipEntry(name))
+                    zip.write(get)
+                    zip.closeEntry()
+                }
+            }
+            resource.merge.forEachAsync {
+                save("", it)
+            }
             PLUGIN.loadAssets("pack") { s, i ->
                 val read = i.readAllBytes()
                 synchronized(zip) {
                     zip.putNextEntry(ZipEntry(s))
                     zip.write(read)
-                    zip.closeEntry()
-                }
-            }
-        }
-
-        override fun zip(resource: PackResource) {
-            fun save(prefix: String, target: PackResource.Builder) {
-                val get = target.supplier()
-                synchronized(zip) {
-                    zip.putNextEntry(ZipEntry("$prefix/${target.dir}"))
-                    zip.write(get)
                     zip.closeEntry()
                 }
             }
@@ -132,6 +130,24 @@ object PackGenerator {
 
 
     fun zip(packType: PackType, resource: PackResource) {
+        fun add(file: File, path: String) {
+            val name = if (path.isEmpty()) file.name else "$path/${file.name}"
+            if (file.isDirectory) file.listFiles()?.forEach {
+                add(it, name)
+            } else {
+                resource.merge.add(name) {
+                    file.inputStream().buffered().use {
+                        it.readAllBytes()
+                    }
+                }
+            }
+        }
+        val parent = DATA_FOLDER.parentFile
+        ConfigManagerImpl.mergeOtherFolder().forEach {
+            File(parent, it).listFiles()?.forEach { f ->
+                add(f, "")
+            }
+        }
         runWithHandleException("Unable to zip resource pack.") {
             when (packType) {
                 PackType.FOLDER -> FolderPack()

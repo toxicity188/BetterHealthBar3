@@ -181,4 +181,48 @@ public class PlaceholderContainer<T> {
             };
         } else return get.value(list);
     }
+
+    public static @NotNull Function<HealthBarPair, String> toString(@NotNull String pattern) {
+        var array = new ArrayList<Function<HealthBarPair, String>>();
+        var sb = new StringBuilder();
+        var skip = false;
+        for (char c : pattern.toCharArray()) {
+            if (!skip) switch (c) {
+                case '[' -> {
+                    var string = sb.toString();
+                    array.add(p -> string);
+                    sb.setLength(0);
+                }
+                case ']' -> {
+                    var result = sb.toString();
+                    var name = subString(result);
+                    var argument = result.length() > name.length() + 1 ? Arrays.asList(result.substring(name.length() + 1).split(",")) : Collections.<String>emptyList();
+                    var find = CLASS_MAP.values().stream().map(f -> f.find(name)).filter(f -> f.ifPresented()).findFirst().orElseThrow(() -> new RuntimeException("Unable to find this placeholder: " + name)).stringValue(argument);
+                    array.add(find::value);
+                    sb.setLength(0);
+                }
+                case '/' -> skip = true;
+                default -> sb.append(c);
+            } else sb.append(c);
+        }
+        if (!sb.isEmpty()) {
+            var string = sb.toString();
+            array.add(p -> string);
+            sb.setLength(0);
+        }
+        return p -> {
+            var sb2 = new StringBuilder();
+            array.forEach(f -> sb2.append(f.apply(p)));
+            return sb2.toString();
+        };
+    }
+
+    private static @NotNull String subString(@NotNull String string) {
+        var sb = new StringBuilder();
+        for (char c1 : string.toCharArray()) {
+            if (':' != c1) sb.append(c1);
+            else break;;
+        }
+        return sb.toString();
+    }
 }

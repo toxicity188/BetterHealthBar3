@@ -10,7 +10,7 @@ import kr.toxicity.healthbar.util.PLUGIN
 class HealthBarUpdaterImpl(
     private val parent: HealthBarUpdaterGroupImpl,
     player: HealthBarPlayer,
-    private val renderer: HealthBarRenderer,
+    private val renderer: HealthBarRenderer
 ): HealthBarUpdater {
     private val display = renderer().render().run {
         PLUGIN.nms().createTextDisplay(player.player(), location, component.component.build())

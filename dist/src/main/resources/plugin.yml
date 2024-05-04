@@ -8,6 +8,7 @@ load: POSTWORLD
 folia-supported: true
 libraries:
   - "net.kyori:adventure-api:${adventure}"
+  - "net.kyori:adventure-text-minimessage:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
 commands:
   healthbar:

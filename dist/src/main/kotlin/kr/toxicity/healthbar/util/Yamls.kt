@@ -1,5 +1,7 @@
 package kr.toxicity.healthbar.util
 
+import kr.toxicity.healthbar.api.condition.HealthBarCondition
+import kr.toxicity.healthbar.api.condition.HealthBarOperation
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -25,3 +27,21 @@ fun ConfigurationSection.forEachSubConfigurationIndexed(block: (Int, Configurati
         }
     }
 }
+fun ConfigurationSection.toCondition(): HealthBarCondition = run {
+    var condition = HealthBarCondition.TRUE
+    getConfigurationSection("conditions")?.forEachSubConfiguration { _, configurationSection ->
+        val old = condition
+        var get = HealthBarOperation.of(configurationSection)
+        if (configurationSection.getBoolean("not")) get = get.not()
+        condition = when (val gate = configurationSection.getString("gate")?.lowercase() ?: "and") {
+            "and" -> HealthBarCondition {
+                old.apply(it) && get.apply(it)
+            }
+            "or" -> HealthBarCondition {
+                old.apply(it) || get.apply(it)
+            }
+            else -> throw RuntimeException("Unsupported gate: $gate")
+        }
+    }
+    condition
+} ?: HealthBarCondition.TRUE
