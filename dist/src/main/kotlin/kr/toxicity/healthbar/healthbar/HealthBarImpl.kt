@@ -72,7 +72,9 @@ class HealthBarImpl(
         }.toMutableList()
 
         override fun hasNext(): Boolean {
-            return pair.entity.entity().isValid && (duration < 0 || ++d <= duration)
+            val entity = pair.entity.entity()
+            val player = pair.player.player()
+            return entity.isValid && entity.world.uid == player.world.uid && player.location.distance(entity.location) < ConfigManagerImpl.lookDistance() && (duration < 0 || ++d <= duration)
         }
 
         override fun canRender(): Boolean {

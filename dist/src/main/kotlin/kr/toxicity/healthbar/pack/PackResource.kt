@@ -2,7 +2,9 @@ package kr.toxicity.healthbar.pack
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.util.*
+import kr.toxicity.healthbar.version.MinecraftVersion
 import java.util.Collections
 
 
@@ -33,7 +35,25 @@ class PackResource {
 
     val dataFolder = DATA_FOLDER
 
-    val merge = ListBuilder()
+    val merge = ListBuilder().apply {
+        if (ConfigManagerImpl.createPackMcmeta()) {
+            PLUGIN.getResource("icon.png")?.buffered()?.let {
+                add("pack.png") {
+                    it.use { stream ->
+                        stream.readAllBytes()
+                    }
+                }
+            }
+            add("pack.mcmeta") {
+                JsonObject().apply {
+                    add("pack", JsonObject().apply {
+                        addProperty("pack_format", MinecraftVersion.current.packVersion())
+                        addProperty("description", "BetterHealthBar's resource pack.")
+                    })
+                }.save()
+            }
+        }
+    }
     val textures = ListBuilder().apply {
         PLUGIN.getResource("splitter.png")?.buffered()?.let {
             add("splitter.png") {

@@ -40,6 +40,18 @@ class HealthBarPlayerImpl(
         PLUGIN.nms().uninject(this)
     }
 
+    override fun clear() {
+        synchronized(updaterMap) {
+            val iterator = updaterMap.values.iterator()
+            synchronized(iterator) {
+                while (iterator.hasNext()) {
+                    iterator.remove()
+                }
+            }
+            updaterMap.clear()
+        }
+    }
+
     override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = updaterMap
 
     override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: LivingEntity) {

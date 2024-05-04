@@ -22,4 +22,7 @@ public interface ConfigManager {
     @NotNull
     @Unmodifiable
     Set<String> mergeOtherFolder();
+    boolean createPackMcmeta();
+    boolean enableSelfHost();
+    int selfHostPort();
 }

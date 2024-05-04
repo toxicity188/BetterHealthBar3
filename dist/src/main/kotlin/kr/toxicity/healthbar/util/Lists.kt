@@ -22,11 +22,6 @@ fun <T> List<List<T>>.sum(): List<T> {
     return result
 }
 
-fun <T> Collection<T>.forEachAsync(block: (T) -> Unit, callback: () -> Unit) {
-    toList().forEachAsync(block)
-    callback()
-}
-
 fun <T> List<T>.forEachAsync(block: (T) -> Unit) {
     if (isNotEmpty()) {
         val available = Runtime.getRuntime().availableProcessors()

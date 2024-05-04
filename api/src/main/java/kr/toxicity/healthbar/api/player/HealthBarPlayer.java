@@ -14,6 +14,7 @@ public interface HealthBarPlayer extends Comparable<HealthBarPlayer> {
     @NotNull
     Player player();
     void uninject();
+    void clear();
     Map<UUID, HealthBarUpdaterGroup> updaterMap();
     void showHealthBar(@NotNull HealthBar healthBar, @NotNull HealthBarTrigger trigger, @NotNull LivingEntity entity);
 }

@@ -13,6 +13,7 @@ public interface HealthBarUpdater {
     HealthBarRenderer renderer();
 
     void updateTick();
+    void remove();
 
     boolean update();
 }

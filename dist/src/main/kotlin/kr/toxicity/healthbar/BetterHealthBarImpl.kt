@@ -15,6 +15,7 @@ import kr.toxicity.healthbar.modelengine.CurrentModelEngineAdapter
 import kr.toxicity.healthbar.modelengine.LegacyModelEngineAdapter
 import kr.toxicity.healthbar.pack.PackGenerator
 import kr.toxicity.healthbar.pack.PackResource
+import kr.toxicity.healthbar.pack.PackUploader
 import kr.toxicity.healthbar.scheduler.FoliaScheduler
 import kr.toxicity.healthbar.scheduler.StandardScheduler
 import kr.toxicity.healthbar.util.*
@@ -25,6 +26,7 @@ import org.bukkit.Bukkit
 import java.io.File
 import java.io.InputStream
 import java.text.DecimalFormat
+import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 import java.util.jar.JarFile
 
@@ -50,9 +52,9 @@ class BetterHealthBarImpl: BetterHealthBar() {
         PlaceholderManagerImpl,
         ImageManagerImpl,
         TextManagerImpl,
-        PlayerManagerImpl,
         LayoutManagerImpl,
-        HealthBarManagerImpl
+        HealthBarManagerImpl,
+        PlayerManagerImpl
     )
 
     @Volatile
@@ -93,7 +95,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
         getCommand("healthbar")?.setExecutor { commandSender, _, _, _ ->
             if (commandSender.hasPermission("betterhealthbar.reload")) {
                 commandSender.sendMessage("Starts reloading. please wait...")
-                asyncTask {
+                CompletableFuture.runAsync {
                     val reload = reload()
                     when (reload.state) {
                         ReloadState.SUCCESS -> commandSender.sendMessage("Reload success! (${DecimalFormat.getInstance().format(reload.time)} ms)")
@@ -111,7 +113,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
                 it.start()
             }
             log.add("Plugin enabled.")
-            asyncTask {
+            scheduler.task {
                 when (reload().state) {
                     ReloadState.SUCCESS -> info(*log.toTypedArray())
                     else -> {
@@ -125,7 +127,9 @@ class BetterHealthBarImpl: BetterHealthBar() {
     override fun reload(): ReloadResult {
         if (onReload) return ReloadResult(ReloadState.ON_RELOAD, 0)
         val time = System.currentTimeMillis()
+        onReload = true
         return runWithHandleException("Error has occurred while reloading.") {
+            PackUploader.stop()
             managers.forEach {
                 it.preReload()
             }
@@ -138,8 +142,10 @@ class BetterHealthBarImpl: BetterHealthBar() {
             managers.forEach {
                 it.postReload()
             }
+            onReload = false
             ReloadResult(ReloadState.SUCCESS, System.currentTimeMillis() - time)
         }.getOrElse {
+            onReload = false
             ReloadResult(ReloadState.FAIL, System.currentTimeMillis() - time)
         }
     }

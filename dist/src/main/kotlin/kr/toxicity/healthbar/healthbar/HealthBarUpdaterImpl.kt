@@ -24,14 +24,18 @@ class HealthBarUpdaterImpl(
         renderer.updateTick()
     }
 
+    override fun remove() {
+        display.remove()
+    }
+
     override fun update(): Boolean {
         if (!renderer().hasNext()) {
-            display().remove()
+            display.remove()
             return false
         } else {
             val render = renderer().render()
-            display().teleport(render.location)
-            display().text(render.component.component.build())
+            display.teleport(render.location)
+            display.text(render.component.component.build())
             return true
         }
     }

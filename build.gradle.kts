@@ -21,7 +21,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.0"
+    version = "3.0-alpha-1"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")

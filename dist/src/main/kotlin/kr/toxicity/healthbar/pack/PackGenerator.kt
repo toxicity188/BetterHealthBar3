@@ -79,7 +79,7 @@ object PackGenerator {
 
     private class ZipPack: Pack {
 
-        private val zip = ConfigManagerImpl.buildFolder().run {
+        private val file = ConfigManagerImpl.buildFolder().run {
             File(parentFile.also {
                 it.parentFile.mkdirs()
             }, name.let { n ->
@@ -87,17 +87,23 @@ object PackGenerator {
             })
         }.apply {
             if (exists()) delete()
+        }
+        private val digest = runCatching {
+            MessageDigest.getInstance("SHA-1")
+        }.getOrNull()
+        private val zip = file.apply {
+            if (exists()) delete()
         }.outputStream().buffered().run {
             var stream: OutputStream = this
-            runCatching {
-                stream = DigestOutputStream(stream, MessageDigest.getInstance("SHA-1"))
+            digest?.let {
+                stream = DigestOutputStream(stream, it)
             }
             ZipOutputStream(stream)
         }
         override fun zip(resource: PackResource) {
             fun save(prefix: String, target: PackResource.Builder) {
                 val get = target.supplier()
-                val name = "$prefix/${target.dir}"
+                val name = if (prefix.isNotEmpty()) "$prefix/${target.dir}" else target.dir
                 synchronized(zip) {
                     zip.putNextEntry(ZipEntry(name))
                     zip.write(get)
@@ -125,6 +131,13 @@ object PackGenerator {
 
         override fun close() {
             zip.close()
+            if (ConfigManagerImpl.enableSelfHost()) {
+                digest?.let { digest ->
+                    file.inputStream().buffered().use {
+                        PackUploader.upload(digest, it.readAllBytes())
+                    }
+                }
+            }
         }
     }
 

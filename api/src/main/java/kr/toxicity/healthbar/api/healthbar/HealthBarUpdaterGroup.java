@@ -21,6 +21,11 @@ public interface HealthBarUpdaterGroup {
         updaters.removeIf(u -> !u.update());
         return true;
     }
+    default void remove() {
+        var updaters = updaters();
+        updaters.forEach(HealthBarUpdater::remove);
+        updaters.clear();
+    }
 
     void addHealthBar(@NotNull HealthBar healthBar, @NotNull HealthBarTrigger trigger);
 }

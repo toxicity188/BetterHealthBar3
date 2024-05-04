@@ -36,6 +36,5 @@ fun warn(vararg message: String) {
     }
 }
 
-fun task(block: () -> Unit) = PLUGIN.scheduler().task(block)
-fun asyncTask(block: () -> Unit) = PLUGIN.scheduler().asyncTask(block)
+fun taskLater(delay: Long, block: () -> Unit) = PLUGIN.scheduler().taskLater(delay, block)
 fun asyncTaskTimer(delay: Long, period: Long, block: () -> Unit) = PLUGIN.scheduler().asyncTaskTimer(delay, period, block)

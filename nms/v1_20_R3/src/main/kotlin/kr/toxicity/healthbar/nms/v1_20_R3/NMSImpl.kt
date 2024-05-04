@@ -181,12 +181,6 @@ class NMSImpl: NMS {
             override fun getHandle(): LivingEntity {
                 return handle
             }
-            override fun getHealth(): Double {
-                return entity.health
-            }
-            override fun isOp(): Boolean {
-                return entity.isOp
-            }
             override fun getEquipment(): EntityEquipment? {
                 return entity.equipment
             }
@@ -288,6 +282,7 @@ class NMSImpl: NMS {
     private inner class PlayerInjection(val player: HealthBarPlayer): ChannelDuplexHandler() {
         private val serverPlayer = (player.player() as CraftPlayer).handle
         private val connection = serverPlayer.connection
+        private val world = player.player().world
 
         init {
             val pipeLine = getConnection(connection).channel.pipeline()
@@ -313,14 +308,15 @@ class NMSImpl: NMS {
                 plugin.healthBarManager().allHealthBars().filter {
                     it.triggers().contains(trigger)
                 }.forEach {
-                    val bukkit = e.bukkitEntity
-                    if (bukkit is CraftLivingEntity && bukkit.isValid) {
-                        if (plugin.isFolia) {
-                            plugin.scheduler().task(bukkit.location) {
-                                player.showHealthBar(it, PacketTrigger(trigger, handle), foliaAdapt(bukkit))
-                            }
-                        } else player.showHealthBar(it, PacketTrigger(trigger, handle), foliaAdapt(bukkit))
+                    fun add() {
+                        val bukkit = e.bukkitEntity
+                        if (bukkit is CraftLivingEntity && bukkit.isValid) {
+                            player.showHealthBar(it, PacketTrigger(trigger, handle), foliaAdapt(bukkit))
+                        }
                     }
+                    if (plugin.isFolia) plugin.scheduler().task(world, e.x.toInt() shr 4, e.z.toInt() shr 4) {
+                        add()
+                    } else add()
                 }
             }
         }
