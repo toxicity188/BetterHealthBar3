@@ -27,9 +27,6 @@ val MINI_MESSAGE = MiniMessage.builder()
         StandardTags.score(),
         StandardTags.nbt(),
     ))
-    .preProcessor {
-        it
-    }
     .postProcessor {
         val style = it.style()
         it.style(style.decorations(TextDecoration.entries.associateWith { d ->
