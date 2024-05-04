@@ -4,6 +4,7 @@ import kr.toxicity.healthbar.api.condition.HealthBarCondition;
 import kr.toxicity.healthbar.api.configuration.HealthBarConfiguration;
 import kr.toxicity.healthbar.api.layout.LayoutGroup;
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer;
+import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -20,12 +21,12 @@ public interface HealthBar extends HealthBarConfiguration {
 
     @NotNull
     @Unmodifiable
-    Set<HealthBarTrigger> triggers();
+    Set<HealthBarTriggerType> triggers();
 
     int duration();
 
     @NotNull
-    HealthBarRenderer createRenderer(@NotNull HealthBarPair pair);
+    HealthBarRenderer createRenderer(@NotNull HealthBarData pair);
     @NotNull
     HealthBarCondition condition();
 }

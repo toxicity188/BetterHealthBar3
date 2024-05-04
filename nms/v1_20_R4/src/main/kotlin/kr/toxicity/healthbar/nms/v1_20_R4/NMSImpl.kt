@@ -8,10 +8,11 @@ import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.chunk.system.entity.EntityLookup
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import kr.toxicity.healthbar.api.BetterHealthBar
-import kr.toxicity.healthbar.api.healthbar.HealthBarTrigger
+import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.nms.NMS
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
+import kr.toxicity.healthbar.api.trigger.PacketTrigger
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
@@ -302,7 +303,7 @@ class NMSImpl: NMS {
             }
         }
 
-        private fun show(trigger: HealthBarTrigger, entity: net.minecraft.world.entity.Entity?) {
+        private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
             val playerX = serverPlayer.x
             val playerY = serverPlayer.y
             val playerZ = serverPlayer.z
@@ -316,9 +317,9 @@ class NMSImpl: NMS {
                     if (bukkit is CraftLivingEntity && bukkit.isValid) {
                         if (plugin.isFolia) {
                             plugin.scheduler().task(bukkit.location) {
-                                player.showHealthBar(it, foliaAdapt(bukkit))
+                                player.showHealthBar(it, PacketTrigger(trigger, handle), foliaAdapt(bukkit))
                             }
-                        } else player.showHealthBar(it, foliaAdapt(bukkit))
+                        } else player.showHealthBar(it, PacketTrigger(trigger, handle), foliaAdapt(bukkit))
                     }
                 }
             }
@@ -363,8 +364,8 @@ class NMSImpl: NMS {
 
         override fun write(ctx: ChannelHandlerContext?, msg: Any?, promise: ChannelPromise?) {
             when (msg) {
-                is ClientboundDamageEventPacket -> show(HealthBarTrigger.DAMAGE, msg.entityId.toEntity())
-                is ClientboundMoveEntityPacket -> show(HealthBarTrigger.MOVE, getEntityFromMovePacket(msg).toEntity())
+                is ClientboundDamageEventPacket -> show(msg, HealthBarTriggerType.DAMAGE, msg.entityId.toEntity())
+                is ClientboundMoveEntityPacket -> show(msg, HealthBarTriggerType.MOVE, getEntityFromMovePacket(msg).toEntity())
             }
             super.write(ctx, msg, promise)
         }
@@ -372,7 +373,7 @@ class NMSImpl: NMS {
         override fun channelRead(ctx: ChannelHandlerContext?, msg: Any?) {
             when (msg) {
                 is ServerboundMovePlayerPacket -> getViewedEntity().forEach {
-                    show(HealthBarTrigger.LOOK, it)
+                    show(msg, HealthBarTriggerType.LOOK, it)
                 }
             }
             super.channelRead(ctx, msg)

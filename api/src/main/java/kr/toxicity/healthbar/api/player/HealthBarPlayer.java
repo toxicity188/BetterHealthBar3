@@ -1,6 +1,7 @@
 package kr.toxicity.healthbar.api.player;
 
 import kr.toxicity.healthbar.api.healthbar.HealthBar;
+import kr.toxicity.healthbar.api.trigger.HealthBarTrigger;
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,5 +15,5 @@ public interface HealthBarPlayer extends Comparable<HealthBarPlayer> {
     Player player();
     void uninject();
     Map<UUID, HealthBarUpdaterGroup> updaterMap();
-    void showHealthBar(@NotNull HealthBar healthBar, @NotNull LivingEntity entity);
+    void showHealthBar(@NotNull HealthBar healthBar, @NotNull HealthBarTrigger trigger, @NotNull LivingEntity entity);
 }

@@ -4,14 +4,48 @@ import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
 
-const val ADVENTURE_START_INT = 0xA0000
+const val NEW_LAYER_INT = 0xA0000
+const val ADVENTURE_START_INT = 0xB0000
+
+val MINI_MESSAGE = MiniMessage.builder()
+    .tags(
+        TagResolver.resolver(
+        StandardTags.decorations(),
+        StandardTags.color(),
+        StandardTags.gradient(),
+        StandardTags.rainbow(),
+        StandardTags.translatable(),
+        StandardTags.translatableFallback(),
+        StandardTags.transition(),
+        StandardTags.insertion(),
+        StandardTags.selector(),
+        StandardTags.score(),
+        StandardTags.nbt(),
+    ))
+    .preProcessor {
+        it
+    }
+    .postProcessor {
+        val style = it.style()
+        it.style(style.decorations(TextDecoration.entries.associateWith { d ->
+            val deco = style.decoration(d)
+            if (deco == TextDecoration.State.NOT_SET) TextDecoration.State.FALSE else TextDecoration.State.TRUE
+        }))
+    }
+    .build()
 
 val SPACE_KEY
     get() = Key.key(NAMESPACE, "space")
 
 val NEGATIVE_ONE_SPACE_COMPONENT
     get() = WidthComponent(0, Component.text().font(SPACE_KEY).content((ADVENTURE_START_INT - 1).parseChar()))
+val NEW_LAYER
+    get() = WidthComponent(0, Component.text().font(SPACE_KEY).content(NEW_LAYER_INT.parseChar()))
 
 val EMPTY_WIDTH_COMPONENT
     get() = WidthComponent(0 , Component.text())

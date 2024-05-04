@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.placeholder;
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarPair;
+import kr.toxicity.healthbar.api.healthbar.HealthBarData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public interface PlaceholderBuilder<T> {
     HealthBarPlaceholder<T> build(@NotNull List<String> strings);
     int requiredArgsCount();
 
-    static <T> PlaceholderBuilder<T> of(int length, @NotNull Class<T> clazz, @NotNull Function<List<String>, Function<HealthBarPair, T>> tFunction) {
+    static <T> PlaceholderBuilder<T> of(int length, @NotNull Class<T> clazz, @NotNull Function<List<String>, Function<HealthBarData, T>> tFunction) {
         return new PlaceholderBuilder<>() {
             @Override
             public HealthBarPlaceholder<T> build(@NotNull List<String> strings) {
@@ -24,7 +24,7 @@ public interface PlaceholderBuilder<T> {
 
                     @NotNull
                     @Override
-                    public T value(@NotNull HealthBarPair player) {
+                    public T value(@NotNull HealthBarData player) {
                         return get.apply(player);
                     }
                 };

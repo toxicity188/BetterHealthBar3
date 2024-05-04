@@ -37,3 +37,11 @@ default_layout:
           first: health_percentage
           second: 0.66
           operation: ">="
+  texts:
+    1:
+      text: default_text
+      pattern: "[entity_name]"
+      align: center
+      x: 60
+      y: 20
+      scale: 0.5

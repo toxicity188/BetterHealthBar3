@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
-import kr.toxicity.healthbar.api.healthbar.HealthBarPair
+import kr.toxicity.healthbar.api.healthbar.HealthBarData
 import kr.toxicity.healthbar.api.layout.TextLayout
 import kr.toxicity.healthbar.api.placeholder.PlaceholderContainer
 import kr.toxicity.healthbar.api.renderer.TextRenderer
@@ -15,6 +15,8 @@ import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.configuration.ConfigurationSection
 import java.util.Collections
 import java.util.function.Function
@@ -44,11 +46,13 @@ class TextLayoutImpl(
     }
     private val duration = section.getInt("duration", - 1)
     private val keys = ArrayList<WidthKey>()
-    private val pattern = PlaceholderContainer.toString(section.getString("pattern").ifNull("Unable to find 'pattern' command."))
+    private val pattern = PlaceholderContainer.toString(
+        section.getString("pattern").ifNull("Unable to find 'pattern' command.")
+    )
 
     override fun charWidth(): Map<Char, Int> = textWidth
     override fun align(): TextAlign = align
-    override fun pattern(): Function<HealthBarPair, String> = pattern
+    override fun pattern(): Function<HealthBarData, String> = pattern
 
     private class WidthKey(
         val key: Key,
@@ -100,12 +104,12 @@ class TextLayoutImpl(
         }
     }
 
-    override fun createRenderer(pair: HealthBarPair): TextRenderer {
+    override fun createRenderer(pair: HealthBarData): TextRenderer {
         return Renderer(pair)
     }
 
     private inner class Renderer(
-        private val pair: HealthBarPair
+        private val pair: HealthBarData
     ): TextRenderer {
         private var d = 0
         override fun hasNext(): Boolean {
@@ -118,12 +122,23 @@ class TextLayoutImpl(
 
         override fun render(groupCount: Int): PixelComponent {
             val key = if (keys.isNotEmpty()) keys[groupCount.coerceAtMost(keys.lastIndex)] else defaultWidth
-            val string = pattern.apply(pair)
+            val target = MINI_MESSAGE.deserialize(pattern.apply(pair))
+            fun length(component: Component): Int {
+                return ((component as? TextComponent)?.let {
+                    val s = it.style()
+                    var i = 0
+                    if (s.hasDecoration(TextDecoration.BOLD)) i++
+                    if (s.hasDecoration(TextDecoration.ITALIC)) i++
+                    it.content().sumOf { c ->
+                        if (c == ' ') 4 else (textWidth[c] ?: 0) + 1 + i
+                    }
+                } ?: 0) + component.children().sumOf {
+                    length(it)
+                }
+            }
             val component = WidthComponent(
-                string.sumOf {
-                    if (it == ' ') 4 else (textWidth[it] ?: 0) + 1
-                },
-                Component.text().font(key.key).content(string)
+                length(target),
+                Component.text().append(target.font(key.key))
             )
             return component.toPixelComponent(key.x + when (align) {
                 TextAlign.LEFT -> 0

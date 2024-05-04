@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.placeholder;
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarPair;
+import kr.toxicity.healthbar.api.healthbar.HealthBarData;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -64,7 +64,7 @@ public class PlaceholderContainer<T> {
 
     private final Map<String, PlaceholderBuilder<T>> map = new HashMap<>();
     
-    public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarPair, T> function) {
+    public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarData, T> function) {
         map.put(name, new PlaceholderBuilder<>() {
             @Override
             public int requiredArgsCount() {
@@ -76,7 +76,7 @@ public class PlaceholderContainer<T> {
                 return new HealthBarPlaceholder<>() {
                     @NotNull
                     @Override
-                    public T value(@NotNull HealthBarPair player) {
+                    public T value(@NotNull HealthBarData player) {
                         return function.apply(player);
                     }
 
@@ -125,7 +125,7 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public String value(@NotNull HealthBarPair player) {
+                public String value(@NotNull HealthBarData player) {
                     return stringMapper.apply(apply.value(player));
                 }
             };
@@ -143,7 +143,7 @@ public class PlaceholderContainer<T> {
 
             @NotNull
             @Override
-            public Object value(@NotNull HealthBarPair player) {
+            public Object value(@NotNull HealthBarData player) {
                 return v;
             }
         };
@@ -175,15 +175,15 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public Object value(@NotNull HealthBarPair player) {
+                public Object value(@NotNull HealthBarData player) {
                     return cast.parser.apply(string.value(player));
                 }
             };
         } else return get.value(list);
     }
 
-    public static @NotNull Function<HealthBarPair, String> toString(@NotNull String pattern) {
-        var array = new ArrayList<Function<HealthBarPair, String>>();
+    public static @NotNull Function<HealthBarData, String> toString(@NotNull String pattern) {
+        var array = new ArrayList<Function<HealthBarData, String>>();
         var sb = new StringBuilder();
         var skip = false;
         for (char c : pattern.toCharArray()) {
@@ -201,7 +201,7 @@ public class PlaceholderContainer<T> {
                     array.add(find::value);
                     sb.setLength(0);
                 }
-                case '/' -> skip = true;
+                case '\\' -> skip = true;
                 default -> sb.append(c);
             } else sb.append(c);
         }

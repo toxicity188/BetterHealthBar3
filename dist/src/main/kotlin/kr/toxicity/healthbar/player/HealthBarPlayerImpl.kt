@@ -3,6 +3,7 @@ package kr.toxicity.healthbar.player
 import kr.toxicity.healthbar.api.healthbar.HealthBar
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
+import kr.toxicity.healthbar.api.trigger.HealthBarTrigger
 import kr.toxicity.healthbar.entity.HealthBarEntityImpl
 import kr.toxicity.healthbar.healthbar.HealthBarUpdaterGroupImpl
 import kr.toxicity.healthbar.util.PLUGIN
@@ -41,11 +42,11 @@ class HealthBarPlayerImpl(
 
     override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = updaterMap
 
-    override fun showHealthBar(healthBar: HealthBar, entity: LivingEntity) {
+    override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: LivingEntity) {
         synchronized(updaterMap) {
             updaterMap.computeIfAbsent(entity.uniqueId) {
-                HealthBarUpdaterGroupImpl(this, HealthBarEntityImpl(PLUGIN.nms().foliaAdapt(entity)))
-            }.addHealthBar(healthBar)
+                HealthBarUpdaterGroupImpl(this, HealthBarEntityImpl(entity))
+            }.addHealthBar(healthBar, trigger)
         }
     }
 

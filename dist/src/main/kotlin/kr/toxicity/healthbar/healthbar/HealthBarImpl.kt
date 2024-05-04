@@ -3,8 +3,8 @@ package kr.toxicity.healthbar.healthbar
 import kr.toxicity.healthbar.api.condition.HealthBarCondition
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.healthbar.HealthBar
-import kr.toxicity.healthbar.api.healthbar.HealthBarPair
-import kr.toxicity.healthbar.api.healthbar.HealthBarTrigger
+import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer.RenderResult
@@ -29,7 +29,7 @@ class HealthBarImpl(
     private val triggers = Collections.unmodifiableSet(EnumSet.copyOf(section.getStringList("triggers").ifEmpty {
         throw RuntimeException("'triggers' list is empty.")
     }.map {
-        HealthBarTrigger.valueOf(it.uppercase())
+        HealthBarTriggerType.valueOf(it.uppercase())
     }))
     private val duration = section.getInt("duration", ConfigManagerImpl.defaultDuration())
     private val conditions = section.toCondition()
@@ -37,16 +37,16 @@ class HealthBarImpl(
     override fun path(): String = path
     override fun uuid(): UUID = uuid
     override fun groups(): List<LayoutGroup> = groups
-    override fun triggers(): Set<HealthBarTrigger> = triggers
+    override fun triggers(): Set<HealthBarTriggerType> = triggers
     override fun condition(): HealthBarCondition = conditions
 
     override fun duration(): Int = duration
 
-    override fun createRenderer(pair: HealthBarPair): HealthBarRenderer {
+    override fun createRenderer(pair: HealthBarData): HealthBarRenderer {
         return Renderer(pair)
     }
 
-    private class RenderedLayout(group: LayoutGroup, pair: HealthBarPair) {
+    private class RenderedLayout(group: LayoutGroup, pair: HealthBarData) {
         val group = group.group()
         val images = group.images().map {
             it.createImageRenderer(pair)
@@ -57,7 +57,7 @@ class HealthBarImpl(
     }
 
     private inner class Renderer(
-        private val pair: HealthBarPair
+        private val pair: HealthBarData
     ): HealthBarRenderer {
         private var d = 0
 
@@ -110,12 +110,12 @@ class HealthBarImpl(
                     val render = image.render(next)
                     val length = render.pixel + render.component.width
                     if (image.isBackground && max < length) max = length
-                    comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent()
+                    comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent() + NEW_LAYER
                 }
                 textRender.forEach { text ->
                     val render = text.render(next)
                     val length = render.pixel + render.component.width
-                    comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent()
+                    comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent() + NEW_LAYER
                 }
             }
             return RenderResult(

@@ -34,11 +34,28 @@ class PackResource {
     val dataFolder = DATA_FOLDER
 
     val merge = ListBuilder()
-    val textures = ListBuilder()
+    val textures = ListBuilder().apply {
+        PLUGIN.getResource("splitter.png")?.buffered()?.let {
+            add("splitter.png") {
+                it.use { stream ->
+                    stream.readAllBytes()
+                }
+            }
+        }
+    }
     val font = ListBuilder().apply {
         add("space.json") {
             JsonObject().apply {
                 add("providers", JsonArray().apply {
+                    add(JsonObject().apply {
+                        addProperty("type", "bitmap")
+                        addProperty("file", "$NAMESPACE:splitter.png")
+                        addProperty("ascent", -9999)
+                        addProperty("height", -2)
+                        add("chars", JsonArray().apply {
+                            add(NEW_LAYER_INT.parseChar())
+                        })
+                    })
                     add(JsonObject().apply {
                         addProperty("type", "space")
                         add("advances", JsonObject().apply {

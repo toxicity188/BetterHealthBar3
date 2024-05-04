@@ -1,4 +1,4 @@
-mob_effect_absorption:
+mob_effect_absorption:  
   group: mob_effect
   images:
     1:

@@ -2,10 +2,11 @@ package kr.toxicity.healthbar.healthbar
 
 import kr.toxicity.healthbar.api.entity.HealthBarEntity
 import kr.toxicity.healthbar.api.healthbar.HealthBar
-import kr.toxicity.healthbar.api.healthbar.HealthBarPair
+import kr.toxicity.healthbar.api.healthbar.HealthBarData
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdater
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
+import kr.toxicity.healthbar.api.trigger.HealthBarTrigger
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
@@ -19,9 +20,15 @@ class HealthBarUpdaterGroupImpl(
 
     override fun updaters(): Collection<HealthBarUpdater> = updaters.values
 
-    override fun addHealthBar(healthBar: HealthBar) {
+    override fun addHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger) {
         updaters.computeIfAbsent(healthBar.uuid()) {
-            HealthBarUpdaterImpl(this, player, healthBar.createRenderer(HealthBarPair(player, entity)))
+            HealthBarUpdaterImpl(this, player, healthBar.createRenderer(
+                HealthBarData(
+                    trigger,
+                    player,
+                    entity
+                )
+            ))
         }.updateTick()
     }
 }

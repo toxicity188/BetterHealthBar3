@@ -20,6 +20,7 @@ import kr.toxicity.healthbar.scheduler.StandardScheduler
 import kr.toxicity.healthbar.util.*
 import kr.toxicity.healthbar.version.MinecraftVersion
 import kr.toxicity.healthbar.version.ModelEngineVersion
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import java.io.File
 import java.io.InputStream
@@ -70,6 +71,9 @@ class BetterHealthBarImpl: BetterHealthBar() {
         nms = when (MinecraftVersion.current) {
             MinecraftVersion.version1_20_5, MinecraftVersion.version1_20_6 -> kr.toxicity.healthbar.nms.v1_20_R4.NMSImpl()
             MinecraftVersion.version1_20_3, MinecraftVersion.version1_20_4 -> kr.toxicity.healthbar.nms.v1_20_R3.NMSImpl()
+            MinecraftVersion.version1_20_2 -> kr.toxicity.healthbar.nms.v1_20_R2.NMSImpl()
+            MinecraftVersion.version1_20, MinecraftVersion.version1_20_1 -> kr.toxicity.healthbar.nms.v1_20_R1.NMSImpl()
+            MinecraftVersion.version1_19_4 -> kr.toxicity.healthbar.nms.v1_19_R3.NMSImpl()
             else -> {
                 warn(
                     "Unsupported version found: ${MinecraftVersion.current}",
@@ -142,6 +146,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
 
     override fun onReload(): Boolean = onReload
     override fun bedrock(): BedrockAdapter = bedrock
+    override fun miniMessage(): MiniMessage = MINI_MESSAGE
     override fun modelEngine(): ModelEngineAdapter = modelEngine
     override fun scheduler(): WrappedScheduler = scheduler
     override fun nms(): NMS = nms

@@ -8,7 +8,6 @@ uniform float FogEnd;
 uniform vec4 FogColor;
 uniform mat4 ProjMat;
 
-in vec3 Position;
 in float vertexDistance;
 in vec4 vertexColor;
 in vec2 texCoord0;

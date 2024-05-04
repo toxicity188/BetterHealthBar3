@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.layout;
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarPair;
+import kr.toxicity.healthbar.api.healthbar.HealthBarData;
 import kr.toxicity.healthbar.api.renderer.TextRenderer;
 import kr.toxicity.healthbar.api.text.TextAlign;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +18,8 @@ public interface TextLayout extends Layout {
     TextAlign align();
 
     @NotNull
-    Function<HealthBarPair, String> pattern();
+    Function<HealthBarData, String> pattern();
 
     @NotNull
-    TextRenderer createRenderer(@NotNull HealthBarPair pair);
+    TextRenderer createRenderer(@NotNull HealthBarData pair);
 }

@@ -53,13 +53,14 @@ void main() {
         float length1 = -cos(pitch) * y;
         float length2 = sin(pitch) * sqrt(pow(x, 2.0) + pow(z, 2.0));
         if (abs(length1 - length2) >= HEIGHT / 2 || abs(length1 + length2) >= HEIGHT / 2) {
-            float alpha = (1 - texColor.a) / 10;
-            if (alpha > 0) {
+            float alpha = texColor.a;
+            if (alpha < 1) {
                 applyColor = 1;
-                float pitchAdd = cos(pitch - 3.1415 / 2) * HEIGHT - alpha - 0.01;
-                pos.y += cos(pitch) * HEIGHT;
-                pos.x += sin(yaw) * pitchAdd;
-                pos.z -= cos(yaw) * pitchAdd;
+                float applyAlpha = alpha / 100;
+                float pitchAdd = cos(pitch - 3.1415 / 2) * HEIGHT;
+                pos.y += cos(pitch) * HEIGHT - sin(pitch) * sqrt(2 * pow(applyAlpha, 2.0));
+                pos.x += sin(yaw) * (pitchAdd + cos(pitch) * applyAlpha);
+                pos.z -= cos(yaw) * (pitchAdd + cos(pitch) * applyAlpha);
             }
         }
     }
