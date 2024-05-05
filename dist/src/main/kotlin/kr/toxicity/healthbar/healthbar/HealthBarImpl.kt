@@ -123,7 +123,7 @@ class HealthBarImpl(
             return RenderResult(
                 comp + (max).toSpaceComponent(),
                 pair.entity.entity().location.apply {
-                    y += pair.entity.entity().eyeHeight + PLUGIN.modelEngine().getHeight(pair.entity.entity()) + ConfigManagerImpl.defaultHeight()
+                    y += (PLUGIN.modelEngine().height(pair.entity.entity()) ?: pair.entity.entity().eyeHeight) + ConfigManagerImpl.defaultHeight()
                 }
             )
         }

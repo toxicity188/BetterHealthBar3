@@ -6,6 +6,7 @@ import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.trigger.HealthBarTrigger
 import kr.toxicity.healthbar.entity.HealthBarEntityImpl
 import kr.toxicity.healthbar.healthbar.HealthBarUpdaterGroupImpl
+import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.healthbar.util.asyncTaskTimer
 import org.bukkit.entity.LivingEntity
@@ -55,6 +56,8 @@ class HealthBarPlayerImpl(
     override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = updaterMap
 
     override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: LivingEntity) {
+        if (ConfigManagerImpl.blacklistEntityType().contains(entity.type)) return
+        if (ConfigManagerImpl.disableToInvulnerableMob() && entity.isInvulnerable) return
         synchronized(updaterMap) {
             updaterMap.computeIfAbsent(entity.uniqueId) {
                 HealthBarUpdaterGroupImpl(this, HealthBarEntityImpl(entity))

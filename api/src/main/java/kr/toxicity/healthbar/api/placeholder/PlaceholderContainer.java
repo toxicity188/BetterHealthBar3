@@ -1,6 +1,9 @@
 package kr.toxicity.healthbar.api.placeholder;
 
+import kr.toxicity.healthbar.api.BetterHealthBar;
 import kr.toxicity.healthbar.api.healthbar.HealthBarData;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -189,7 +192,7 @@ public class PlaceholderContainer<T> {
         for (char c : pattern.toCharArray()) {
             if (!skip) switch (c) {
                 case '[' -> {
-                    var string = sb.toString();
+                    var string = legacyAdapt(sb.toString());
                     array.add(p -> string);
                     sb.setLength(0);
                 }
@@ -198,7 +201,7 @@ public class PlaceholderContainer<T> {
                     var name = subString(result);
                     var argument = result.length() > name.length() + 1 ? Arrays.asList(result.substring(name.length() + 1).split(",")) : Collections.<String>emptyList();
                     var find = CLASS_MAP.values().stream().map(f -> f.find(name)).filter(f -> f.ifPresented()).findFirst().orElseThrow(() -> new RuntimeException("Unable to find this placeholder: " + name)).stringValue(argument);
-                    array.add(find::value);
+                    array.add(f -> legacyAdapt(find.value(f)));
                     sb.setLength(0);
                 }
                 case '\\' -> skip = true;
@@ -215,6 +218,37 @@ public class PlaceholderContainer<T> {
             array.forEach(f -> sb2.append(f.apply(p)));
             return sb2.toString();
         };
+    }
+
+    private static @NotNull String legacyAdapt(@NotNull String string) {
+        var sb1 = new StringBuilder();
+        var sb2 = new StringBuilder();
+        var skip = false;
+        for (char c : string.toCharArray()) {
+            if (!skip) switch (c) {
+                case '<' -> {
+                    sb2.append(legacyAdapt0(sb1.toString()));
+                    sb1.setLength(0);
+                    sb1.append(c);
+                }
+                case '>' -> {
+                    sb1.append(c);
+                    sb2.append(sb1);
+                    sb1.setLength(0);
+                }
+                case '\\' -> {
+                    sb1.append(c);
+                    skip = true;
+                }
+                default -> sb1.append(c);
+            } else sb1.append(c);
+        }
+        if (!sb1.isEmpty()) sb2.append(legacyAdapt0(sb1.toString()));
+        return sb2.toString();
+    }
+
+    private static @NotNull String legacyAdapt0(@NotNull String s) {
+        return BetterHealthBar.inst().miniMessage().serialize(LegacyComponentSerializer.legacySection().deserialize(s));
     }
 
     private static @NotNull String subString(@NotNull String string) {

@@ -9,7 +9,10 @@ import kr.toxicity.healthbar.util.DATA_FOLDER
 import kr.toxicity.healthbar.util.isValidPackNamespace
 import kr.toxicity.healthbar.util.runWithHandleException
 import kr.toxicity.healthbar.util.warn
+import org.bukkit.entity.EntityType
 import java.io.File
+import java.util.Collections
+import java.util.EnumSet
 
 object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
 
@@ -25,6 +28,8 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     private var createPackMemeta = true
     private var enableSelfHost = false
     private var selfHostPort = 8163
+    private var blackListEntityType = emptySet<EntityType>()
+    private var disableToInvulnerableMob = true
 
     override fun preReload() {
         runWithHandleException("Unable to load config.yml") {
@@ -57,6 +62,12 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
             createPackMemeta = config.getBoolean("create-pack-mcmeta", true)
             enableSelfHost = config.getBoolean("enable-self-host", false)
             selfHostPort = config.getInt("self-host-port", 8163)
+            blackListEntityType = Collections.unmodifiableSet(EnumSet.copyOf(config.getStringList("blacklist-entity-type").mapNotNull {
+                runCatching {
+                    EntityType.valueOf(it.uppercase())
+                }.getOrNull()
+            }))
+            disableToInvulnerableMob = config.getBoolean("disable-to-invulnerable-mob", true)
         }
     }
 
@@ -75,4 +86,6 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     override fun createPackMcmeta(): Boolean = createPackMemeta
     override fun enableSelfHost(): Boolean = enableSelfHost
     override fun selfHostPort(): Int = selfHostPort
+    override fun blacklistEntityType(): Set<EntityType> = blackListEntityType
+    override fun disableToInvulnerableMob(): Boolean = disableToInvulnerableMob
 }

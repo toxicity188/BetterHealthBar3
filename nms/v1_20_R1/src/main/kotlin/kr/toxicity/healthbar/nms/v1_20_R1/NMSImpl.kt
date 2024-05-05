@@ -219,11 +219,15 @@ class NMSImpl: NMS {
         }
     }
 
+    private val interpolation = Display::class.java.getDeclaredMethod("b", Integer.TYPE).apply {
+        isAccessible = true
+    }
+
     override fun createTextDisplay(player: Player, location: Location, component: Component): VirtualTextDisplay {
         val connection = (player as CraftPlayer).handle.connection
         val display = TextDisplay(EntityType.TEXT_DISPLAY, (player.world as CraftWorld).handle).apply {
             billboardConstraints = Display.BillboardConstraints.CENTER
-            interpolationDuration = 1
+            interpolation(this, 1)
             entityData.run {
                 set(TextDisplay.DATA_BACKGROUND_COLOR_ID, 0)
                 set(TextDisplay.DATA_LINE_WIDTH_ID, Int.MAX_VALUE)

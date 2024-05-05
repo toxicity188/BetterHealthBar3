@@ -10,3 +10,9 @@ merge-other-folder: []
 create-pack-mcmeta: true
 enable-self-host: true
 self-host-port: 8163
+blacklist-entity-type:
+  - ARMOR_STAND
+  - TEXT_DISPLAY
+  - BLOCK_DISPLAY
+  - ITEM_DISPLAY
+disable-to-invulnerable-mob: true

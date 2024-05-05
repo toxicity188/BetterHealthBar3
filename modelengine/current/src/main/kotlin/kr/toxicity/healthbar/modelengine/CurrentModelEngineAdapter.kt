@@ -6,7 +6,7 @@ import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter
 import org.bukkit.entity.Entity
 
 class CurrentModelEngineAdapter: ModelEngineAdapter {
-    override fun getHeight(entity: Entity): Double {
+    override fun height(entity: Entity): Double? {
         return ModelEngineAPI.getModeledEntity(entity.uniqueId)?.run {
             models.values.maxOf {
                 fun getChildren(blueprint: BlueprintBone): Double {
@@ -19,7 +19,7 @@ class CurrentModelEngineAdapter: ModelEngineAdapter {
                 it.blueprint.bones.values.maxOf { bb ->
                     getChildren(bb)
                 }
-            } - 0.75
-        } ?: 0.0
+            }
+        }
     }
 }

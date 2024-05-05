@@ -1,6 +1,7 @@
 package kr.toxicity.healthbar.api.manager;
 
 import kr.toxicity.healthbar.api.pack.PackType;
+import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -25,4 +26,8 @@ public interface ConfigManager {
     boolean createPackMcmeta();
     boolean enableSelfHost();
     int selfHostPort();
+    @NotNull
+    @Unmodifiable
+    Set<EntityType> blacklistEntityType();
+    boolean disableToInvulnerableMob();
 }

@@ -8,9 +8,14 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 const val NEW_LAYER_INT = 0xA0000
 const val ADVENTURE_START_INT = 0xB0000
+
+val LEGACY = LegacyComponentSerializer.builder()
+    .useUnusualXRepeatedCharacterHexFormat()
+    .build()
 
 val MINI_MESSAGE = MiniMessage.builder()
     .tags(
@@ -26,8 +31,7 @@ val MINI_MESSAGE = MiniMessage.builder()
         StandardTags.selector(),
         StandardTags.score(),
         StandardTags.nbt(),
-    ))
-    .postProcessor {
+    )).postProcessor {
         val style = it.style()
         it.style(style.decorations(TextDecoration.entries.associateWith { d ->
             val deco = style.decoration(d)
