@@ -30,7 +30,6 @@ allprojects {
         maven("https://mvn.lumine.io/repository/maven-public/")
     }
     dependencies {
-        compileOnly("io.lumine:Mythic-Dist:5.6.2")
 
         testImplementation(kotlin("test"))
     }
@@ -67,7 +66,7 @@ fun getApiDependencyProject(name: String) = project(name).also {
     }
 }
 
-val dist = getApiDependencyProject("dist").spigot().also {
+val dist = getApiDependencyProject("dist").spigot().dependency("io.lumine:Mythic-Dist:5.6.2").also {
     it.tasks.processResources {
         filteringCharset = Charsets.UTF_8.name()
         val props = mapOf(

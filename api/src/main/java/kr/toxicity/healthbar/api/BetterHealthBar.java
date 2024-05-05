@@ -49,4 +49,5 @@ public abstract class BetterHealthBar extends JavaPlugin {
     public abstract @NotNull ListenerManager listenerManager();
     public abstract @NotNull PlaceholderManager placeholderManager();
     public abstract @NotNull TextManager textManager();
+    public abstract @NotNull MobManager mobManager();
 }

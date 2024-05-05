@@ -54,6 +54,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
         TextManagerImpl,
         LayoutManagerImpl,
         HealthBarManagerImpl,
+        MobManagerImpl,
         PlayerManagerImpl
     )
 
@@ -190,6 +191,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
     override fun healthBarManager(): HealthBarManager = HealthBarManagerImpl
     override fun textManager(): TextManager = TextManagerImpl
     override fun placeholderManager(): PlaceholderManager = PlaceholderManagerImpl
+    override fun mobManager(): MobManager = MobManagerImpl
 
     override fun onDisable() {
         runWithHandleException("Error has occurred while disabling.") {

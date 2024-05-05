@@ -20,10 +20,15 @@ public interface HealthBar extends HealthBarConfiguration {
     List<LayoutGroup> groups();
 
     @NotNull
+    Set<String> applicableTypes();
+
+    @NotNull
     @Unmodifiable
     Set<HealthBarTriggerType> triggers();
 
     int duration();
+
+    boolean isDefault();
 
     @NotNull
     HealthBarRenderer createRenderer(@NotNull HealthBarData pair);

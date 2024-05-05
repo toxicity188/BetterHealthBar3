@@ -18,6 +18,7 @@ import java.util.UUID
 
 class HealthBarImpl(
     private val path: String,
+    private val s: String,
     private val uuid: UUID,
     section: ConfigurationSection
 ): HealthBar {
@@ -33,17 +34,34 @@ class HealthBarImpl(
     }))
     private val duration = section.getInt("duration", ConfigManagerImpl.defaultDuration())
     private val conditions = section.toCondition()
+    private val isDefault = section.getBoolean("default")
+    private val applicableTypes = section.getStringList("applicable-types").toSet()
 
     override fun path(): String = path
     override fun uuid(): UUID = uuid
+    override fun applicableTypes(): Set<String> = applicableTypes
     override fun groups(): List<LayoutGroup> = groups
     override fun triggers(): Set<HealthBarTriggerType> = triggers
     override fun condition(): HealthBarCondition = conditions
+    override fun isDefault(): Boolean = isDefault
 
     override fun duration(): Int = duration
 
     override fun createRenderer(pair: HealthBarData): HealthBarRenderer {
         return Renderer(pair)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HealthBarImpl
+
+        return s == other.s
+    }
+
+    override fun hashCode(): Int {
+        return s.hashCode()
     }
 
     private class RenderedLayout(group: LayoutGroup, pair: HealthBarData) {
@@ -120,10 +138,14 @@ class HealthBarImpl(
                     comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent() + NEW_LAYER
                 }
             }
+            val entity = pair.entity
             return RenderResult(
                 comp + (max).toSpaceComponent(),
-                pair.entity.entity().location.apply {
+                entity.entity().location.apply {
                     y += (PLUGIN.modelEngine().height(pair.entity.entity()) ?: pair.entity.entity().eyeHeight) + ConfigManagerImpl.defaultHeight()
+                    entity.mob()?.let {
+                        y += it.configuration().height()
+                    }
                 }
             )
         }
@@ -132,4 +154,6 @@ class HealthBarImpl(
             d = 0
         }
     }
+
+
 }

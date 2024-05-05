@@ -34,6 +34,7 @@ object HealthBarManagerImpl: HealthBarManager, BetterHealthBerManager {
                 while (!uuidSet.add(uuid)) uuid = UUID.randomUUID()
                 val healthBar = HealthBarImpl(
                     file.path,
+                    s,
                     uuid,
                     section
                 )

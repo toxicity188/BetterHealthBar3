@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.player
 
+import kr.toxicity.healthbar.api.entity.HealthBarEntity
 import kr.toxicity.healthbar.api.healthbar.HealthBar
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
@@ -46,7 +47,7 @@ class HealthBarPlayerImpl(
             val iterator = updaterMap.values.iterator()
             synchronized(iterator) {
                 while (iterator.hasNext()) {
-                    iterator.remove()
+                    iterator.next().remove()
                 }
             }
             updaterMap.clear()
@@ -55,12 +56,15 @@ class HealthBarPlayerImpl(
 
     override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = updaterMap
 
-    override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: LivingEntity) {
-        if (ConfigManagerImpl.blacklistEntityType().contains(entity.type)) return
-        if (ConfigManagerImpl.disableToInvulnerableMob() && entity.isInvulnerable) return
+    override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: HealthBarEntity) {
+        if (ConfigManagerImpl.blacklistEntityType().contains(entity.entity().type)) return
+        if (ConfigManagerImpl.disableToInvulnerableMob() && entity.entity().isInvulnerable) return
+        entity.mob()?.let {
+            if (it.configuration().blacklist()) return
+        }
         synchronized(updaterMap) {
-            updaterMap.computeIfAbsent(entity.uniqueId) {
-                HealthBarUpdaterGroupImpl(this, HealthBarEntityImpl(entity))
+            updaterMap.computeIfAbsent(entity.entity().uniqueId) {
+                HealthBarUpdaterGroupImpl(this, entity)
             }.addHealthBar(healthBar, trigger)
         }
     }

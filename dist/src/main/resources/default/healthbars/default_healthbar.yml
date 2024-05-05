@@ -1,4 +1,6 @@
 default_healthbar:
+  default: true
+  applicable-types: []
   triggers:
     - damage
     - look

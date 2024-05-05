@@ -48,6 +48,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector3f
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.HashSet
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -305,19 +306,30 @@ class NMSImpl: NMS {
             fun Double.square() = this * this
             entity?.let { e ->
                 if (sqrt((playerX - e.x).square()  + (playerY - e.y).square() + (playerZ - e.z).square()) > plugin.configManager().lookDistance()) return
-                plugin.healthBarManager().allHealthBars().filter {
+                val set = HashSet(plugin.healthBarManager().allHealthBars().filter {
                     it.triggers().contains(trigger)
-                }.forEach {
-                    fun add() {
-                        val bukkit = e.bukkitEntity
-                        if (bukkit is CraftLivingEntity && bukkit.isValid) {
-                            player.showHealthBar(it, PacketTrigger(trigger, handle), foliaAdapt(bukkit))
+                })
+                fun add() {
+                    val bukkit = e.bukkitEntity
+                    if (bukkit is CraftLivingEntity && bukkit.isValid) {
+                        val adapt = plugin.mobManager().entity(foliaAdapt(bukkit))
+                        adapt.mob()?.let {
+                            set.addAll(it.configuration().healthBars())
+                        }
+                        val types = adapt.mob()?.configuration()?.types()
+                        val packet = PacketTrigger(trigger, handle)
+                        set.filter {
+                            it.isDefault || (types != null && it.applicableTypes().any { t ->
+                                types.contains(t)
+                            })
+                        }.forEach {
+                            player.showHealthBar(it, packet, adapt)
                         }
                     }
-                    if (plugin.isFolia) plugin.scheduler().task(world, e.x.toInt() shr 4, e.z.toInt() shr 4) {
-                        add()
-                    } else add()
                 }
+                if (plugin.isFolia) plugin.scheduler().task(world, e.x.toInt() shr 4, e.z.toInt() shr 4) {
+                    add()
+                } else add()
             }
         }
         private fun getViewedEntity(): List<LivingEntity> {
