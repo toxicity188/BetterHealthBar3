@@ -63,8 +63,8 @@ void main() {
                 vec3 alphaVector = vec3(xAlpha * cos(yaw), -sin(pitch) * applyAlpha, xAlpha * sin(yaw));
 
                 pos.y += cos(pitch) * HEIGHT;
-                pos.x += sin(yaw) * (pitchAdd + xAlpha);
-                pos.z -= cos(yaw) * (pitchAdd + xAlpha);
+                pos.x += sin(yaw) * pitchAdd;
+                pos.z -= cos(yaw) * pitchAdd;
 
                 pos += alphaVector;
             }
