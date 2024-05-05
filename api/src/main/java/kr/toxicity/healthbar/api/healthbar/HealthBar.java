@@ -5,6 +5,7 @@ import kr.toxicity.healthbar.api.configuration.HealthBarConfiguration;
 import kr.toxicity.healthbar.api.layout.LayoutGroup;
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer;
 import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -18,6 +19,9 @@ public interface HealthBar extends HealthBarConfiguration {
     @NotNull
     @Unmodifiable
     List<LayoutGroup> groups();
+
+    @NotNull
+    Vector scale();
 
     @NotNull
     Set<String> applicableTypes();

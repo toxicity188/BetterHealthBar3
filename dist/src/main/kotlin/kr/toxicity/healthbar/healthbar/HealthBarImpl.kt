@@ -12,6 +12,7 @@ import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.manager.LayoutManagerImpl
 import kr.toxicity.healthbar.util.*
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.util.Vector
 import java.util.Collections
 import java.util.EnumSet
 import java.util.UUID
@@ -36,6 +37,13 @@ class HealthBarImpl(
     private val conditions = section.toCondition()
     private val isDefault = section.getBoolean("default")
     private val applicableTypes = section.getStringList("applicable-types").toSet()
+    private val scale = section.getConfigurationSection("scale")?.let {
+        Vector(
+            it.getDouble("x", 1.0),
+            it.getDouble("y", 1.0),
+            it.getDouble("z", 1.0)
+        )
+    } ?: Vector(1, 1, 1)
 
     override fun path(): String = path
     override fun uuid(): UUID = uuid
@@ -44,6 +52,7 @@ class HealthBarImpl(
     override fun triggers(): Set<HealthBarTriggerType> = triggers
     override fun condition(): HealthBarCondition = conditions
     override fun isDefault(): Boolean = isDefault
+    override fun scale(): Vector = Vector(scale.x, scale.y, scale.z)
 
     override fun duration(): Int = duration
 

@@ -1,6 +1,10 @@
 default_healthbar:
   default: true
   applicable-types: []
+  scale:
+    x: 0.75
+    y: 0.75
+    z: 0.75
   triggers:
     - damage
     - look

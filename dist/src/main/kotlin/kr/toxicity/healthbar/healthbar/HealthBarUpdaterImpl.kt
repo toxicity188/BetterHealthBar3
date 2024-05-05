@@ -1,19 +1,21 @@
 package kr.toxicity.healthbar.healthbar
 
+import kr.toxicity.healthbar.api.healthbar.HealthBarData
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdater
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
-import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
 import kr.toxicity.healthbar.util.PLUGIN
 
 class HealthBarUpdaterImpl(
     private val parent: HealthBarUpdaterGroupImpl,
-    player: HealthBarPlayer,
+    data: HealthBarData,
     private val renderer: HealthBarRenderer
 ): HealthBarUpdater {
     private val display = renderer().render().run {
-        PLUGIN.nms().createTextDisplay(player.player(), location, component.component.build())
+        PLUGIN.nms().createTextDisplay(data.player.player(), location, component.component.build()).apply {
+            scale(data.healthBar.scale())
+        }
     }
 
     override fun parent(): HealthBarUpdaterGroup = parent

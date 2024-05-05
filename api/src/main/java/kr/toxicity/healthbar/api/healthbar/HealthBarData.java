@@ -7,6 +7,7 @@ import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType;
 import org.jetbrains.annotations.NotNull;
 
 public record HealthBarData(
+        @NotNull HealthBar healthBar,
         @NotNull HealthBarTrigger trigger,
         @NotNull HealthBarPlayer player,
         @NotNull HealthBarEntity entity

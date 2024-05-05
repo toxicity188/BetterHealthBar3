@@ -22,13 +22,13 @@ class HealthBarUpdaterGroupImpl(
 
     override fun addHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger) {
         updaters.computeIfAbsent(healthBar.uuid()) {
-            HealthBarUpdaterImpl(this, player, healthBar.createRenderer(
-                HealthBarData(
-                    trigger,
-                    player,
-                    entity
-                )
-            ))
+            val data = HealthBarData(
+                healthBar,
+                trigger,
+                player,
+                entity
+            )
+            HealthBarUpdaterImpl(this, data, healthBar.createRenderer(data))
         }.updateTick()
     }
 }
