@@ -309,7 +309,7 @@ class NMSImpl: NMS {
                 fun add() {
                     val bukkit = e.bukkitEntity
                     if (bukkit is CraftLivingEntity && bukkit.isValid) {
-                        val adapt = plugin.mobManager().entity(foliaAdapt(bukkit))
+                        val adapt = plugin.mobManager().entity(if (bukkit is Player) foliaAdapt(bukkit) else foliaAdapt(bukkit))
                         adapt.mob()?.let {
                             set.addAll(it.configuration().healthBars())
                         }
