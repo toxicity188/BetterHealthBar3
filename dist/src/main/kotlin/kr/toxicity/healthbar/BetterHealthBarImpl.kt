@@ -48,6 +48,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
 
     private val managers = listOf(
         ConfigManagerImpl,
+        CompatibilityManager,
         ListenerManagerImpl,
         PlaceholderManagerImpl,
         ImageManagerImpl,
@@ -55,7 +56,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
         LayoutManagerImpl,
         HealthBarManagerImpl,
         MobManagerImpl,
-        PlayerManagerImpl
+        PlayerManagerImpl,
     )
 
     @Volatile

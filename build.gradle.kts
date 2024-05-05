@@ -28,6 +28,8 @@ allprojects {
         maven("https://repo.opencollab.dev/main/")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven-public/")
+        maven("https://jitpack.io/")
+        maven("https://repo.alessiodp.com/releases/")
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.0.2")
@@ -66,20 +68,23 @@ fun getApiDependencyProject(name: String) = project(name).also {
     }
 }
 
-val dist = getApiDependencyProject("dist").spigot().dependency("io.lumine:Mythic-Dist:5.6.2").also {
-    it.tasks.processResources {
-        filteringCharset = Charsets.UTF_8.name()
-        val props = mapOf(
-            "version" to project.version,
-            "adventure" to adventure,
-            "platform" to platform
-        )
-        inputs.properties(props)
-        filesMatching("plugin.yml") {
-            expand(props)
+val dist = getApiDependencyProject("dist").spigot()
+    .dependency("io.lumine:Mythic-Dist:5.6.2")
+    .dependency("com.github.toxicity188:BetterHud:beta-21")
+    .also {
+        it.tasks.processResources {
+            filteringCharset = Charsets.UTF_8.name()
+            val props = mapOf(
+                "version" to project.version,
+                "adventure" to adventure,
+                "platform" to platform
+            )
+            inputs.properties(props)
+            filesMatching("plugin.yml") {
+                expand(props)
+            }
         }
     }
-}
 
 fun getProject(name: String) = getApiDependencyProject(name).also {
     dist.dependencies {
@@ -153,6 +158,7 @@ tasks {
     }
     runServer {
         version(minecraft)
+        pluginJars(fileTree("libs"))
     }
     shadowJar {
         legacyNms.forEach {

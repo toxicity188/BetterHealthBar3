@@ -18,7 +18,7 @@ out vec4 vertexColor;
 out vec2 texCoord0;
 out float applyColor;
 
-#define HEIGHT 8192.0 / 40.0
+#define DISPLAY_HEIGHT 8192.0 / 40.0
 
 float betterhealthbar_fog_distance(vec3 pos, int shape) {
     if (shape == 0) {
@@ -34,6 +34,8 @@ void main() {
     vec3 pos = vec3(Position);
 
     applyColor = 0;
+
+    //start
     if (ProjMat[3].x != -1) {
         vec4 texColor = texture(Sampler0, UV0);
         mat4 invModelViewMat = inverse(ModelViewMat);
@@ -52,16 +54,16 @@ void main() {
 
         float length1 = -cos(pitch) * y;
         float length2 = sin(pitch) * sqrt(pow(x, 2.0) + pow(z, 2.0));
-        if (abs(length1 - length2) >= HEIGHT / 2 || abs(length1 + length2) >= HEIGHT / 2) {
+        if (abs(length1 - length2) >= DISPLAY_HEIGHT / 2 || abs(length1 + length2) >= DISPLAY_HEIGHT / 2) {
             float alpha = texColor.a;
             if (alpha < 1) {
                 applyColor = 1;
-                float pitchAdd = cos(pitch - 3.1415 / 2) * HEIGHT;
+                float pitchAdd = cos(pitch - 3.1415 / 2) * DISPLAY_HEIGHT;
 
                 float xAlpha = cos(pitch) * alpha;
                 vec3 alphaVector = vec3(xAlpha * sin(yaw), -sin(pitch) * alpha, -xAlpha * cos(yaw));
 
-                pos.y += cos(pitch) * HEIGHT;
+                pos.y += cos(pitch) * DISPLAY_HEIGHT;
                 pos.x += sin(yaw) * pitchAdd;
                 pos.z -= cos(yaw) * pitchAdd;
 
@@ -69,6 +71,7 @@ void main() {
             }
         }
     }
+    //end
 
     vertexDistance = betterhealthbar_fog_distance(pos, FogShape);
     vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);

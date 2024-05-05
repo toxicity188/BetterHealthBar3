@@ -11,6 +11,7 @@ libraries:
   - "net.kyori:adventure-text-minimessage:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
 softdepend:
+  - BetterHud
   - ModelEngine
   - MythicMobs
 commands:
