@@ -58,9 +58,15 @@ void main() {
                 applyColor = 1;
                 float applyAlpha = alpha / 100;
                 float pitchAdd = cos(pitch - 3.1415 / 2) * HEIGHT;
-                pos.y += cos(pitch) * HEIGHT - sin(pitch) * sqrt(2 * pow(applyAlpha, 2.0));
-                pos.x += sin(yaw) * (pitchAdd + cos(pitch) * applyAlpha);
-                pos.z -= cos(yaw) * (pitchAdd + cos(pitch) * applyAlpha);
+
+                float xAlpha = cos(pitch) * applyAlpha;
+                vec3 alphaVector = vec3(xAlpha * cos(yaw), -sin(pitch) * applyAlpha, xAlpha * sin(yaw));
+
+                pos.y += cos(pitch) * HEIGHT;
+                pos.x += sin(yaw) * (pitchAdd + xAlpha);
+                pos.z -= cos(yaw) * (pitchAdd + xAlpha);
+
+                pos += alphaVector;
             }
         }
     }

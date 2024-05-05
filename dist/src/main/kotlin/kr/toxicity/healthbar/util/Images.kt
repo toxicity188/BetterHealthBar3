@@ -124,12 +124,15 @@ fun BufferedImage.removeEmptySide(): ProcessedImage? {
     )
 }
 
+private const val ENCODE_COLOR = (1 shl 16) or (2 shl 8) or 3
+
 fun BufferedImage.withOpacity(opacity: Int): BufferedImage {
     return BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).also {
         for (i1 in 0..<width) {
             for (i2 in 0..<height) {
                 val rgba = getRGB(i1, i2)
-                if ((rgba shr 24) and 0xFF > 0) it.setRGB(i1, i2, (opacity shl 24) or (rgba and 0xFFFFFF))
+                val alpha = opacity shl 24
+                it.setRGB(i1, i2, alpha or (if ((rgba shr 24) and 0xFF > 0) (rgba and 0xFFFFFF) else ENCODE_COLOR))
             }
         }
     }

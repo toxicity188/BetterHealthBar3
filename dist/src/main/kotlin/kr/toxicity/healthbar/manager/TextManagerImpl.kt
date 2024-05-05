@@ -124,10 +124,10 @@ object TextManagerImpl: TextManager, BetterHealthBerManager {
             fun save(image: List<CharImage>) {
                 val array = JsonArray()
                 val sb = StringBuilder()
-                val target = BufferedImage(font.size * image.size.coerceAtMost(SPLIT_SIZE), height * (((image.size - 1) / SPLIT_SIZE).coerceAtLeast(0) + 1), BufferedImage.TYPE_INT_ARGB)
+                val target = BufferedImage(it.key * image.size.coerceAtMost(SPLIT_SIZE), height * (((image.size - 1) / SPLIT_SIZE).coerceAtLeast(0) + 1), BufferedImage.TYPE_INT_ARGB)
                 target.createGraphics().run {
                     image.forEachIndexed { index, charImage ->
-                        drawImage(charImage.image, font.size * (index % SPLIT_SIZE), height * (index / SPLIT_SIZE), null)
+                        drawImage(charImage.image, it.key * (index % SPLIT_SIZE), height * (index / SPLIT_SIZE), null)
                         sb.append(charImage.char)
                         if ((index + 1) % SPLIT_SIZE == 0) {
                             array.add(JsonPrimitive(sb.toString()))

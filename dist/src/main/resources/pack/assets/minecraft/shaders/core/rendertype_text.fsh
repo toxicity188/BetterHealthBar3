@@ -15,6 +15,10 @@ in float applyColor;
 
 out vec4 fragColor;
 
+bool isEncodeColor(vec4 color) {
+    return color.x == 1.0 / 255.0 && color.y == 2.0 / 255.0 && color.z == 3.0 / 255.0;
+}
+
 vec4 betterhealthbar_fog_distance(vec4 inColor, float vertexDistance, float fogStart, float fogEnd, vec4 fogColor) {
     if (vertexDistance <= fogStart) {
         return inColor;
@@ -28,7 +32,7 @@ void main() {
     vec4 texColor = texture(Sampler0, texCoord0);
     vec4 color = texColor * vertexColor * ColorModulator;
     if (applyColor > 0 && texColor.a > 0) {
-        color = vec4(texColor.rgb, 1.0) * vertexColor * ColorModulator;
+        color = vec4(texColor.rgb, isEncodeColor(texColor) ? 0.0 : 1.0) * vertexColor * ColorModulator;
     }
     if (color.a < 0.1) {
         discard;
