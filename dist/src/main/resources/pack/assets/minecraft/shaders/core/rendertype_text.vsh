@@ -56,17 +56,16 @@ void main() {
             float alpha = texColor.a;
             if (alpha < 1) {
                 applyColor = 1;
-                float applyAlpha = alpha / 100;
                 float pitchAdd = cos(pitch - 3.1415 / 2) * HEIGHT;
 
-                float xAlpha = cos(pitch) * applyAlpha;
-                vec3 alphaVector = vec3(xAlpha * cos(yaw), -sin(pitch) * applyAlpha, xAlpha * sin(yaw));
+                float xAlpha = cos(pitch) * alpha;
+                vec3 alphaVector = vec3(xAlpha * sin(yaw), -sin(pitch) * alpha, -xAlpha * cos(yaw));
 
                 pos.y += cos(pitch) * HEIGHT;
                 pos.x += sin(yaw) * pitchAdd;
                 pos.z -= cos(yaw) * pitchAdd;
 
-                pos += alphaVector;
+                pos += alphaVector / 100;
             }
         }
     }

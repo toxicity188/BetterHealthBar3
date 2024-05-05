@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.manager
 
+import kr.toxicity.healthbar.api.compatibility.MythicActiveMob
 import kr.toxicity.healthbar.api.healthbar.HealthBarData
 import kr.toxicity.healthbar.api.manager.PlaceholderManager
 import kr.toxicity.healthbar.api.placeholder.PlaceholderContainer
@@ -11,6 +12,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Registry
 import org.bukkit.Tag
 import org.bukkit.attribute.Attribute
+import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffectType
 import java.util.function.Function
 
@@ -39,23 +41,31 @@ object PlaceholderManagerImpl: PlaceholderManager, BetterHealthBerManager {
                 e.entity.entity().name
             }
         }
-        PlaceholderContainer.BOOL.addPlaceholder("has_potion_effect", placeholder(1) {
-            if (MinecraftVersion.current >= MinecraftVersion.version1_20_3) {
-                Registry.EFFECT.get(NamespacedKey.minecraft(it[0]))
-            } else {
-                @Suppress("DEPRECATION")
-                PotionEffectType.getByName(it[0])
-            }?.let { type ->
-                Function { pair: HealthBarData ->
-                    pair.entity.entity().hasPotionEffect(type)
+        PlaceholderContainer.BOOL.run {
+            addPlaceholder("has_potion_effect", placeholder(1) {
+                if (MinecraftVersion.current >= MinecraftVersion.version1_20_3) {
+                    Registry.EFFECT.get(NamespacedKey.minecraft(it[0]))
+                } else {
+                    @Suppress("DEPRECATION")
+                    PotionEffectType.getByName(it[0])
+                }?.let { type ->
+                    Function { pair: HealthBarData ->
+                        pair.entity.entity().hasPotionEffect(type)
+                    }
+                } ?: run {
+                    warn("Unable to find this potion effect: ${it[0]}")
+                    Function { _: HealthBarData ->
+                        false
+                    }
                 }
-            } ?: run {
-                warn("Unable to find this potion effect: ${it[0]}")
-                Function { _: HealthBarData ->
-                    false
-                }
+            })
+            addPlaceholder("is_player") { e: HealthBarData ->
+                e.entity.entity() is Player
             }
-        })
+            addPlaceholder("is_mythic_mob") { e: HealthBarData ->
+                e.entity.mob() is MythicActiveMob
+            }
+        }
     }
 
     override fun reload(resource: PackResource) {
