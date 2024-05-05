@@ -34,6 +34,12 @@ This plugin supports stack system, make it supports many system like buff.
 ![2024-05-05_08 58 58](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/4d87bab8-a3d9-4df6-957c-d04c8f490282)  
 This plugin supports ModelEngine, automatically detects mob's height.
 
+# Command
+/healthbar - Reload command
+
+# Permission
+betterhealthbar.reload - Access to reload command
+
 # Build
 ./gradlew build
 
