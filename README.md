@@ -19,7 +19,7 @@ Welcome to BetterHealthBar!
 This plugin implements beautiful health bar!
 
 ### Sight trace
-![녹화_2024_05_05_10_43_26_494](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/9b103a90-1b68-4753-9169-77a863416c7b)  
+![ezgif-4-07e904edf5](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/defd513b-1503-4369-b539-df04e63cd657)  
 This plugin supports sight-trace system.
 
 ### Custom core shader
