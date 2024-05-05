@@ -5,10 +5,8 @@ import kr.toxicity.healthbar.api.manager.ConfigManager
 import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.configuration.PluginConfiguration
 import kr.toxicity.healthbar.pack.PackResource
-import kr.toxicity.healthbar.util.DATA_FOLDER
-import kr.toxicity.healthbar.util.isValidPackNamespace
-import kr.toxicity.healthbar.util.runWithHandleException
-import kr.toxicity.healthbar.util.warn
+import kr.toxicity.healthbar.util.*
+import org.bstats.bukkit.Metrics
 import org.bukkit.entity.EntityType
 import java.io.File
 import java.util.Collections
@@ -17,6 +15,7 @@ import java.util.EnumSet
 object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
 
     private var debug = true
+    private var metrics = true
     private var packType = PackType.FOLDER
     private lateinit var buildFolder: File
     private var namespace = BetterHealthBar.NAMESPACE
@@ -30,6 +29,8 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     private var selfHostPort = 8163
     private var blackListEntityType = emptySet<EntityType>()
     private var disableToInvulnerableMob = true
+
+    private var bstats: Metrics? = null
 
     override fun preReload() {
         runWithHandleException("Unable to load config.yml") {
@@ -68,6 +69,13 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
                 }.getOrNull()
             }))
             disableToInvulnerableMob = config.getBoolean("disable-to-invulnerable-mob", true)
+
+            if (!metrics) {
+                bstats?.shutdown()
+                bstats = null
+            } else if (bstats == null) {
+                bstats = Metrics(PLUGIN, 21802)
+            }
         }
     }
 
@@ -75,6 +83,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     }
 
     override fun debug(): Boolean = debug
+    override fun metrics(): Boolean = metrics
     override fun packType(): PackType = packType
     override fun buildFolder(): File = buildFolder
     override fun namespace(): String = namespace

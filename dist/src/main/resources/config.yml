@@ -1,4 +1,5 @@
 debug: false
+metrics: true
 pack-type: folder
 namespace: "betterhealthbar"
 default-duration: 60

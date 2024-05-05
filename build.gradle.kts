@@ -30,7 +30,7 @@ allprojects {
         maven("https://mvn.lumine.io/repository/maven-public/")
     }
     dependencies {
-
+        implementation("org.bstats:bstats-bukkit:3.0.2")
         testImplementation(kotlin("test"))
     }
     tasks {
@@ -166,6 +166,7 @@ tasks {
             relocate(pattern, "${project.group}.shaded.$pattern")
         }
         prefix("kotlin")
+        prefix("org.bstats")
         dependencies {
             exclude(dependency("org.jetbrains:annotations:13.0"))
         }

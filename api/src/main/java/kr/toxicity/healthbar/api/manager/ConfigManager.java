@@ -10,6 +10,7 @@ import java.util.Set;
 
 public interface ConfigManager {
     boolean debug();
+    boolean metrics();
     @NotNull
     PackType packType();
     @NotNull
