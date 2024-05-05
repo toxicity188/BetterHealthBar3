@@ -14,7 +14,7 @@ Welcome to BetterHealthBar!
 
 ![156ab45b912cc836](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/b6a9871b-0e96-48d1-84c5-7dd491576c4b)  
 
-### Asynchrous health bar creation
+### Asynchronous health bar creation
 ![327962748-ae033d45-f040-486e-9943-6ce9c1cf6bc6](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/64a96e7a-04ac-4ae2-b9e0-9b71a62de04b)  ` 
 This plugin implements beautiful health bar!
 
@@ -33,6 +33,12 @@ This plugin supports stack system, make it supports many system like buff.
 ### ModelEngine support
 ![2024-05-05_08 58 58](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/4d87bab8-a3d9-4df6-957c-d04c8f490282)  
 This plugin supports ModelEngine, automatically detects mob's height.
+
+# Dependency
+No
+
+# Version
+1.19.4-1.20.6
 
 # Command
 /healthbar - Reload command
