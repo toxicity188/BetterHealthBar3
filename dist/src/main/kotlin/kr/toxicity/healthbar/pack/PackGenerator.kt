@@ -4,6 +4,7 @@ import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.util.*
 import java.io.File
+import java.io.InputStream
 import java.io.OutputStream
 import java.security.DigestOutputStream
 import java.security.MessageDigest
@@ -55,13 +56,19 @@ object PackGenerator {
             resource.merge.forEachAsync {
                 save(parent, it, "")
             }
-            PLUGIN.loadAssets("pack") { s, i ->
+            fun applyResource(s: String, i: InputStream) {
                 assetsMap.remove(s)
                 File(parent, s).apply {
                     parentFile.mkdirs()
                 }.outputStream().buffered().use { os ->
                     i.copyTo(os)
                 }
+            }
+            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")?.buffered()?.use {
+                applyResource("assets/minecraft/shaders/core/rendertype_text.fsh", it)
+            }
+            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()?.use {
+                applyResource("assets/minecraft/shaders/core/rendertype_text.vsh", it)
             }
             resource.font.forEachAsync {
                 save(font, it, "assets/$NAMESPACE/font")
@@ -113,13 +120,19 @@ object PackGenerator {
             resource.merge.forEachAsync {
                 save("", it)
             }
-            PLUGIN.loadAssets("pack") { s, i ->
+            fun applyResource(s: String, i: InputStream) {
                 val read = i.readAllBytes()
                 synchronized(zip) {
                     zip.putNextEntry(ZipEntry(s))
                     zip.write(read)
                     zip.closeEntry()
                 }
+            }
+            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")?.buffered()?.use {
+                applyResource("assets/minecraft/shaders/core/rendertype_text.fsh", it)
+            }
+            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()?.use {
+                applyResource("assets/minecraft/shaders/core/rendertype_text.vsh", it)
             }
             resource.font.forEachAsync {
                 save("assets/$NAMESPACE/font", it)

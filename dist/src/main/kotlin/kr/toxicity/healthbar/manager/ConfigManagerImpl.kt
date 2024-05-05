@@ -1,6 +1,7 @@
 package kr.toxicity.healthbar.manager
 
 import kr.toxicity.healthbar.api.BetterHealthBar
+import kr.toxicity.healthbar.api.configuration.CoreShadersOption
 import kr.toxicity.healthbar.api.manager.ConfigManager
 import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.configuration.PluginConfiguration
@@ -29,6 +30,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     private var selfHostPort = 8163
     private var blackListEntityType = emptySet<EntityType>()
     private var disableToInvulnerableMob = true
+    private var shaders = CoreShadersOption.DEFAULT
 
     private var bstats: Metrics? = null
 
@@ -69,7 +71,12 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
                 }.getOrNull()
             }))
             disableToInvulnerableMob = config.getBoolean("disable-to-invulnerable-mob", true)
-
+            config.getConfigurationSection("shaders")?.let { s ->
+                shaders = CoreShadersOption(
+                    s.getBoolean("rendertype_text.vsh", true),
+                    s.getBoolean("rendertype_text.fsh", true)
+                )
+            }
             if (!metrics) {
                 bstats?.shutdown()
                 bstats = null
@@ -97,4 +104,5 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     override fun selfHostPort(): Int = selfHostPort
     override fun blacklistEntityType(): Set<EntityType> = blackListEntityType
     override fun disableToInvulnerableMob(): Boolean = disableToInvulnerableMob
+    override fun shaders(): CoreShadersOption = shaders
 }

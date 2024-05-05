@@ -17,3 +17,6 @@ blacklist-entity-type:
   - BLOCK_DISPLAY
   - ITEM_DISPLAY
 disable-to-invulnerable-mob: true
+shaders:
+  rendertype_text.vsh: true
+  rendertype_text.fsh: true

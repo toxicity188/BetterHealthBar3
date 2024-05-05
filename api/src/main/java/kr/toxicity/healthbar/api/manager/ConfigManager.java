@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.api.manager;
 
+import kr.toxicity.healthbar.api.configuration.CoreShadersOption;
 import kr.toxicity.healthbar.api.pack.PackType;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
@@ -31,4 +32,6 @@ public interface ConfigManager {
     @Unmodifiable
     Set<EntityType> blacklistEntityType();
     boolean disableToInvulnerableMob();
+    @NotNull
+    CoreShadersOption shaders();
 }

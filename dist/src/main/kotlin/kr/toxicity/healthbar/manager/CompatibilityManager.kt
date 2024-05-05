@@ -18,7 +18,7 @@ object CompatibilityManager: BetterHealthBerManager {
                 registerEvents(object : Listener {
                     @EventHandler
                     fun shader(e: CreateShaderEvent) {
-                        PLUGIN.getResource("pack/assets/minecraft/shaders/core/rendertype_text.vsh")?.let {
+                        PLUGIN.getResource("rendertype_text.vsh")?.let {
                             InputStreamReader(it, StandardCharsets.UTF_8).buffered().use { reader ->
                                 var started = false
                                 for (s in reader.readLines()) {
