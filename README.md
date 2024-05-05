@@ -4,9 +4,9 @@
 
 Welcome to BetterHealthBar!
 
-[![GitHub Release](https://img.shields.io/github/v/release/toxicity188/BetterHealthBar?display_name=release&style=for-the-badge&logo=kotlin)](https://github.com/toxicity188/BetterHealthBar/releases/latest)
+[![GitHub Release](https://img.shields.io/github/v/release/toxicity188/BetterHealthBar3?display_name=release&style=for-the-badge&logo=kotlin)](https://github.com/toxicity188/BetterHealthBar3/releases/latest)
 [![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/rePyFESDbk) 
-[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/toxicity188/BetterHealthBar?style=for-the-badge&logo=github)](https://github.com/toxicity188/BetterHealthBar/issues) 
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/toxicity188/BetterHealthBar3?style=for-the-badge&logo=github)](https://github.com/toxicity188/BetterHealthBar3/issues) 
 [![bStats Servers](https://img.shields.io/bstats/servers/21802?style=for-the-badge&logo=minecraft&label=bStats&color=0%2C150%2C136%2C0)](https://bstats.org/plugin/bukkit/BetterHealthBar/21802)
 [![Static Badge](https://img.shields.io/badge/paypal-toxicity-blue?style=for-the-badge&logo=paypal)](https://www.paypal.com/paypalme/toxicity188?country.x=KR&locale.x=en_US)
 
