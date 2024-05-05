@@ -15,7 +15,7 @@ Welcome to BetterHealthBar!
 ![156ab45b912cc836](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/b6a9871b-0e96-48d1-84c5-7dd491576c4b)  
 
 ### Asynchronous health bar creation
-![327962748-ae033d45-f040-486e-9943-6ce9c1cf6bc6](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/64a96e7a-04ac-4ae2-b9e0-9b71a62de04b)  ` 
+![327962748-ae033d45-f040-486e-9943-6ce9c1cf6bc6](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/64a96e7a-04ac-4ae2-b9e0-9b71a62de04b)  
 This plugin implements beautiful health bar!
 
 ### Sight trace
