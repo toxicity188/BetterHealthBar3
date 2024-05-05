@@ -8,10 +8,10 @@ import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.chunk.system.entity.EntityLookup
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import kr.toxicity.healthbar.api.BetterHealthBar
-import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.nms.NMS
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
+import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.trigger.PacketTrigger
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.pointer.Pointers
@@ -256,8 +256,9 @@ class NMSImpl: NMS {
                 connection.send(ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!))
             }
 
-            override fun scale(vector: Vector) {
-                display.setTransformation(Transformation(null, null, Vector3f(vector.x.toFloat(), vector.y.toFloat(), vector.z.toFloat()), null))
+            override fun transformation(location: Vector, scale: Vector) {
+                fun Vector.toVanilla() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
+                display.setTransformation(Transformation(location.toVanilla(), null, scale.toVanilla(), null))
                 connection.send(ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!))
             }
 

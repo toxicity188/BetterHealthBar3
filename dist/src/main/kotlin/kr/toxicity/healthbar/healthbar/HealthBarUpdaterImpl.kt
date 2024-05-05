@@ -6,6 +6,7 @@ import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
 import kr.toxicity.healthbar.util.PLUGIN
+import org.bukkit.util.Vector
 
 class HealthBarUpdaterImpl(
     private val parent: HealthBarUpdaterGroupImpl,
@@ -13,8 +14,13 @@ class HealthBarUpdaterImpl(
     private val renderer: HealthBarRenderer
 ): HealthBarUpdater {
     private val display = renderer().render().run {
-        PLUGIN.nms().createTextDisplay(data.player.player(), location, component.component.build()).apply {
-            scale(data.healthBar.scale())
+        val player = data.player.player()
+        PLUGIN.nms().createTextDisplay(player, location, component.component.build()).apply {
+            val scale = data.healthBar.scale()
+            transformation(
+                Vector(0.0, -(1 - scale.y) * 8192 / 40 ,0.0),
+                scale
+            )
         }
     }
 

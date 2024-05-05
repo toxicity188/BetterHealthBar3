@@ -8,6 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public interface VirtualTextDisplay {
     void teleport(@NotNull Location location);
     void remove();
-    void scale(@NotNull Vector vector);
+    void transformation(@NotNull Vector location, @NotNull Vector vector);
     void text(@NotNull Component component);
 }
