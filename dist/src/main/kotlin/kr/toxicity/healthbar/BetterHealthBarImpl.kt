@@ -176,7 +176,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
                 if (entry.name.length <= prefix.length + 1) return@forEachAsync
                 val name = entry.name.substring(prefix.length + 1)
                 if (!entry.isDirectory) {
-                    getResource(entry.name)?.buffered()?.use { stream ->
+                    it.getInputStream(entry).buffered().use { stream ->
                         consumer.accept(name, stream)
                     }
                 }
