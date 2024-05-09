@@ -156,7 +156,9 @@ tasks {
     }
     runServer {
         version(minecraft)
-        pluginJars(fileTree("libs"))
+        downloadPlugins {
+            url("https://github.com/toxicity188/BetterHud/releases/download/beta-22/BetterHud-beta-22.jar")
+        }
     }
     shadowJar {
         legacyNms.forEach {
