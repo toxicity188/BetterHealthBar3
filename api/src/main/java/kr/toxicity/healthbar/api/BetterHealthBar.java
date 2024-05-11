@@ -6,6 +6,7 @@ import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter;
 import kr.toxicity.healthbar.api.nms.NMS;
 import kr.toxicity.healthbar.api.plugin.ReloadResult;
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,7 @@ public abstract class BetterHealthBar extends JavaPlugin {
     public abstract @NotNull ModelEngineAdapter modelEngine();
     public abstract @NotNull BedrockAdapter bedrock();
     public abstract @NotNull MiniMessage miniMessage();
+    public abstract @NotNull BukkitAudiences audiences();
     public abstract void loadAssets(@NotNull String prefix, @NotNull BiConsumer<String, InputStream> consumer);
     public abstract void loadAssets(@NotNull String prefix, @NotNull File dir);
 

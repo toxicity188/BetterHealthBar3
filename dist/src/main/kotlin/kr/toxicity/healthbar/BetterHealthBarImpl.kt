@@ -21,10 +21,20 @@ import kr.toxicity.healthbar.scheduler.StandardScheduler
 import kr.toxicity.healthbar.util.*
 import kr.toxicity.healthbar.version.MinecraftVersion
 import kr.toxicity.healthbar.version.ModelEngineVersion
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import java.io.File
 import java.io.InputStream
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.text.DecimalFormat
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
@@ -44,6 +54,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
     private var bedrock = BedrockAdapter.NONE
     private var modelEngine = ModelEngineAdapter.NONE
     private lateinit var nms: NMS
+    private lateinit var audiences: BukkitAudiences
     private val scheduler = if (isFolia) FoliaScheduler() else StandardScheduler()
 
     private val managers = listOf(
@@ -94,6 +105,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
             log.add("Floodgate support enabled.")
             bedrock = FloodgateAdapter()
         }
+        audiences = BukkitAudiences.create(this)
         getCommand("healthbar")?.setExecutor { commandSender, _, _, _ ->
             if (commandSender.hasPermission("betterhealthbar.reload")) {
                 commandSender.sendMessage("Starts reloading. please wait...")
@@ -121,6 +133,34 @@ class BetterHealthBarImpl: BetterHealthBar() {
                     else -> {
                         manager.disablePlugin(this)
                     }
+                }
+            }
+        }
+        runWithHandleException("Unable to get latest version.") {
+            HttpClient.newHttpClient().sendAsync(
+                HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.spigotmc.org/legacy/update.php?resource=116619/"))
+                    .GET()
+                    .build(), HttpResponse.BodyHandlers.ofString()
+            ).thenAccept {
+                val body = it.body()
+                if (description.version != body) {
+                    warn("New version found: $body")
+                    warn("Download: https://www.spigotmc.org/resources/116619")
+                    Bukkit.getPluginManager().registerEvents(object : Listener {
+                        @EventHandler
+                        fun join(e: PlayerJoinEvent) {
+                            val player = e.player
+                            if (player.isOp) {
+                                player.info(Component.text("New BetterHealthBar version found: $body"))
+                                player.info(Component.text("Download: https://www.spigotmc.org/resources/115559")
+                                    .clickEvent(ClickEvent.clickEvent(
+                                        ClickEvent.Action.OPEN_URL,
+                                        "https://www.spigotmc.org/resources/115559"
+                                    )))
+                            }
+                        }
+                    }, this)
                 }
             }
         }
@@ -193,6 +233,7 @@ class BetterHealthBarImpl: BetterHealthBar() {
     override fun textManager(): TextManager = TextManagerImpl
     override fun placeholderManager(): PlaceholderManager = PlaceholderManagerImpl
     override fun mobManager(): MobManager = MobManagerImpl
+    override fun audiences(): BukkitAudiences = audiences
 
     override fun onDisable() {
         runWithHandleException("Error has occurred while disabling.") {

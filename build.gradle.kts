@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.0-alpha-2"
+    version = "3.0-alpha-3"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -122,11 +122,11 @@ dependencies {
     implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.2-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
     implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.6"))
-    legacyNms.forEach {
+    ArrayList<NmsVersion>().apply {
+        addAll(legacyNms)
+        addAll(currentNms)
+    }.forEach {
         implementation(project(":nms:${it.name}", configuration = "reobf"))
-    }
-    currentNms.forEach {
-        implementation(it.project)
     }
 }
 

@@ -35,7 +35,7 @@ fun <T> List<T>.forEachAsync(block: (T) -> Unit) {
             val queue = LinkedList<() -> Unit>()
             var i = 0
             val add = (size.toDouble() / available).toInt()
-            while (i < size) {
+            while (i <= size) {
                 val get = subList(i, (i + add).coerceAtMost(size))
                 queue.add {
                     get.forEach { t ->
