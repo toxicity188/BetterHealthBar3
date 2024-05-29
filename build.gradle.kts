@@ -1,16 +1,16 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version("1.9.24")
     id("io.github.goooler.shadow") version("8.1.7")
-    id("io.papermc.paperweight.userdev") version("1.6.0") apply(false)
-    id("xyz.jpenilla.run-paper") version "2.2.4"
+    id("io.papermc.paperweight.userdev") version("1.7.1") apply(false)
+    id("xyz.jpenilla.run-paper") version "2.3.0"
     id("org.jetbrains.dokka") version "1.9.20"
 }
 
 
 val minecraft = "1.20.6"
 val folia = "1.20.4" // TODO Bumps version.
-val adventure = "4.16.0"
+val adventure = "4.17.0"
 val platform = "4.3.2"
 val targetJavaVersion = 21
 
@@ -96,21 +96,24 @@ fun Project.folia() = also {
     }
 }
 
-class NmsVersion(val name: String) {
+class NmsVersion(val name: String, javaVersion: Int) {
     val project = getProject("nms:$name").also {
         it.apply(plugin = "io.papermc.paperweight.userdev")
+        it.java {
+            toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
+        }
+        it.kotlin {
+            jvmToolchain(javaVersion)
+        }
     }
 }
 
-val legacyNms = listOf(
-    NmsVersion("v1_19_R3"),
-    NmsVersion("v1_20_R1"),
-    NmsVersion("v1_20_R2"),
-    NmsVersion("v1_20_R3")
-)
-
-val currentNms = listOf(
-    NmsVersion("v1_20_R4")
+val nmsVersions = listOf(
+    NmsVersion("v1_19_R3", 17),
+    NmsVersion("v1_20_R1", 17),
+    NmsVersion("v1_20_R2", 17),
+    NmsVersion("v1_20_R3", 17),
+    NmsVersion("v1_20_R4", 21)
 )
 
 dependencies {
@@ -122,10 +125,7 @@ dependencies {
     implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.2-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
     implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.6"))
-    ArrayList<NmsVersion>().apply {
-        addAll(legacyNms)
-        addAll(currentNms)
-    }.forEach {
+    nmsVersions.forEach {
         implementation(project(":nms:${it.name}", configuration = "reobf"))
     }
 }
@@ -161,11 +161,11 @@ tasks {
         }
     }
     shadowJar {
-        legacyNms.forEach {
-            dependsOn("nms:${it.name}:reobfJar")
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "spigot"
         }
-        currentNms.forEach {
-            dependsOn("nms:${it.name}:jar")
+        nmsVersions.forEach {
+            dependsOn("nms:${it.name}:reobfJar")
         }
         archiveClassifier = ""
         fun prefix(pattern: String) {
@@ -181,16 +181,9 @@ tasks {
     }
 }
 
-ArrayList<Project>().apply {
-    add(project)
-    addAll(currentNms.map {
-        it.project
-    })
-}.forEach {
-    it.java {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    it.kotlin {
-        jvmToolchain(targetJavaVersion)
-    }
+project.java {
+    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+}
+project.kotlin {
+    jvmToolchain(targetJavaVersion)
 }

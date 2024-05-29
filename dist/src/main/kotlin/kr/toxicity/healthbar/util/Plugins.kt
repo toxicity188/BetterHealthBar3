@@ -10,7 +10,10 @@ val PLUGIN
 
 val DATA_FOLDER
     get() = PLUGIN.dataFolder.apply {
-        if (!exists()) PLUGIN.loadAssets("default", this)
+        if (!exists()) {
+            mkdir()
+            PLUGIN.loadAssets("default", this)
+        }
     }
 
 val NAMESPACE
