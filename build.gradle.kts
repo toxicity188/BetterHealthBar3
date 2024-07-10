@@ -1,15 +1,15 @@
 plugins {
     `java-library`
-    kotlin("jvm") version("1.9.24")
-    id("io.github.goooler.shadow") version("8.1.7")
+    kotlin("jvm") version("2.0.0")
+    id("io.github.goooler.shadow") version("8.1.8")
     id("io.papermc.paperweight.userdev") version("1.7.1") apply(false)
     id("xyz.jpenilla.run-paper") version "2.3.0"
     id("org.jetbrains.dokka") version "1.9.20"
 }
 
 
-val minecraft = "1.20.6"
-val folia = "1.20.4" // TODO Bumps version.
+val minecraft = "1.21"
+val folia = "1.20.6" // TODO Bumps version.
 val adventure = "4.17.0"
 val platform = "4.3.2"
 val targetJavaVersion = 21
@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.0-alpha-3"
+    version = "3.0-alpha-4"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -38,8 +38,20 @@ allprojects {
             useJUnitPlatform()
         }
         compileJava {
+            options.compilerArgs.addAll(listOf("-source", "17", "-target", "17"))
             options.encoding = Charsets.UTF_8.name()
         }
+        compileKotlin {
+            compilerOptions {
+                freeCompilerArgs.addAll(listOf("-jvm-target", "17"))
+            }
+        }
+    }
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    kotlin {
+        jvmToolchain(targetJavaVersion)
     }
 }
 
@@ -68,7 +80,7 @@ fun getApiDependencyProject(name: String) = project(name).also {
 
 val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.6.2")
-    .dependency("com.github.toxicity188:BetterHud:beta-21")
+    .dependency("com.github.toxicity188:BetterHud:beta-26")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -96,24 +108,19 @@ fun Project.folia() = also {
     }
 }
 
-class NmsVersion(val name: String, javaVersion: Int) {
+class NmsVersion(val name: String) {
     val project = getProject("nms:$name").also {
         it.apply(plugin = "io.papermc.paperweight.userdev")
-        it.java {
-            toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
-        }
-        it.kotlin {
-            jvmToolchain(javaVersion)
-        }
     }
 }
 
 val nmsVersions = listOf(
-    NmsVersion("v1_19_R3", 17),
-    NmsVersion("v1_20_R1", 17),
-    NmsVersion("v1_20_R2", 17),
-    NmsVersion("v1_20_R3", 17),
-    NmsVersion("v1_20_R4", 21)
+    NmsVersion("v1_19_R3"),
+    NmsVersion("v1_20_R1"),
+    NmsVersion("v1_20_R2"),
+    NmsVersion("v1_20_R3"),
+    NmsVersion("v1_20_R4"),
+    NmsVersion("v1_21_R1")
 )
 
 dependencies {
@@ -157,7 +164,7 @@ tasks {
     runServer {
         version(minecraft)
         downloadPlugins {
-            url("https://github.com/toxicity188/BetterHud/releases/download/beta-22/BetterHud-beta-22.jar")
+            url("https://github.com/toxicity188/BetterHud/releases/download/beta-26/BetterHud-beta-26.jar")
         }
     }
     shadowJar {
@@ -179,11 +186,4 @@ tasks {
         finalizedBy(sourceJar)
         finalizedBy(dokkaJar)
     }
-}
-
-project.java {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-}
-project.kotlin {
-    jvmToolchain(targetJavaVersion)
 }

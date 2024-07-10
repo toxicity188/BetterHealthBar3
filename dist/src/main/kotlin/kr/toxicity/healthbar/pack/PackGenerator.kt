@@ -21,7 +21,7 @@ object PackGenerator {
     }
 
     private class FolderPack: Pack {
-        private val parent = ConfigManagerImpl.buildFolder()
+        private val parent: File = ConfigManagerImpl.buildFolder()
         private val buildFolder = File(parent, "assets").apply {
             mkdirs()
         }
