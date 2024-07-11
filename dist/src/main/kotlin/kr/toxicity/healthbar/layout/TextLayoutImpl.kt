@@ -120,6 +120,8 @@ class TextLayoutImpl(
             return condition().apply(pair)
         }
 
+        override fun layer(): Int = this@TextLayoutImpl.layer()
+
         override fun render(groupCount: Int): PixelComponent {
             val key = if (keys.isNotEmpty()) keys[groupCount.coerceAtMost(keys.lastIndex)] else defaultWidth
             val target = MINI_MESSAGE.deserialize(pattern.apply(pair))

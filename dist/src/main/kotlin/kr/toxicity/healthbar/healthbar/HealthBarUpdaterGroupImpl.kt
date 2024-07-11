@@ -28,7 +28,7 @@ class HealthBarUpdaterGroupImpl(
                 player,
                 entity
             )
-            HealthBarUpdaterImpl(this, data, healthBar.createRenderer(data))
+            HealthBarUpdaterImpl(this, healthBar.createRenderer(data))
         }.updateTick()
     }
 }

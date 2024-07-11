@@ -89,6 +89,8 @@ class ImageLayoutImpl(
             return condition().apply(pair)
         }
 
+        override fun layer(): Int = this@ImageLayoutImpl.layer()
+
         override fun isBackground(): Boolean = background
 
         override fun render(count: Int): PixelComponent {

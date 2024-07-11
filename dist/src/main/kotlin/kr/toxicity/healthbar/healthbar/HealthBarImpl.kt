@@ -1,16 +1,18 @@
 package kr.toxicity.healthbar.healthbar
 
+import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.condition.HealthBarCondition
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.healthbar.HealthBar
 import kr.toxicity.healthbar.api.healthbar.HealthBarData
 import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.layout.LayoutGroup
+import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
-import kr.toxicity.healthbar.api.renderer.HealthBarRenderer.RenderResult
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.manager.LayoutManagerImpl
 import kr.toxicity.healthbar.util.*
+import org.bukkit.Location
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.util.Vector
 import java.util.Collections
@@ -57,7 +59,7 @@ class HealthBarImpl(
     override fun duration(): Int = duration
 
     override fun createRenderer(pair: HealthBarData): HealthBarRenderer {
-        return Renderer(pair)
+        return if (ConfigManagerImpl.useCoreShaders()) SingleRenderer(pair) else MultiRenderer(pair)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -73,43 +75,73 @@ class HealthBarImpl(
         return s.hashCode()
     }
 
-    private class RenderedLayout(group: LayoutGroup, pair: HealthBarData) {
-        val group = group.group()
-        val images = group.images().map {
-            it.createImageRenderer(pair)
-        }.toMutableList()
-        val texts = group.texts().map {
-            it.createRenderer(pair)
-        }.toMutableList()
-    }
-
-    private inner class Renderer(
-        private val pair: HealthBarData
-    ): HealthBarRenderer {
-        private var d = 0
-
-        private val indexes = groups.mapNotNull {
+    private abstract inner class AbstractRenderer(protected val pair: HealthBarData): HealthBarRenderer {
+        protected val indexes = groups.mapNotNull {
             it.group()
         }.associateWith {
             GroupIndex()
         }
 
-        private val render = groups.map {
-            RenderedLayout(it, pair)
+        protected val render = groups.map {
+            RenderedLayout(it,  pair)
         }.toMutableList()
+
+        protected var d = 0
 
         override fun hasNext(): Boolean {
             val entity = pair.entity.entity()
             val player = pair.player.player()
             return entity.isValid && entity.world.uid == player.world.uid && player.location.distance(entity.location) < ConfigManagerImpl.lookDistance() && (duration < 0 || ++d <= duration)
         }
-
         override fun canRender(): Boolean {
             return conditions.apply(pair)
         }
+        override fun updateTick() {
+            d = 0
+        }
+    }
+    private inner class MultiRenderer(
+        pair: HealthBarData
+    ): AbstractRenderer(pair) {
 
-        override fun render(): RenderResult {
-            var comp = EMPTY_WIDTH_COMPONENT
+        private val displays = render.map {
+            it.createPool(pair, indexes)
+        }.toMutableList()
+
+        override fun work(): Boolean {
+            if (!hasNext()) {
+                displays.forEach {
+                    it.remove()
+                }
+                return false
+            } else {
+                indexes.values.forEach {
+                    it.clear()
+                }
+                displays.removeIf {
+                    !it.update()
+                }
+                return displays.isNotEmpty()
+            }
+        }
+
+        override fun displays(): List<VirtualTextDisplay> = displays.map {
+            it.displays()
+        }.sum()
+
+        override fun stop() {
+            displays.forEach {
+                it.remove()
+            }
+        }
+    }
+    private inner class SingleRenderer(
+        pair: HealthBarData
+    ): AbstractRenderer(pair) {
+
+        private val display = pair.createEntity(render())
+
+        private fun removeUnused() {
             indexes.values.forEach {
                 it.clear()
             }
@@ -122,11 +154,31 @@ class HealthBarImpl(
                 }
                 it.images.isEmpty() && it.texts.isEmpty()
             }
+        }
+
+        override fun stop() {
+            display.remove()
+        }
+
+        override fun displays(): List<VirtualTextDisplay> = listOf(display)
+
+        override fun work(): Boolean {
+            if (!hasNext() || render.isEmpty()) {
+                display.remove()
+                return false
+            } else {
+                removeUnused()
+                val render = render()
+                display.teleport(pair.toEntityLocation())
+                display.text(render.component.build())
+                return true
+            }
+        }
+
+        private fun render(): WidthComponent {
+            var comp = EMPTY_WIDTH_COMPONENT
             var max = 0
             render.forEach {
-                val index = it.group?.let { s ->
-                    indexes[s]
-                }
                 val imageRender = it.images.filter { r ->
                     r.canRender()
                 }
@@ -134,6 +186,9 @@ class HealthBarImpl(
                     r.canRender()
                 }
                 if (imageRender.isEmpty() && textRender.isEmpty()) return@forEach
+                val index = it.group?.let { s ->
+                    indexes[s]
+                }
                 val next = index?.next() ?: 0
                 imageRender.forEach { image ->
                     val render = image.render(next)
@@ -147,20 +202,7 @@ class HealthBarImpl(
                     comp += render.pixel.toSpaceComponent() + render.component + (-length).toSpaceComponent() + NEW_LAYER
                 }
             }
-            val entity = pair.entity
-            return RenderResult(
-                comp + (max).toSpaceComponent(),
-                entity.entity().location.apply {
-                    y += (PLUGIN.modelEngine().height(pair.entity.entity()) ?: pair.entity.entity().eyeHeight) + ConfigManagerImpl.defaultHeight()
-                    entity.mob()?.let {
-                        y += it.configuration().height()
-                    }
-                }
-            )
-        }
-
-        override fun updateTick() {
-            d = 0
+            return comp + (max).toSpaceComponent()
         }
     }
 

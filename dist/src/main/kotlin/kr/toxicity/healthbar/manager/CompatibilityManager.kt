@@ -18,6 +18,7 @@ object CompatibilityManager: BetterHealthBerManager {
                 registerEvents(object : Listener {
                     @EventHandler
                     fun shader(e: CreateShaderEvent) {
+                        if (!ConfigManagerImpl.useCoreShaders()) return
                         PLUGIN.getResource("rendertype_text.vsh")?.let {
                             InputStreamReader(it, StandardCharsets.UTF_8).buffered().use { reader ->
                                 var started = false

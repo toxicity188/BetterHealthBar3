@@ -64,11 +64,15 @@ object PackGenerator {
                     i.copyTo(os)
                 }
             }
-            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")?.buffered()?.use {
-                applyResource("assets/minecraft/shaders/core/rendertype_text.fsh", it)
-            }
-            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()?.use {
-                applyResource("assets/minecraft/shaders/core/rendertype_text.vsh", it)
+            if (ConfigManagerImpl.useCoreShaders()) {
+                if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")
+                    ?.buffered()?.use {
+                    applyResource("assets/minecraft/shaders/core/rendertype_text.fsh", it)
+                }
+                if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()
+                    ?.use {
+                        applyResource("assets/minecraft/shaders/core/rendertype_text.vsh", it)
+                    }
             }
             resource.font.forEachAsync {
                 save(font, it, "assets/$NAMESPACE/font")
@@ -128,11 +132,15 @@ object PackGenerator {
                     zip.closeEntry()
                 }
             }
-            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")?.buffered()?.use {
-                applyResource("assets/minecraft/shaders/core/rendertype_text.fsh", it)
-            }
-            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()?.use {
-                applyResource("assets/minecraft/shaders/core/rendertype_text.vsh", it)
+            if (ConfigManagerImpl.useCoreShaders()) {
+                if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")
+                    ?.buffered()?.use {
+                    applyResource("assets/minecraft/shaders/core/rendertype_text.fsh", it)
+                }
+                if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()
+                    ?.use {
+                        applyResource("assets/minecraft/shaders/core/rendertype_text.vsh", it)
+                    }
             }
             resource.font.forEachAsync {
                 save("assets/$NAMESPACE/font", it)

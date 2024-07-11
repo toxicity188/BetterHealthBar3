@@ -34,4 +34,5 @@ public interface ConfigManager {
     boolean disableToInvulnerableMob();
     @NotNull
     CoreShadersOption shaders();
+    boolean useCoreShaders();
 }

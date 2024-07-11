@@ -1,15 +1,16 @@
 package kr.toxicity.healthbar.api.renderer;
 
-import kr.toxicity.healthbar.api.component.WidthComponent;
-import org.bukkit.Location;
+import kr.toxicity.healthbar.api.nms.VirtualTextDisplay;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.List;
 
 public interface HealthBarRenderer extends Renderer {
     @NotNull
-    RenderResult render();
-
+    @Unmodifiable
+    List<VirtualTextDisplay> displays();
     void updateTick();
-
-    record RenderResult(@NotNull WidthComponent component, @NotNull Location location) {
-    }
+    boolean work();
+    void stop();
 }

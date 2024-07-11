@@ -31,6 +31,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     private var blackListEntityType = emptySet<EntityType>()
     private var disableToInvulnerableMob = true
     private var shaders = CoreShadersOption.DEFAULT
+    private var useCoreShaders = true
 
     private var bstats: Metrics? = null
 
@@ -77,6 +78,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
                     s.getBoolean("rendertype_text.fsh", true)
                 )
             }
+            useCoreShaders = config.getBoolean("use-core-shaders", true)
             if (!metrics) {
                 bstats?.shutdown()
                 bstats = null
@@ -105,4 +107,5 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     override fun blacklistEntityType(): Set<EntityType> = blackListEntityType
     override fun disableToInvulnerableMob(): Boolean = disableToInvulnerableMob
     override fun shaders(): CoreShadersOption = shaders
+    override fun useCoreShaders(): Boolean = useCoreShaders
 }
