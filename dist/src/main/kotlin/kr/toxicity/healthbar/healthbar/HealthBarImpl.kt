@@ -15,6 +15,7 @@ import kr.toxicity.healthbar.util.*
 import org.bukkit.Location
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.util.Vector
+import java.util.ArrayList
 import java.util.Collections
 import java.util.EnumSet
 import java.util.UUID
@@ -109,7 +110,7 @@ class HealthBarImpl(
         }.toMutableList()
 
         override fun work(): Boolean {
-            if (!hasNext()) {
+            if (!hasNext() || displays.isEmpty()) {
                 displays.forEach {
                     it.remove()
                 }
@@ -118,10 +119,20 @@ class HealthBarImpl(
                 indexes.values.forEach {
                     it.clear()
                 }
-                displays.removeIf {
-                    !it.update()
+                var result = false
+                var max = 0
+                val pool = ArrayList<RenderedLayout.RenderedEntityPool>()
+                displays.forEach {
+                    if (it.update()) {
+                        result = true
+                        if (max < it.max) max = it.max
+                        pool.add(it)
+                    }
                 }
-                return displays.isNotEmpty()
+                pool.forEach {
+                    it.create(max)
+                }
+                return result
             }
         }
 
@@ -186,10 +197,9 @@ class HealthBarImpl(
                     r.canRender()
                 }
                 if (imageRender.isEmpty() && textRender.isEmpty()) return@forEach
-                val index = it.group?.let { s ->
+                val next = it.group?.let { s ->
                     indexes[s]
-                }
-                val next = index?.next() ?: 0
+                }?.next() ?: 0
                 imageRender.forEach { image ->
                     val render = image.render(next)
                     val length = render.pixel + render.component.width
