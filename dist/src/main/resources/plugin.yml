@@ -14,6 +14,7 @@ softdepend:
   - BetterHud
   - ModelEngine
   - MythicMobs
+  - PlaceholderAPI
 commands:
   healthbar:
     aliases: hb

@@ -21,3 +21,4 @@ shaders:
   rendertype_text.vsh: true
   rendertype_text.fsh: true
 use-core-shaders: true
+show-me-healthbar: true

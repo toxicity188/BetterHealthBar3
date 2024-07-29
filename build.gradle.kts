@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.0-alpha-5"
+    version = "3.0-alpha-7"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -28,6 +28,7 @@ allprojects {
         maven("https://mvn.lumine.io/repository/maven-public/")
         maven("https://jitpack.io/")
         maven("https://repo.alessiodp.com/releases/")
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.0.2")
@@ -80,6 +81,7 @@ fun getApiDependencyProject(name: String) = project(name).also {
 
 val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.6.2")
+    .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.github.toxicity188:BetterHud:beta-26")
     .also {
         it.tasks.processResources {
@@ -165,6 +167,7 @@ tasks {
         version(minecraft)
         downloadPlugins {
             url("https://github.com/toxicity188/BetterHud/releases/download/beta-26/BetterHud-beta-26.jar")
+            url("https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/PlaceholderAPI-2.11.7-DEV-200.jar")
         }
     }
     shadowJar {

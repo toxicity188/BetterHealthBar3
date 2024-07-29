@@ -55,6 +55,6 @@ data class MinecraftVersion(
     fun packVersion() = packVersion[this] ?: 7
 
     override fun toString(): String {
-        return "$first.$second.$third"
+        return if (third != 0) "$first.$second.$third" else "$first.$second"
     }
 }

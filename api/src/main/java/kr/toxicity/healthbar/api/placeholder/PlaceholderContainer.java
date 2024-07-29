@@ -3,7 +3,6 @@ package kr.toxicity.healthbar.api.placeholder;
 import kr.toxicity.healthbar.api.BetterHealthBar;
 import kr.toxicity.healthbar.api.healthbar.HealthBarData;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -255,7 +254,7 @@ public class PlaceholderContainer<T> {
         var sb = new StringBuilder();
         for (char c1 : string.toCharArray()) {
             if (':' != c1) sb.append(c1);
-            else break;;
+            else break;
         }
         return sb.toString();
     }

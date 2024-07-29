@@ -57,6 +57,7 @@ class HealthBarPlayerImpl(
     override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: HealthBarEntity) {
         if (ConfigManagerImpl.blacklistEntityType().contains(entity.entity().type)) return
         if (ConfigManagerImpl.disableToInvulnerableMob() && entity.entity().isInvulnerable) return
+        if (!ConfigManagerImpl.showMeHealthBar() && player.uniqueId == entity.entity().uniqueId) return
         entity.mob()?.let {
             if (it.configuration().blacklist()) return
         }

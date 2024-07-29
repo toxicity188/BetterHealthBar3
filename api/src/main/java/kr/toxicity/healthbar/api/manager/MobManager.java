@@ -12,4 +12,5 @@ public interface MobManager extends MobProvider {
     MobConfiguration configuration(@NotNull String name);
     @NotNull
     HealthBarEntity entity(@NotNull LivingEntity livingEntity);
+    void addProvider(@NotNull MobProvider provider);
 }

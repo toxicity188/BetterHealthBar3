@@ -1,5 +1,7 @@
 package kr.toxicity.healthbar.manager
 
+import kr.toxicity.healthbar.compatibility.MythicMobsCompatibility
+import kr.toxicity.healthbar.compatibility.PlaceholderAPICompatibility
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.hud.api.BetterHud
@@ -11,6 +13,16 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 object CompatibilityManager: BetterHealthBerManager {
+
+    private val compMap = mapOf(
+        "MythicMobs" to {
+            MythicMobsCompatibility()
+        },
+        "PlaceholderAPI" to {
+            PlaceholderAPICompatibility()
+        }
+    )
+
     override fun start() {
         Bukkit.getPluginManager().run {
             if (isPluginEnabled("BetterHud")) {
@@ -37,6 +49,9 @@ object CompatibilityManager: BetterHealthBerManager {
                         }
                     }
                 }, PLUGIN)
+            }
+            compMap.forEach {
+                if (isPluginEnabled(it.key)) it.value().accept()
             }
         }
     }

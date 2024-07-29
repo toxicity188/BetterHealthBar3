@@ -32,6 +32,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     private var disableToInvulnerableMob = true
     private var shaders = CoreShadersOption.DEFAULT
     private var useCoreShaders = true
+    private var showMeHealthBar = true
 
     private var bstats: Metrics? = null
 
@@ -79,6 +80,7 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
                 )
             }
             useCoreShaders = config.getBoolean("use-core-shaders", true)
+            showMeHealthBar = config.getBoolean("show-me-healthbar", true)
             if (!metrics) {
                 bstats?.shutdown()
                 bstats = null
@@ -108,4 +110,5 @@ object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
     override fun disableToInvulnerableMob(): Boolean = disableToInvulnerableMob
     override fun shaders(): CoreShadersOption = shaders
     override fun useCoreShaders(): Boolean = useCoreShaders
+    override fun showMeHealthBar(): Boolean = showMeHealthBar
 }

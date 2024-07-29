@@ -9,6 +9,7 @@ import java.util.Set;
 
 public interface MobConfiguration extends HealthBarConfiguration {
     @NotNull
+    @Unmodifiable
     Set<String> types();
     double height();
     boolean blacklist();

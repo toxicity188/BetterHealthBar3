@@ -35,4 +35,5 @@ public interface ConfigManager {
     @NotNull
     CoreShadersOption shaders();
     boolean useCoreShaders();
+    boolean showMeHealthBar();
 }
