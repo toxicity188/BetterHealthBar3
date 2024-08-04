@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.manager
 
 import kr.toxicity.healthbar.compatibility.MythicMobsCompatibility
 import kr.toxicity.healthbar.compatibility.PlaceholderAPICompatibility
+import kr.toxicity.healthbar.compatibility.CitizensCompatibility
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.hud.api.BetterHud
@@ -20,6 +21,9 @@ object CompatibilityManager: BetterHealthBerManager {
         },
         "PlaceholderAPI" to {
             PlaceholderAPICompatibility()
+        },
+        "Citizens" to {
+            CitizensCompatibility()
         }
     )
 

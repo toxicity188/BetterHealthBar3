@@ -316,7 +316,7 @@ class NMSImpl: NMS {
                         val types = adapt.mob()?.configuration()?.types()
                         val packet = PacketTrigger(trigger, handle)
                         set.filter {
-                            it.isDefault || (types != null && it.applicableTypes().any { t ->
+                            (adapt.mob()?.configuration()?.ignoreDefault() != true && it.isDefault) || (types != null && it.applicableTypes().any { t ->
                                 types.contains(t)
                             })
                         }.forEach {

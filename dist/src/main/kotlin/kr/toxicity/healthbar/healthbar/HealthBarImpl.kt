@@ -12,7 +12,6 @@ import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.manager.LayoutManagerImpl
 import kr.toxicity.healthbar.util.*
-import org.bukkit.Location
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.util.Vector
 import java.util.ArrayList

@@ -29,6 +29,8 @@ allprojects {
         maven("https://jitpack.io/")
         maven("https://repo.alessiodp.com/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+        maven("https://maven.citizensnpcs.co/repo/")
+        maven("https://repo.alessiodp.com/releases/")
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.0.2")
@@ -83,6 +85,8 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.6.2")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.github.toxicity188:BetterHud:beta-26")
+    .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
+    .dependency("net.byteflux:libby-bukkit:1.3.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()

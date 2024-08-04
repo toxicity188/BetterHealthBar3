@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.player
 
 import kr.toxicity.healthbar.api.entity.HealthBarEntity
 import kr.toxicity.healthbar.api.healthbar.HealthBar
+import kr.toxicity.healthbar.api.healthbar.HealthBarData
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.trigger.HealthBarTrigger
@@ -61,10 +62,17 @@ class HealthBarPlayerImpl(
         entity.mob()?.let {
             if (it.configuration().blacklist()) return
         }
+        val data = HealthBarData(
+            healthBar,
+            trigger,
+            this,
+            entity
+        )
+        if (!healthBar.condition().apply(data)) return
         synchronized(updaterMap) {
             updaterMap.computeIfAbsent(entity.entity().uniqueId) {
                 HealthBarUpdaterGroupImpl(this, entity)
-            }.addHealthBar(healthBar, trigger)
+            }.addHealthBar(data)
         }
     }
 

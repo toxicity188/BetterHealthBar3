@@ -13,6 +13,7 @@ class MobConfigurationImpl(
     private val types = section.getStringList("type").toSet()
     private val height = section.getDouble("height")
     private val blacklist = section.getBoolean("blacklist")
+    private val ignoreDefault = section.getBoolean("ignore-default")
     private val healthBars = section.getStringList("healthbars").map {
         HealthBarManagerImpl.healthBar(it).ifNull("Unable to find this health bar: $it")
     }.toSet()
@@ -21,5 +22,6 @@ class MobConfigurationImpl(
     override fun path(): String = path
     override fun height(): Double = height
     override fun blacklist(): Boolean = blacklist
+    override fun ignoreDefault(): Boolean = ignoreDefault
     override fun healthBars(): Set<HealthBar> = healthBars
 }
