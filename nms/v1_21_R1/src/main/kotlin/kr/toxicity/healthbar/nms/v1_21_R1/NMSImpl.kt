@@ -325,9 +325,6 @@ class NMSImpl: NMS {
                     val bukkit = e.bukkitEntity
                     if (bukkit is CraftLivingEntity && bukkit.isValid) {
                         val adapt = plugin.mobManager().entity(if (bukkit is Player) foliaAdapt(bukkit) else foliaAdapt(bukkit))
-                        adapt.mob()?.let {
-                            set.addAll(it.configuration().healthBars())
-                        }
                         val types = adapt.mob()?.configuration()?.types()
                         val packet = PacketTrigger(trigger, handle)
                         set.filter {
@@ -335,6 +332,9 @@ class NMSImpl: NMS {
                                 types.contains(t)
                             })
                         }.forEach {
+                            player.showHealthBar(it, packet, adapt)
+                        }
+                        adapt.mob()?.configuration()?.healthBars()?.forEach {
                             player.showHealthBar(it, packet, adapt)
                         }
                     }

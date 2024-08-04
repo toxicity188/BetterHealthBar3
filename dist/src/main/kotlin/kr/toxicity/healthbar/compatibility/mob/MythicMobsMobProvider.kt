@@ -9,7 +9,7 @@ import org.bukkit.entity.LivingEntity
 class MythicMobsMobProvider: MobProvider {
     override fun provide(entity: LivingEntity): HealthBarMob? {
         return MythicBukkit.inst().mobManager.getMythicMobInstance(entity)?.let {
-            MythicActiveMobImpl(it, MobManagerImpl.configuration(it.type.internalName) ?: return null)
+            MythicActiveMobImpl(it, MobManagerImpl.configuration(it.mobType) ?: return null)
         }
     }
 }
