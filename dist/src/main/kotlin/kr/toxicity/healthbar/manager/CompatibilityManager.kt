@@ -5,8 +5,8 @@ import kr.toxicity.healthbar.compatibility.PlaceholderAPICompatibility
 import kr.toxicity.healthbar.compatibility.CitizensCompatibility
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.PLUGIN
-import kr.toxicity.hud.api.BetterHud
-import kr.toxicity.hud.api.event.CreateShaderEvent
+import kr.toxicity.hud.api.BetterHudAPI
+import kr.toxicity.hud.api.bukkit.event.CreateShaderEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -30,7 +30,7 @@ object CompatibilityManager: BetterHealthBerManager {
     override fun start() {
         Bukkit.getPluginManager().run {
             if (isPluginEnabled("BetterHud")) {
-                BetterHud.getInstance().shaderManager.addConstant("DISPLAY_HEIGHT", "8192.0 / 40.0")
+                BetterHudAPI.inst().shaderManager.addConstant("DISPLAY_HEIGHT", "8192.0 / 40.0")
                 registerEvents(object : Listener {
                     @EventHandler
                     fun shader(e: CreateShaderEvent) {

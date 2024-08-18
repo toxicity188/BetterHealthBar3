@@ -1,17 +1,17 @@
 plugins {
     `java-library`
-    kotlin("jvm") version("2.0.0")
+    kotlin("jvm") version("2.0.10")
     id("io.github.goooler.shadow") version("8.1.8")
-    id("io.papermc.paperweight.userdev") version("1.7.1") apply(false)
-    id("xyz.jpenilla.run-paper") version "2.3.0"
-    id("org.jetbrains.dokka") version "1.9.20"
+    id("io.papermc.paperweight.userdev") version("1.7.2") apply(false)
+    id("xyz.jpenilla.run-paper") version("2.3.0")
+    id("org.jetbrains.dokka") version("1.9.20")
 }
 
 
-val minecraft = "1.21"
+val minecraft = "1.21.1"
 val folia = "1.20.6" // TODO Bumps version.
 val adventure = "4.17.0"
-val platform = "4.3.2"
+val platform = "4.3.4"
 val targetJavaVersion = 21
 
 allprojects {
@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.0-alpha-7"
+    version = "3.1"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -82,9 +82,9 @@ fun getApiDependencyProject(name: String) = project(name).also {
 }
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.6.2")
+    .dependency("io.lumine:Mythic-Dist:5.7.1")
     .dependency("me.clip:placeholderapi:2.11.6")
-    .dependency("com.github.toxicity188:BetterHud:beta-26")
+    .dependency("com.github.toxicity188:BetterHud:5c8fd05248")
     .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
     .dependency("net.byteflux:libby-bukkit:1.3.0")
     .also {
@@ -169,8 +169,9 @@ tasks {
     }
     runServer {
         version(minecraft)
+        pluginJars(fileTree("plugins"))
         downloadPlugins {
-            url("https://github.com/toxicity188/BetterHud/releases/download/beta-26/BetterHud-beta-26.jar")
+            //url("https://github.com/toxicity188/BetterHud/releases/download/1.3/BetterHud-1.3.jar")
             url("https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/PlaceholderAPI-2.11.7-DEV-200.jar")
         }
     }
