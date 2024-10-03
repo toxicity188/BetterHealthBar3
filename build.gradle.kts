@@ -1,9 +1,9 @@
 plugins {
     `java-library`
-    kotlin("jvm") version("2.0.10")
+    kotlin("jvm") version("2.0.20")
     id("io.github.goooler.shadow") version("8.1.8")
-    id("io.papermc.paperweight.userdev") version("1.7.2") apply(false)
-    id("xyz.jpenilla.run-paper") version("2.3.0")
+    id("io.papermc.paperweight.userdev") version("1.7.3") apply(false)
+    id("xyz.jpenilla.run-paper") version("2.3.1")
     id("org.jetbrains.dokka") version("1.9.20")
 }
 
@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.1"
+    version = "3.2"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -33,7 +33,7 @@ allprojects {
         maven("https://repo.alessiodp.com/releases/")
     }
     dependencies {
-        implementation("org.bstats:bstats-bukkit:3.0.2")
+        implementation("org.bstats:bstats-bukkit:3.0.3")
         testImplementation(kotlin("test"))
     }
     tasks {
@@ -82,9 +82,9 @@ fun getApiDependencyProject(name: String) = project(name).also {
 }
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.7.1")
+    .dependency("io.lumine:Mythic-Dist:5.7.2")
     .dependency("me.clip:placeholderapi:2.11.6")
-    .dependency("com.github.toxicity188:BetterHud:5c8fd05248")
+    .dependency("com.github.toxicity188:BetterHud:83ca746ccd")
     .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
     .dependency("net.byteflux:libby-bukkit:1.3.0")
     .also {
@@ -171,7 +171,7 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            //url("https://github.com/toxicity188/BetterHud/releases/download/1.3/BetterHud-1.3.jar")
+            url("https://github.com/toxicity188/BetterHud/releases/download/1.5/BetterHud-1.5.jar")
             url("https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/PlaceholderAPI-2.11.7-DEV-200.jar")
         }
     }
