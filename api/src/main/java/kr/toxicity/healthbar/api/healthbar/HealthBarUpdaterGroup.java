@@ -16,9 +16,8 @@ public interface HealthBarUpdaterGroup {
 
     default boolean update() {
         var updaters = updaters();
-        if (updaters.isEmpty()) return false;
         updaters.removeIf(u -> !u.update());
-        return true;
+        return updaters.isEmpty();
     }
     default void remove() {
         var updaters = updaters();

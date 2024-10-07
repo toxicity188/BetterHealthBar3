@@ -38,7 +38,7 @@ class HealthBarPlayerImpl(
 
     override fun clear() {
         updaterMap.values.removeIf {
-            it.update()
+            it.remove()
             true
         }
     }
