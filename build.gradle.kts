@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.2"
+    version = "3.3"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -191,6 +191,8 @@ tasks {
         dependencies {
             exclude(dependency("org.jetbrains:annotations:13.0"))
         }
+    }
+    build {
         finalizedBy(sourceJar)
         finalizedBy(dokkaJar)
     }

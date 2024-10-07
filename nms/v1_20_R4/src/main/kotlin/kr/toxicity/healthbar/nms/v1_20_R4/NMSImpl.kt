@@ -16,6 +16,7 @@ import kr.toxicity.healthbar.api.trigger.PacketTrigger
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.network.Connection
 import net.minecraft.network.protocol.game.*
 import net.minecraft.server.level.ServerLevel
@@ -27,6 +28,7 @@ import net.minecraft.world.entity.Display.TextDisplay
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.level.entity.LevelEntityGetter
+import net.minecraft.world.level.entity.LevelEntityGetterAdapter
 import net.minecraft.world.level.entity.PersistentEntitySectionManager
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -37,6 +39,7 @@ import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.craftbukkit.entity.CraftLivingEntity
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
+import org.bukkit.craftbukkit.util.CraftChatMessage
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
@@ -74,6 +77,8 @@ class NMSImpl: NMS {
     }
     private val entityTracker = ServerLevel::class.java.fields.firstOrNull {
         it.type == PersistentEntitySectionManager::class.java
+    }?.apply { 
+        isAccessible = true
     }
 
     private val getEntityById: (LevelEntityGetter<net.minecraft.world.entity.Entity>, Int) -> net.minecraft.world.entity.Entity? = if (plugin.isPaper) EntityLookup::class.java.declaredFields.first {
@@ -83,7 +88,7 @@ class NMSImpl: NMS {
         { e, i ->
             (it[e] as Int2ReferenceOpenHashMap<*>)[i] as? net.minecraft.world.entity.Entity
         }
-    } else PersistentEntitySectionManager::class.java.declaredFields.first {
+    } else LevelEntityGetterAdapter::class.java.declaredFields.first {
         net.minecraft.world.level.entity.EntityLookup::class.java.isAssignableFrom(it.type)
     }.let {
         it.isAccessible = true
@@ -97,6 +102,15 @@ class NMSImpl: NMS {
         it.isAccessible = true
         { p ->
             it[p] as Int
+        }
+    }
+    private val textVanilla: (Component) -> net.minecraft.network.chat.Component = if (plugin.isPaper) {
+        {
+            PaperAdventure.asVanilla(it)
+        }
+    } else {
+        {
+            CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(it))
         }
     }
 
@@ -228,7 +242,7 @@ class NMSImpl: NMS {
                 set(TextDisplay.DATA_LINE_WIDTH_ID, Int.MAX_VALUE)
             }
             brightnessOverride = Brightness(15, 15)
-            text = PaperAdventure.asVanilla(component)
+            text = textVanilla(component)
             moveTo(
                 location.x,
                 location.y,
@@ -252,7 +266,7 @@ class NMSImpl: NMS {
             }
 
             override fun text(component: Component) {
-                display.text = PaperAdventure.asVanilla(component)
+                display.text = textVanilla(component)
                 connection.send(ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!))
             }
 

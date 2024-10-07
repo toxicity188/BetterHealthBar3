@@ -12,7 +12,6 @@ import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.healthbar.util.asyncTaskTimer
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 class HealthBarPlayerImpl(
     private val player: Player
@@ -20,10 +19,12 @@ class HealthBarPlayerImpl(
     override fun player(): Player = player
     override fun compareTo(other: HealthBarPlayer): Int = player.uniqueId.compareTo(other.player().uniqueId)
 
-    private val updaterMap = ConcurrentHashMap<UUID, HealthBarUpdaterGroup>()
+    private val updaterMap = HashMap<UUID, HealthBarUpdaterGroup>()
     private val task = asyncTaskTimer(1, 1) {
-        updaterMap.values.removeIf {
-            !it.update()
+        synchronized(updaterMap) {
+            updaterMap.values.removeIf {
+                !it.update()
+            }
         }
     }
 
@@ -37,13 +38,17 @@ class HealthBarPlayerImpl(
     }
 
     override fun clear() {
-        updaterMap.values.removeIf {
-            it.remove()
-            true
+        synchronized(updaterMap) {
+            updaterMap.values.removeIf {
+                it.remove()
+                true
+            }
         }
     }
 
-    override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = updaterMap
+    override fun updaterMap(): MutableMap<UUID, HealthBarUpdaterGroup> = synchronized(updaterMap) {
+        updaterMap
+    }
 
     override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: HealthBarEntity) {
         if (ConfigManagerImpl.blacklistEntityType().contains(entity.entity().type)) return
@@ -59,9 +64,11 @@ class HealthBarPlayerImpl(
             entity
         )
         if (!healthBar.condition().apply(data)) return
-        updaterMap.computeIfAbsent(entity.entity().uniqueId) {
-            HealthBarUpdaterGroupImpl(this, entity)
-        }.addHealthBar(data)
+        synchronized(updaterMap) {
+            updaterMap.computeIfAbsent(entity.entity().uniqueId) {
+                HealthBarUpdaterGroupImpl(this, entity)
+            }.addHealthBar(data)
+        }
     }
 
     override fun equals(other: Any?): Boolean {
