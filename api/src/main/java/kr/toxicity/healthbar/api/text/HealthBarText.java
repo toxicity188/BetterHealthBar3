@@ -10,7 +10,7 @@ import java.util.Map;
 public interface HealthBarText extends HealthBarConfiguration {
     @NotNull
     @Unmodifiable
-    Map<Character, Integer> chatWidth();
+    Map<Integer, Integer> chatWidth();
 
     @NotNull
     @Unmodifiable

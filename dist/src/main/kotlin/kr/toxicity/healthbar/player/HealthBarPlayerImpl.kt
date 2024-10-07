@@ -12,6 +12,7 @@ import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.healthbar.util.asyncTaskTimer
 import org.bukkit.entity.Player
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 class HealthBarPlayerImpl(
     private val player: Player
@@ -19,16 +20,10 @@ class HealthBarPlayerImpl(
     override fun player(): Player = player
     override fun compareTo(other: HealthBarPlayer): Int = player.uniqueId.compareTo(other.player().uniqueId)
 
-    private val updaterMap = HashMap<UUID, HealthBarUpdaterGroup>()
+    private val updaterMap = ConcurrentHashMap<UUID, HealthBarUpdaterGroup>()
     private val task = asyncTaskTimer(1, 1) {
-        synchronized(updaterMap) {
-            val iterator = updaterMap.values.iterator()
-            synchronized(iterator) {
-                while (iterator.hasNext()) {
-                    val next = iterator.next()
-                    if (!next.update()) iterator.remove()
-                }
-            }
+        updaterMap.values.removeIf {
+            !it.update()
         }
     }
 
@@ -42,14 +37,9 @@ class HealthBarPlayerImpl(
     }
 
     override fun clear() {
-        synchronized(updaterMap) {
-            val iterator = updaterMap.values.iterator()
-            synchronized(iterator) {
-                while (iterator.hasNext()) {
-                    iterator.next().remove()
-                }
-            }
-            updaterMap.clear()
+        updaterMap.values.removeIf {
+            it.update()
+            true
         }
     }
 
@@ -69,11 +59,9 @@ class HealthBarPlayerImpl(
             entity
         )
         if (!healthBar.condition().apply(data)) return
-        synchronized(updaterMap) {
-            updaterMap.computeIfAbsent(entity.entity().uniqueId) {
-                HealthBarUpdaterGroupImpl(this, entity)
-            }.addHealthBar(data)
-        }
+        updaterMap.computeIfAbsent(entity.entity().uniqueId) {
+            HealthBarUpdaterGroupImpl(this, entity)
+        }.addHealthBar(data)
     }
 
     override fun equals(other: Any?): Boolean {

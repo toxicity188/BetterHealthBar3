@@ -12,7 +12,7 @@ import java.util.function.Function;
 public interface TextLayout extends Layout {
     @NotNull
     @Unmodifiable
-    Map<Character, Integer> charWidth();
+    Map<Integer, Integer> charWidth();
 
     @NotNull
     TextAlign align();

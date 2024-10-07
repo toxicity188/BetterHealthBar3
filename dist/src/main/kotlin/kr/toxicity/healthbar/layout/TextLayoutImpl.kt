@@ -35,7 +35,7 @@ class TextLayoutImpl(
         TextManagerImpl.text(this).ifNull("Unable to find this text: $this")
     }
     private val height = (text.height().toDouble() * scale()).roundToInt().toHeight()
-    private val textWidth = Collections.unmodifiableMap(HashMap<Char, Int>().apply {
+    private val textWidth = Collections.unmodifiableMap(HashMap<Int, Int>().apply {
         val div = height.toDouble() / text.height().toDouble()
         text.chatWidth().forEach {
             put(it.key, (it.value * div).roundToInt())
@@ -50,7 +50,7 @@ class TextLayoutImpl(
         section.getString("pattern").ifNull("Unable to find 'pattern' command.")
     )
 
-    override fun charWidth(): Map<Char, Int> = textWidth
+    override fun charWidth(): Map<Int, Int> = textWidth
     override fun align(): TextAlign = align
     override fun pattern(): Function<HealthBarData, String> = pattern
 
@@ -131,9 +131,9 @@ class TextLayoutImpl(
                     var i = 0
                     if (s.hasDecoration(TextDecoration.BOLD)) i++
                     if (s.hasDecoration(TextDecoration.ITALIC)) i++
-                    it.content().sumOf { c ->
-                        if (c == ' ') 4 else (textWidth[c] ?: 0) + 1 + i
-                    }
+                    it.content().codePoints().map { c ->
+                        if (c == ' '.code) 4 else (textWidth[c] ?: 0) + 1 + i
+                    }.sum()
                 } ?: 0) + component.children().sumOf {
                     length(it)
                 }
