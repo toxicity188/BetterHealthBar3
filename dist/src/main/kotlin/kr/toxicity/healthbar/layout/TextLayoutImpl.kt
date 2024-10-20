@@ -52,7 +52,7 @@ class TextLayoutImpl(
 
     override fun charWidth(): Map<Int, Int> = textWidth
     override fun align(): TextAlign = align
-    override fun pattern(): Function<HealthBarData, String> = pattern
+    override fun pattern(): Function<HealthBarData, Component> = pattern
 
     private class WidthKey(
         val key: Key,
@@ -124,7 +124,7 @@ class TextLayoutImpl(
 
         override fun render(groupCount: Int): PixelComponent {
             val key = if (keys.isNotEmpty()) keys[groupCount.coerceAtMost(keys.lastIndex)] else defaultWidth
-            val target = MINI_MESSAGE.deserialize(pattern.apply(pair))
+            val target = pattern.apply(pair)
             fun length(component: Component): Int {
                 return ((component as? TextComponent)?.let {
                     val s = it.style()

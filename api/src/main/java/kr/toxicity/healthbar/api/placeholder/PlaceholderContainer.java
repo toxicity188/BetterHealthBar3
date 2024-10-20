@@ -1,7 +1,9 @@
 package kr.toxicity.healthbar.api.placeholder;
 
-import kr.toxicity.healthbar.api.BetterHealthBar;
 import kr.toxicity.healthbar.api.healthbar.HealthBarData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -184,8 +186,8 @@ public class PlaceholderContainer<T> {
         } else return get.value(list);
     }
 
-    public static @NotNull Function<HealthBarData, String> toString(@NotNull String pattern) {
-        var array = new ArrayList<Function<HealthBarData, String>>();
+    public static @NotNull Function<HealthBarData, Component> toString(@NotNull String pattern) {
+        var array = new ArrayList<Function<HealthBarData, Component>>();
         var sb = new StringBuilder();
         var skip = false;
         for (char c : pattern.toCharArray()) {
@@ -208,20 +210,20 @@ public class PlaceholderContainer<T> {
             } else sb.append(c);
         }
         if (!sb.isEmpty()) {
-            var string = sb.toString();
+            var string = Component.text(sb.toString());
             array.add(p -> string);
             sb.setLength(0);
         }
         return p -> {
-            var sb2 = new StringBuilder();
+            var sb2 = Component.text();
             array.forEach(f -> sb2.append(f.apply(p)));
-            return sb2.toString();
+            return sb2.build();
         };
     }
 
-    private static @NotNull String legacyAdapt(@NotNull String string) {
+    private static @NotNull Component legacyAdapt(@NotNull String string) {
         var sb1 = new StringBuilder();
-        var sb2 = new StringBuilder();
+        var sb2 = Component.text();
         var skip = false;
         for (char c : string.toCharArray()) {
             if (!skip) switch (c) {
@@ -232,7 +234,7 @@ public class PlaceholderContainer<T> {
                 }
                 case '>' -> {
                     sb1.append(c);
-                    sb2.append(sb1);
+                    sb2.append(Component.text(sb1.toString()));
                     sb1.setLength(0);
                 }
                 case '\\' -> {
@@ -243,11 +245,16 @@ public class PlaceholderContainer<T> {
             } else sb1.append(c);
         }
         if (!sb1.isEmpty()) sb2.append(legacyAdapt0(sb1.toString()));
-        return sb2.toString();
+        return sb2.build();
     }
 
-    private static @NotNull String legacyAdapt0(@NotNull String s) {
-        return BetterHealthBar.inst().miniMessage().serialize(LegacyComponentSerializer.legacySection().deserialize(s));
+    private static final TextReplacementConfig TO_MINI_MESSAGE = TextReplacementConfig.builder()
+            .match(Pattern.compile(".+"))
+            .replacement((r, b) -> MiniMessage.miniMessage().deserialize(r.group()))
+            .build();
+
+    private static @NotNull Component legacyAdapt0(@NotNull String s) {
+        return LegacyComponentSerializer.legacySection().deserialize(s).replaceText(TO_MINI_MESSAGE);
     }
 
     private static @NotNull String subString(@NotNull String string) {

@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    kotlin("jvm") version("2.0.20")
+    kotlin("jvm") version("2.0.21")
     id("io.github.goooler.shadow") version("8.1.8")
     id("io.papermc.paperweight.userdev") version("1.7.3") apply(false)
     id("xyz.jpenilla.run-paper") version("2.3.1")
@@ -33,7 +33,7 @@ allprojects {
         maven("https://repo.alessiodp.com/releases/")
     }
     dependencies {
-        implementation("org.bstats:bstats-bukkit:3.0.3")
+        implementation("org.bstats:bstats-bukkit:3.1.0")
         testImplementation(kotlin("test"))
     }
     tasks {
@@ -84,7 +84,7 @@ fun getApiDependencyProject(name: String) = project(name).also {
 val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.7.2")
     .dependency("me.clip:placeholderapi:2.11.6")
-    .dependency("com.github.toxicity188:BetterHud:83ca746ccd")
+    .dependency("com.github.toxicity188:BetterHud:c3e147bbd3")
     .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
     .dependency("net.byteflux:libby-bukkit:1.3.0")
     .also {
@@ -134,10 +134,10 @@ dependencies {
     implementation(dist)
     implementation(getProject("scheduler:standard").spigot())
     implementation(getProject("scheduler:folia").folia())
-    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.2.0-SNAPSHOT"))
-    implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.2-SNAPSHOT"))
+    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.4.2-SNAPSHOT"))
+    implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.3-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
-    implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.6"))
+    implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.7"))
     nmsVersions.forEach {
         implementation(project(":nms:${it.name}", configuration = "reobf"))
     }
