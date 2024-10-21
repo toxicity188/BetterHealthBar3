@@ -19,7 +19,7 @@ fun HealthBarCreateEvent.createEntity(component: WidthComponent, layer: Int = 0)
     return PLUGIN.nms().createTextDisplay(player.player(), toEntityLocation(), component.component.build()).apply {
         val scale = healthBar.scale()
         transformation(
-            Vector(0.0, if (ConfigManagerImpl.useCoreShaders()) -(1 - scale.y) * 8192 / 40 else 0.0, (layer.toDouble()) / 4000),
+            Vector(0.0, if (ConfigManagerImpl.useCoreShaders()) -(1 - scale.y) * 8192 / 40 else 0.0, layer.toDouble() / 4000),
             scale
         )
     }

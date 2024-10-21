@@ -47,10 +47,10 @@ class ImageLayoutImpl(
             }
             val newHeight = (it.image.image.height.toDouble() * scale()).roundToInt()
             val div = newHeight.toDouble() / it.image.image.height.toDouble()
-            for (i in (0..<count)) {
-                val y = (y() + groupY() * i)
+            for (i in 0..<count) {
+                val y = y() + groupY() * i
                 list.add(componentMap.computeIfAbsent(BitmapData(dir, y, newHeight)) { _ ->
-                    val component = (parent.index++).parseChar()
+                    val component = parent.index++.parseChar()
                     jsonArray.add(JsonObject().apply {
                         addProperty("type", "bitmap")
                         addProperty("file", "$NAMESPACE:$dir")
@@ -100,7 +100,7 @@ class ImageLayoutImpl(
             val list = if (listen >= 0) {
                 components[(listen * components.lastIndex).roundToInt().coerceAtMost(components.lastIndex)]
             } else {
-                components[(next++) % components.size]
+                components[next++ % components.size]
             }
             return list[count.coerceAtMost(list.lastIndex)]
         }

@@ -74,7 +74,7 @@ class TextLayoutImpl(
         }
 
         val map = HashMap<BitmapData, WidthKey>()
-        for (i in (0..<count)) {
+        for (i in 0..<count) {
             val y = y() + groupY() * i
             val keyName = "${parent.name}/$name/${i + 1}"
             keys.add(map.computeIfAbsent(BitmapData(keyName, y, height)) {

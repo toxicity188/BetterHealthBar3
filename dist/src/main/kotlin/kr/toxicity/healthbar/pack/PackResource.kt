@@ -79,7 +79,7 @@ class PackResource {
                     add(JsonObject().apply {
                         addProperty("type", "space")
                         add("advances", JsonObject().apply {
-                            (-8192..8192).forEach { i ->
+                            for (i in -8192..8192) {
                                 addProperty((ADVENTURE_START_INT + i).parseChar(), i)
                             }
                         })
