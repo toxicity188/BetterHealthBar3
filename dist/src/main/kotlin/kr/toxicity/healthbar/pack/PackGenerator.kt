@@ -20,7 +20,7 @@ object PackGenerator {
         fun zip(resource: PackResource)
     }
 
-    private class FolderPack: Pack {
+    private class FolderPack : Pack {
         private val parent: File = ConfigManagerImpl.buildFolder()
         private val buildFolder = File(parent, "assets").apply {
             mkdirs()
@@ -88,7 +88,7 @@ object PackGenerator {
         }
     }
 
-    private class ZipPack: Pack {
+    private class ZipPack : Pack {
 
         private val file = ConfigManagerImpl.buildFolder().run {
             File(parentFile.also {

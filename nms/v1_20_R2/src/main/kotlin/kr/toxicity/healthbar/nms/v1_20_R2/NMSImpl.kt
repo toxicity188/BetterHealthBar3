@@ -56,7 +56,7 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 @Suppress("UNUSED")
-class NMSImpl: NMS {
+class NMSImpl : NMS {
     private val plugin
         get() = BetterHealthBar.inst()
 
@@ -294,7 +294,7 @@ class NMSImpl: NMS {
         injectionMap.remove(player.player().uniqueId)?.uninject()
     }
 
-    private inner class PlayerInjection(val player: HealthBarPlayer): ChannelDuplexHandler() {
+    private inner class PlayerInjection(val player: HealthBarPlayer) : ChannelDuplexHandler() {
         private val serverPlayer = (player.player() as CraftPlayer).handle
         private val connection = serverPlayer.connection
         private val world = player.player().world
@@ -323,26 +323,30 @@ class NMSImpl: NMS {
                 val set = HashSet(plugin.healthBarManager().allHealthBars().filter {
                     it.isDefault && it.triggers().contains(trigger)
                 })
-                fun add() {
+                fun add(sync: Boolean = false) {
                     val bukkit = e.bukkitEntity
                     if (bukkit is CraftLivingEntity && bukkit.isValid) {
                         val adapt = plugin.mobManager().entity(if (bukkit is Player) foliaAdapt(bukkit) else foliaAdapt(bukkit))
                         val types = adapt.mob()?.configuration()?.types()
                         val packet = PacketTrigger(trigger, handle)
-                        set.filter {
-                            (adapt.mob()?.configuration()?.ignoreDefault() != true && it.isDefault) || (types != null && it.applicableTypes().any { t ->
-                                types.contains(t)
-                            })
-                        }.forEach {
-                            player.showHealthBar(it, packet, adapt)
+                        val run = Runnable {
+                            set.filter {
+                                (adapt.mob()?.configuration()?.ignoreDefault() != true && it.isDefault) || (types != null && it.applicableTypes().any { t ->
+                                    types.contains(t)
+                                })
+                            }.forEach {
+                                player.showHealthBar(it, packet, adapt)
+                            }
+                            adapt.mob()?.configuration()?.healthBars()?.forEach {
+                                player.showHealthBar(it, packet, adapt)
+                            }
                         }
-                        adapt.mob()?.configuration()?.healthBars()?.forEach {
-                            player.showHealthBar(it, packet, adapt)
-                        }
+                        if (sync) plugin.scheduler().asyncTask(run)
+                        else run.run()
                     }
                 }
                 if (plugin.isFolia) plugin.scheduler().task(world, e.x.toInt() shr 4, e.z.toInt() shr 4) {
-                    add()
+                    add(true)
                 } else add()
             }
         }

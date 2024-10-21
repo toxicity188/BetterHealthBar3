@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.layout;
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarData;
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent;
 import kr.toxicity.healthbar.api.renderer.TextRenderer;
 import kr.toxicity.healthbar.api.text.TextAlign;
 import net.kyori.adventure.text.Component;
@@ -19,8 +19,8 @@ public interface TextLayout extends Layout {
     TextAlign align();
 
     @NotNull
-    Function<HealthBarData, Component> pattern();
+    Function<HealthBarCreateEvent, Component> pattern();
 
     @NotNull
-    TextRenderer createRenderer(@NotNull HealthBarData pair);
+    TextRenderer createRenderer(@NotNull HealthBarCreateEvent pair);
 }

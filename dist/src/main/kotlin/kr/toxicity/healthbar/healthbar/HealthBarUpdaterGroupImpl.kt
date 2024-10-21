@@ -1,7 +1,7 @@
 package kr.toxicity.healthbar.healthbar
 
 import kr.toxicity.healthbar.api.entity.HealthBarEntity
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdater
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
@@ -18,7 +18,7 @@ class HealthBarUpdaterGroupImpl(
 
     override fun updaters(): Collection<HealthBarUpdater> = updaters.values
 
-    override fun addHealthBar(data: HealthBarData) {
+    override fun addHealthBar(data: HealthBarCreateEvent) {
         updaters.computeIfAbsent(data.healthBar.uuid()) {
             HealthBarUpdaterImpl(this, data.healthBar.createRenderer(data))
         }.updateTick()

@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-object PlayerManagerImpl: PlayerManager, BetterHealthBerManager {
+object PlayerManagerImpl : PlayerManager, BetterHealthBerManager {
     private val playerMap = ConcurrentHashMap<UUID, HealthBarPlayer>()
 
     override fun preReload() {

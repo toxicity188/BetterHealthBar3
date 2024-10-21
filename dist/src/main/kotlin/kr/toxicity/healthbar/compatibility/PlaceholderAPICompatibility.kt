@@ -5,7 +5,7 @@ import kr.toxicity.healthbar.util.placeholder
 import me.clip.placeholderapi.PlaceholderAPI
 import java.util.function.Function
 
-class PlaceholderAPICompatibility: Compatibility {
+class PlaceholderAPICompatibility : Compatibility {
     override fun accept() {
         PlaceholderContainer.STRING.addPlaceholder("papi", placeholder(1) {
             val papi = if (it[0].startsWith('%')) it[0] else "%${it[0]}%"

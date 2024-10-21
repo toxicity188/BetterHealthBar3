@@ -3,6 +3,7 @@ package kr.toxicity.healthbar.manager
 import kr.toxicity.healthbar.compatibility.MythicMobsCompatibility
 import kr.toxicity.healthbar.compatibility.PlaceholderAPICompatibility
 import kr.toxicity.healthbar.compatibility.CitizensCompatibility
+import kr.toxicity.healthbar.compatibility.SkriptCompatibility
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.hud.api.BetterHudAPI
@@ -13,7 +14,7 @@ import org.bukkit.event.Listener
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-object CompatibilityManager: BetterHealthBerManager {
+object CompatibilityManager : BetterHealthBerManager {
 
     private val compMap = mapOf(
         "MythicMobs" to {
@@ -24,6 +25,9 @@ object CompatibilityManager: BetterHealthBerManager {
         },
         "Citizens" to {
             CitizensCompatibility()
+        },
+        "Skript" to {
+            SkriptCompatibility()
         }
     )
 

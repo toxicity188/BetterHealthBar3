@@ -6,6 +6,7 @@ author: toxicity
 description: Make mob has greater health bar!
 load: POSTWORLD
 folia-supported: true
+website: "https://www.spigotmc.org/resources/116619/"
 libraries:
   - "net.kyori:adventure-api:${adventure}"
   - "net.kyori:adventure-text-minimessage:${adventure}"
@@ -16,6 +17,10 @@ softdepend:
   - MythicMobs
   - PlaceholderAPI
   - Citizens
+  - Skript
+  - SkBee
+  - skript-placeholders
+  - skript-reflect
 commands:
   healthbar:
     aliases: hb

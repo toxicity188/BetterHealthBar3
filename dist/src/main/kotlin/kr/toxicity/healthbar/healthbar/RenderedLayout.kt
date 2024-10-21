@@ -1,7 +1,7 @@
 package kr.toxicity.healthbar.healthbar
 
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.ImageRenderer
@@ -9,7 +9,7 @@ import kr.toxicity.healthbar.api.renderer.PixelRenderer
 import kr.toxicity.healthbar.util.*
 import org.bukkit.Location
 
-class RenderedLayout(group: LayoutGroup, pair: HealthBarData) {
+class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
     val group = group.group()
     val images = group.images().map {
         it.createImageRenderer(pair)
@@ -18,10 +18,10 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarData) {
         it.createRenderer(pair)
     }.toMutableList()
 
-    fun createPool(data: HealthBarData, indexes: Map<String, GroupIndex>) = RenderedEntityPool(data, indexes)
+    fun createPool(data: HealthBarCreateEvent, indexes: Map<String, GroupIndex>) = RenderedEntityPool(data, indexes)
 
     inner class RenderedEntityPool(
-        private val data: HealthBarData,
+        private val data: HealthBarCreateEvent,
         private val indexes: Map<String, GroupIndex>
     ) {
         private val imagesEntity = images.map {

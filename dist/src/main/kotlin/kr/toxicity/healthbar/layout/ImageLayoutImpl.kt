@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.image.HealthBarImage
 import kr.toxicity.healthbar.api.layout.ImageLayout
 import kr.toxicity.healthbar.api.listener.HealthBarListener
@@ -71,12 +71,12 @@ class ImageLayoutImpl(
         }
     }
 
-    override fun createImageRenderer(pair: HealthBarData): ImageRenderer {
+    override fun createImageRenderer(pair: HealthBarCreateEvent): ImageRenderer {
         return Renderer(pair)
     }
 
     private inner class Renderer(
-        private val pair: HealthBarData
+        private val pair: HealthBarCreateEvent
     ): ImageRenderer {
         private var next = 0
         private var d = 0

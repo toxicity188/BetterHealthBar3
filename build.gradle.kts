@@ -1,10 +1,10 @@
 plugins {
     `java-library`
-    kotlin("jvm") version("2.0.21")
-    id("io.github.goooler.shadow") version("8.1.8")
-    id("io.papermc.paperweight.userdev") version("1.7.3") apply(false)
-    id("xyz.jpenilla.run-paper") version("2.3.1")
-    id("org.jetbrains.dokka") version("1.9.20")
+    kotlin("jvm") version "2.0.21"
+    id("io.github.goooler.shadow") version "8.1.8"
+    id("io.papermc.paperweight.userdev") version "1.7.3" apply false
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 
@@ -27,6 +27,7 @@ allprojects {
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven-public/")
         maven("https://jitpack.io/")
+        maven("https://repo.skriptlang.org/releases")
         maven("https://repo.alessiodp.com/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://maven.citizensnpcs.co/repo/")
@@ -34,6 +35,7 @@ allprojects {
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")
+        implementation("net.jodah:expiringmap:0.5.11")
         testImplementation(kotlin("test"))
     }
     tasks {
@@ -87,6 +89,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.github.toxicity188:BetterHud:c3e147bbd3")
     .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
     .dependency("net.byteflux:libby-bukkit:1.3.0")
+    .dependency("com.github.SkriptLang:Skript:2.9.3")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -171,8 +174,9 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            url("https://github.com/toxicity188/BetterHud/releases/download/1.5/BetterHud-1.5.jar")
-            url("https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/PlaceholderAPI-2.11.7-DEV-200.jar")
+            modrinth("betterhud2", "1.6.253")
+            hangar("PlaceholderAPI", "2.11.6")
+            hangar("Skript", "2.9.3")
         }
     }
     shadowJar {
@@ -188,6 +192,7 @@ tasks {
         }
         prefix("kotlin")
         prefix("org.bstats")
+        prefix("net.jodah.expiringmap")
         dependencies {
             exclude(dependency("org.jetbrains:annotations:13.0"))
         }

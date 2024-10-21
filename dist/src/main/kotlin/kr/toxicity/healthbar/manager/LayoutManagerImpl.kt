@@ -12,7 +12,7 @@ import java.util.Collections
 import java.util.HashSet
 import java.util.concurrent.ConcurrentHashMap
 
-object LayoutManagerImpl: LayoutManager, BetterHealthBerManager {
+object LayoutManagerImpl : LayoutManager, BetterHealthBerManager {
 
     private val layoutMap = ConcurrentHashMap<String, LayoutGroupImpl>()
     private val groupData = ConcurrentHashMap<String, MutableSet<LayoutGroupImpl>>()

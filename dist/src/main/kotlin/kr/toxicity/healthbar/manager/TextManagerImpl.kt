@@ -20,7 +20,7 @@ import java.util.TreeSet
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
-object TextManagerImpl: TextManager, BetterHealthBerManager {
+object TextManagerImpl : TextManager, BetterHealthBerManager {
 
     private val frc = FontRenderContext(null, true, true)
     private const val SPLIT_SIZE = 16

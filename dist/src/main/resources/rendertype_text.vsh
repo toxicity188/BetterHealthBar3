@@ -51,7 +51,6 @@ void main() {
         float x = abs(pos.x) + abs(ModelViewMat[3].x);
         float y = abs(pos.y) + abs(ModelViewMat[3].y);
         float z = abs(pos.z) + abs(ModelViewMat[3].z);
-
         float length1 = -cos(pitch) * y;
         float length2 = sin(pitch) * sqrt(pow(x, 2.0) + pow(z, 2.0));
         if (abs(length1 - length2) >= DISPLAY_HEIGHT / 2 || abs(length1 + length2) >= DISPLAY_HEIGHT / 2) {
@@ -59,14 +58,11 @@ void main() {
             if (alpha < 1) {
                 applyColor = 1;
                 float pitchAdd = cos(pitch - 3.1415 / 2) * DISPLAY_HEIGHT;
-
                 float xAlpha = cos(pitch) * alpha;
                 vec3 alphaVector = vec3(xAlpha * sin(yaw), -sin(pitch) * alpha, -xAlpha * cos(yaw));
-
                 pos.y += cos(pitch) * DISPLAY_HEIGHT;
                 pos.x += sin(yaw) * pitchAdd;
                 pos.z -= cos(yaw) * pitchAdd;
-
                 pos += alphaVector / 100;
             }
         }

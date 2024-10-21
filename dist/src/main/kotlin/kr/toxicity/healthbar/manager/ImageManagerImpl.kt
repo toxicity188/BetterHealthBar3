@@ -11,7 +11,7 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Pattern
 
-object ImageManagerImpl: ImageManager, BetterHealthBerManager {
+object ImageManagerImpl : ImageManager, BetterHealthBerManager {
 
     private val imageMap = ConcurrentHashMap<String, HealthBarImageImpl>()
     private val framePattern = Pattern.compile("(?<name>(([a-zA-Z]|_|[0-9])+)):(?<frame>([0-9]+))")

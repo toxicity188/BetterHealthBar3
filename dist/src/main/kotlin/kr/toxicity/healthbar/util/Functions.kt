@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.util
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.placeholder.PlaceholderBuilder
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import java.util.function.Function
@@ -19,6 +19,6 @@ fun Throwable.handleException(log: String): Array<String> {
     )
 }
 
-inline fun <reified T> placeholder(length: Int, function: Function<List<String>, Function<HealthBarData, T>>): PlaceholderBuilder<T> {
+inline fun <reified T> placeholder(length: Int, function: Function<List<String>, Function<HealthBarCreateEvent, T>>): PlaceholderBuilder<T> {
     return PlaceholderBuilder.of(length, T::class.java, function)
 }

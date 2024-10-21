@@ -9,7 +9,7 @@ import org.bukkit.configuration.ConfigurationSection
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Function
 
-object ListenerManagerImpl: ListenerManager, BetterHealthBerManager {
+object ListenerManagerImpl : ListenerManager, BetterHealthBerManager {
 
     private val listenerMap = ConcurrentHashMap<String, (ConfigurationSection) -> HealthBarListener>().apply {
         put("health") {

@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.layout.TextLayout
 import kr.toxicity.healthbar.api.placeholder.PlaceholderContainer
 import kr.toxicity.healthbar.api.renderer.TextRenderer
@@ -52,7 +52,7 @@ class TextLayoutImpl(
 
     override fun charWidth(): Map<Int, Int> = textWidth
     override fun align(): TextAlign = align
-    override fun pattern(): Function<HealthBarData, Component> = pattern
+    override fun pattern(): Function<HealthBarCreateEvent, Component> = pattern
 
     private class WidthKey(
         val key: Key,
@@ -104,12 +104,12 @@ class TextLayoutImpl(
         }
     }
 
-    override fun createRenderer(pair: HealthBarData): TextRenderer {
+    override fun createRenderer(pair: HealthBarCreateEvent): TextRenderer {
         return Renderer(pair)
     }
 
     private inner class Renderer(
-        private val pair: HealthBarData
+        private val pair: HealthBarCreateEvent
     ): TextRenderer {
         private var d = 0
         override fun hasNext(): Boolean {

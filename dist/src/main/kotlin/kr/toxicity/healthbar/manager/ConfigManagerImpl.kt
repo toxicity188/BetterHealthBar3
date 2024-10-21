@@ -13,7 +13,7 @@ import java.io.File
 import java.util.Collections
 import java.util.EnumSet
 
-object ConfigManagerImpl: ConfigManager, BetterHealthBerManager {
+object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
 
     private var debug = true
     private var metrics = true

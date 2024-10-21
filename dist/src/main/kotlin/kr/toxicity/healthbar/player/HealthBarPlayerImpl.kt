@@ -2,7 +2,7 @@ package kr.toxicity.healthbar.player
 
 import kr.toxicity.healthbar.api.entity.HealthBarEntity
 import kr.toxicity.healthbar.api.healthbar.HealthBar
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.healthbar.HealthBarUpdaterGroup
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.trigger.HealthBarTrigger
@@ -10,6 +10,7 @@ import kr.toxicity.healthbar.healthbar.HealthBarUpdaterGroupImpl
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.healthbar.util.asyncTaskTimer
+import kr.toxicity.healthbar.util.call
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -57,12 +58,13 @@ class HealthBarPlayerImpl(
         entity.mob()?.let {
             if (it.configuration().blacklist()) return
         }
-        val data = HealthBarData(
+        val data = HealthBarCreateEvent(
             healthBar,
             trigger,
             this,
             entity
         )
+        if (!data.call()) return
         if (!healthBar.condition().apply(data)) return
         synchronized(updaterMap) {
             updaterMap.computeIfAbsent(entity.entity().uniqueId) {

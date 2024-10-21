@@ -5,7 +5,7 @@ import kr.toxicity.healthbar.util.placeholder
 import net.citizensnpcs.api.CitizensAPI
 import java.util.function.Function
 
-class CitizensCompatibility: Compatibility {
+class CitizensCompatibility : Compatibility {
     override fun accept() {
         PlaceholderContainer.BOOL.addPlaceholder("citizens_npc", placeholder(0) {
             Function {

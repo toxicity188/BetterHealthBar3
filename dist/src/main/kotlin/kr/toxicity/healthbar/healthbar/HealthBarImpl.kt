@@ -4,7 +4,7 @@ import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.condition.HealthBarCondition
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.healthbar.HealthBar
-import kr.toxicity.healthbar.api.healthbar.HealthBarData
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
@@ -58,7 +58,7 @@ class HealthBarImpl(
 
     override fun duration(): Int = duration
 
-    override fun createRenderer(pair: HealthBarData): HealthBarRenderer {
+    override fun createRenderer(pair: HealthBarCreateEvent): HealthBarRenderer {
         return if (ConfigManagerImpl.useCoreShaders()) SingleRenderer(pair) else MultiRenderer(pair)
     }
 
@@ -75,7 +75,7 @@ class HealthBarImpl(
         return s.hashCode()
     }
 
-    private abstract inner class AbstractRenderer(protected val pair: HealthBarData): HealthBarRenderer {
+    private abstract inner class AbstractRenderer(protected val pair: HealthBarCreateEvent): HealthBarRenderer {
         protected val indexes = groups.mapNotNull {
             it.group()
         }.associateWith {
@@ -101,7 +101,7 @@ class HealthBarImpl(
         }
     }
     private inner class MultiRenderer(
-        pair: HealthBarData
+        pair: HealthBarCreateEvent
     ): AbstractRenderer(pair) {
 
         private val displays = render.map {
@@ -146,7 +146,7 @@ class HealthBarImpl(
         }
     }
     private inner class SingleRenderer(
-        pair: HealthBarData
+        pair: HealthBarCreateEvent
     ): AbstractRenderer(pair) {
 
         private val display = pair.createEntity(render())

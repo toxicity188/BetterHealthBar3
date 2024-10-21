@@ -41,7 +41,7 @@ import java.util.function.BiConsumer
 import java.util.jar.JarFile
 
 @Suppress("UNUSED")
-class BetterHealthBarImpl: BetterHealthBar() {
+class BetterHealthBarImpl : BetterHealthBar() {
 
     private val isFolia = runCatching {
         Class.forName("io.papermc.paper.threadedregions.scheduler.FoliaAsyncScheduler")
@@ -76,13 +76,6 @@ class BetterHealthBarImpl: BetterHealthBar() {
     override fun onEnable() {
         val log = ArrayList<String>()
         val manager = Bukkit.getPluginManager()
-        manager.getPlugin("ModelEngine")?.let {
-            runWithHandleException("Failed to load ModelEngine support.") {
-                val version = ModelEngineVersion(it.description.version)
-                modelEngine = if (version >= ModelEngineVersion.version_4_0_0) CurrentModelEngineAdapter() else LegacyModelEngineAdapter()
-                log.add("ModelEngine support enabled. $version")
-            }
-        }
         nms = when (MinecraftVersion.current) {
             MinecraftVersion.version1_21, MinecraftVersion.version1_21_1 -> kr.toxicity.healthbar.nms.v1_21_R1.NMSImpl()
             MinecraftVersion.version1_20_5, MinecraftVersion.version1_20_6 -> kr.toxicity.healthbar.nms.v1_20_R4.NMSImpl()
@@ -97,6 +90,13 @@ class BetterHealthBarImpl: BetterHealthBar() {
                 )
                 manager.disablePlugin(this)
                 return
+            }
+        }
+        manager.getPlugin("ModelEngine")?.let {
+            runWithHandleException("Failed to load ModelEngine support.") {
+                val version = ModelEngineVersion(it.description.version)
+                modelEngine = if (version >= ModelEngineVersion.version_4_0_0) CurrentModelEngineAdapter() else LegacyModelEngineAdapter()
+                log.add("ModelEngine support enabled: $version")
             }
         }
         if (manager.isPluginEnabled("Geyser-Spigot")) {

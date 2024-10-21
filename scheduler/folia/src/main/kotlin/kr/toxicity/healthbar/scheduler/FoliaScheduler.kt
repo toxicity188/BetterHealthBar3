@@ -8,13 +8,19 @@ import org.bukkit.Bukkit
 import org.bukkit.World
 import java.util.concurrent.TimeUnit
 
-class FoliaScheduler: WrappedScheduler {
+class FoliaScheduler : WrappedScheduler {
 
     private val plugin
         get() = BetterHealthBar.inst()
 
     override fun task(runnable: Runnable): WrappedTask {
         return Bukkit.getGlobalRegionScheduler().run(plugin) {
+            runnable.run()
+        }.wrap()
+    }
+
+    override fun asyncTask(runnable: Runnable): WrappedTask {
+        return Bukkit.getAsyncScheduler().runNow(plugin) {
             runnable.run()
         }.wrap()
     }

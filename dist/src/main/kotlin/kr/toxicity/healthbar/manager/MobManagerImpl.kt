@@ -15,7 +15,7 @@ import kr.toxicity.healthbar.util.subFolder
 import org.bukkit.entity.LivingEntity
 import java.util.concurrent.ConcurrentHashMap
 
-object MobManagerImpl: BetterHealthBerManager, MobManager {
+object MobManagerImpl : BetterHealthBerManager, MobManager {
     private val mobProviders = ArrayList<MobProvider>()
 
     private val mobConfigurationMap = ConcurrentHashMap<String, MobConfiguration>()

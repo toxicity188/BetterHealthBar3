@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.placeholder;
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarData;
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -68,7 +68,7 @@ public class PlaceholderContainer<T> {
 
     private final Map<String, PlaceholderBuilder<T>> map = new HashMap<>();
     
-    public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarData, T> function) {
+    public void addPlaceholder(@NotNull String name, @NotNull Function<HealthBarCreateEvent, T> function) {
         map.put(name, new PlaceholderBuilder<>() {
             @Override
             public int requiredArgsCount() {
@@ -76,11 +76,11 @@ public class PlaceholderContainer<T> {
             }
 
             @Override
-            public HealthBarPlaceholder<T> build(@NotNull List<String> strings) {
+            public @NotNull HealthBarPlaceholder<T> build(@NotNull List<String> strings) {
                 return new HealthBarPlaceholder<>() {
                     @NotNull
                     @Override
-                    public T value(@NotNull HealthBarData player) {
+                    public T value(@NotNull HealthBarCreateEvent player) {
                         return function.apply(player);
                     }
 
@@ -129,7 +129,7 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public String value(@NotNull HealthBarData player) {
+                public String value(@NotNull HealthBarCreateEvent player) {
                     return stringMapper.apply(apply.value(player));
                 }
             };
@@ -147,7 +147,7 @@ public class PlaceholderContainer<T> {
 
             @NotNull
             @Override
-            public Object value(@NotNull HealthBarData player) {
+            public Object value(@NotNull HealthBarCreateEvent player) {
                 return v;
             }
         };
@@ -179,15 +179,15 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public Object value(@NotNull HealthBarData player) {
+                public Object value(@NotNull HealthBarCreateEvent player) {
                     return cast.parser.apply(string.value(player));
                 }
             };
         } else return get.value(list);
     }
 
-    public static @NotNull Function<HealthBarData, Component> toString(@NotNull String pattern) {
-        var array = new ArrayList<Function<HealthBarData, Component>>();
+    public static @NotNull Function<HealthBarCreateEvent, Component> toString(@NotNull String pattern) {
+        var array = new ArrayList<Function<HealthBarCreateEvent, Component>>();
         var sb = new StringBuilder();
         var skip = false;
         for (char c : pattern.toCharArray()) {

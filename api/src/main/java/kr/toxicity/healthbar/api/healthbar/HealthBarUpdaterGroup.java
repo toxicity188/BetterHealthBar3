@@ -1,6 +1,7 @@
 package kr.toxicity.healthbar.api.healthbar;
 
 import kr.toxicity.healthbar.api.entity.HealthBarEntity;
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent;
 import kr.toxicity.healthbar.api.player.HealthBarPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,5 +26,5 @@ public interface HealthBarUpdaterGroup {
         updaters.clear();
     }
 
-    void addHealthBar(@NotNull HealthBarData data);
+    void addHealthBar(@NotNull HealthBarCreateEvent data);
 }

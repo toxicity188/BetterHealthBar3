@@ -12,7 +12,7 @@ import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-object HealthBarManagerImpl: HealthBarManager, BetterHealthBerManager {
+object HealthBarManagerImpl : HealthBarManager, BetterHealthBerManager {
 
     private val healthBarMap = ConcurrentHashMap<String, HealthBarImpl>()
     private val uuidSet = Collections.synchronizedSet(HashSet<UUID>())

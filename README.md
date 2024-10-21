@@ -2,6 +2,8 @@
   
 ![healthbar](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/8af7d97c-3277-42f7-bccd-d5e124dfa5df)  
 
+**NOTICE: If you want to use BetterHealthBar with shaderspack, set use-core-shaders to false in config.yml**  
+
 Welcome to BetterHealthBar!
 
 [![GitHub Release](https://img.shields.io/github/v/release/toxicity188/BetterHealthBar3?display_name=release&style=for-the-badge&logo=kotlin)](https://github.com/toxicity188/BetterHealthBar3/releases/latest)
@@ -22,9 +24,9 @@ This plugin implements beautiful health bar!
 ![ezgif-4-6688863fff](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/8484a92e-d0c2-4fd5-a766-5c5cb9fe697c)  
 This plugin supports sight-trace system.
 
-### Custom core shader
+### Custom core shaders
 ![2024_05_03_10_05_19_637-min](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/7a0efa03-a6e7-42fd-b38e-a92d69503ad3)  
-This plugin has it's own core shader, fixes z-fighting issue!
+This plugin has it's own core shaders, fixes z-fighting issue!
 
 ### Stack system
 ![녹화_2024_05_05_10_11_17_395-min](https://github.com/toxicity188/BetterHealthBar3/assets/114675706/d0903a79-e55d-4634-babb-063af2ef0c7c)  

@@ -1,6 +1,6 @@
 package kr.toxicity.healthbar.api.layout;
 
-import kr.toxicity.healthbar.api.healthbar.HealthBarData;
+import kr.toxicity.healthbar.api.event.HealthBarCreateEvent;
 import kr.toxicity.healthbar.api.image.HealthBarImage;
 import kr.toxicity.healthbar.api.listener.HealthBarListener;
 import kr.toxicity.healthbar.api.renderer.ImageRenderer;
@@ -14,5 +14,5 @@ public interface ImageLayout extends Layout {
     int duration();
 
     @NotNull
-    ImageRenderer createImageRenderer(@NotNull HealthBarData entity);
+    ImageRenderer createImageRenderer(@NotNull HealthBarCreateEvent entity);
 }

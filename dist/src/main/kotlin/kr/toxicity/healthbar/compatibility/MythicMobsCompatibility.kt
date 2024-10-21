@@ -8,7 +8,7 @@ import kr.toxicity.healthbar.manager.MobManagerImpl
 import kr.toxicity.healthbar.util.placeholder
 import java.util.function.Function
 
-class MythicMobsCompatibility: Compatibility {
+class MythicMobsCompatibility : Compatibility {
     override fun accept() {
         MobManagerImpl.addProvider(MythicMobsMobProvider())
 
