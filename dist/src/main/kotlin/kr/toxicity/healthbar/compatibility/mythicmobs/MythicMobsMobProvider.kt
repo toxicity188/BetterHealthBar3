@@ -1,4 +1,4 @@
-package kr.toxicity.healthbar.compatibility.mob
+package kr.toxicity.healthbar.compatibility.mythicmobs
 
 import io.lumine.mythic.bukkit.MythicBukkit
 import kr.toxicity.healthbar.api.mob.HealthBarMob

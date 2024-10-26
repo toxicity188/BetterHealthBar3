@@ -26,13 +26,12 @@ public class PlaceholderContainer<T> {
         this.parser = parser;
         this.stringMapper = stringMapper;
 
-
         CLASS_MAP.put(clazz, this);
         STRING_MAP.put(name, this);
     }
 
-    public static final PlaceholderContainer<Double> NUMBER = new PlaceholderContainer<>(
-            Double.class,
+    public static final PlaceholderContainer<Number> NUMBER = new PlaceholderContainer<>(
+            Number.class,
             "number",
             d -> {
                 try {
@@ -135,22 +134,26 @@ public class PlaceholderContainer<T> {
             };
         }
     }
-    public static HealthBarPlaceholder<?> primitive(@NotNull String value) {
-        var v = CLASS_MAP.values().stream().map(c -> c.parser.apply(value)).filter(Objects::nonNull).findFirst().orElseThrow(() -> new RuntimeException("Unable to parse this value: " + value));
-        return new HealthBarPlaceholder<>() {
-            @NotNull
-            @Override
-            @SuppressWarnings("unchecked")
-            public Class<Object> type() {
-                return (Class<Object>) v.getClass();
-            }
 
-            @NotNull
-            @Override
-            public Object value(@NotNull HealthBarCreateEvent player) {
-                return v;
-            }
-        };
+    private record PrimitivePlaceholder(@NotNull Class<Object> refer, Object value) implements HealthBarPlaceholder<Object> {
+
+        @Override
+        public @NotNull Class<Object> type() {
+            return refer;
+        }
+
+        @Override
+        public @NotNull Object value(@NotNull HealthBarCreateEvent player) {
+            return value;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static HealthBarPlaceholder<?> primitive(@NotNull String value) {
+        return CLASS_MAP.values().stream().map(c -> {
+            var applied = c.parser.apply(value);
+            return applied != null ? new PrimitivePlaceholder((Class<Object>) c.clazz, applied) : null;
+        }).filter(Objects::nonNull).findFirst().orElseThrow(() -> new RuntimeException("Unable to parse this value: " + value));
     }
 
     public static HealthBarPlaceholder<?> parse(@NotNull String pattern) {

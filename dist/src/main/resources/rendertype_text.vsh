@@ -35,7 +35,7 @@ void main() {
 
     applyColor = 0;
 
-    //start
+    //GenerateOtherMainMethod
     if (ProjMat[3].x != -1) {
         vec4 texColor = texture(Sampler0, UV0);
         mat4 invModelViewMat = inverse(ModelViewMat);
@@ -67,7 +67,7 @@ void main() {
             }
         }
     }
-    //end
+    //GenerateOtherMainMethod
 
     vertexDistance = betterhealthbar_fog_distance(pos, FogShape);
     vertexColor = Color * texelFetch(Sampler2, UV2 / 16, 0);

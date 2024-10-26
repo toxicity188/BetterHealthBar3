@@ -1,16 +1,11 @@
 package kr.toxicity.healthbar.manager
 
-import kr.toxicity.healthbar.compatibility.MythicMobsCompatibility
-import kr.toxicity.healthbar.compatibility.PlaceholderAPICompatibility
-import kr.toxicity.healthbar.compatibility.CitizensCompatibility
-import kr.toxicity.healthbar.compatibility.SkriptCompatibility
+import kr.toxicity.healthbar.compatibility.*
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.hud.api.BetterHudAPI
-import kr.toxicity.hud.api.bukkit.event.CreateShaderEvent
+import kr.toxicity.hud.api.manager.ShaderManager
 import org.bukkit.Bukkit
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
@@ -28,35 +23,48 @@ object CompatibilityManager : BetterHealthBerManager {
         },
         "Skript" to {
             SkriptCompatibility()
+        },
+        "LevelledMobs" to {
+            LevelledMobsCompatibility()
         }
     )
+
+    private fun List<String>.range(key: String): List<String> {
+        val list = ArrayList<String>()
+        var add = false
+        forEach {
+            if (it.trim() == key) {
+                if (!add) add = true
+                else return list
+            } else if (add) {
+                list.add(it)
+            }
+        }
+        return list
+    }
+    private fun loadShaderLine(name: String) = PLUGIN.getResource(name)?.let {
+        InputStreamReader(it, StandardCharsets.UTF_8).buffered().use { reader ->
+            reader.readLines()
+        }
+    } ?: emptyList()
 
     override fun start() {
         Bukkit.getPluginManager().run {
             if (isPluginEnabled("BetterHud")) {
-                BetterHudAPI.inst().shaderManager.addConstant("DISPLAY_HEIGHT", "8192.0 / 40.0")
-                registerEvents(object : Listener {
-                    @EventHandler
-                    fun shader(e: CreateShaderEvent) {
-                        if (!ConfigManagerImpl.useCoreShaders()) return
-                        PLUGIN.getResource("rendertype_text.vsh")?.let {
-                            InputStreamReader(it, StandardCharsets.UTF_8).buffered().use { reader ->
-                                var started = false
-                                for (s in reader.readLines()) {
-                                    if (s.endsWith("//start")) {
-                                        started = true
-                                        continue
-                                    }
-                                    if (!started) continue
-                                    if (s.endsWith("//end")) {
-                                        break
-                                    }
-                                    e.lines.add(s)
-                                }
-                            }
-                        }
+                BetterHudAPI.inst().shaderManager.run {
+                    addConstant("DISPLAY_HEIGHT", "8192.0 / 40.0")
+                    addTagSupplier(ShaderManager.ShaderType.TEXT_VERTEX) {
+                        val vsh = loadShaderLine("rendertype_text.vsh")
+                        ShaderManager.newTag()
+                            .add("GenerateOtherMainMethod", vsh.range("//GenerateOtherMainMethod"))
                     }
-                }, PLUGIN)
+                    addTagSupplier(ShaderManager.ShaderType.TEXT_FRAGMENT) {
+                        val fsh = loadShaderLine("rendertype_text.fsh")
+                        ShaderManager.newTag()
+                            .add("GenerateOtherMainMethod", fsh.range("//GenerateOtherMainMethod"))
+                            .add("GenerateOtherDefinedMethod", fsh.range("//GenerateOtherDefinedMethod"))
+                    }
+                }
             }
             compMap.forEach {
                 if (isPluginEnabled(it.key)) it.value().accept()

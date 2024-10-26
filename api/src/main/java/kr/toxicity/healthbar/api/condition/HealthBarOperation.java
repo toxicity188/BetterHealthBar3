@@ -9,13 +9,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public interface HealthBarOperation<T> {
-    HealthBarOperationCondition<Double> NUMBER = new HealthBarOperationCondition<>(Double.class)
-            .add("==", Double::equals)
-            .add("!=", (a, b) -> !a.equals(b))
-            .add(">=", (a, b) -> a >= b)
-            .add("<=", (a, b) -> a <= b)
-            .add(">", (a, b) -> a > b)
-            .add("<", (a, b) -> a < b)
+    HealthBarOperationCondition<Number> NUMBER = new HealthBarOperationCondition<>(Number.class)
+            .add("==", (a, b) -> a.doubleValue() == b.doubleValue())
+            .add("!=", (a, b) -> a.doubleValue() != b.doubleValue())
+            .add(">=", (a, b) -> a.doubleValue() >= b.doubleValue())
+            .add("<=", (a, b) -> a.doubleValue() <= b.doubleValue())
+            .add(">", (a, b) -> a.doubleValue() > b.doubleValue())
+            .add("<", (a, b) -> a.doubleValue() < b.doubleValue())
             ;
     HealthBarOperationCondition<Boolean> BOOL = new HealthBarOperationCondition<>(Boolean.class)
             .add("==", (a, b) -> a == b)

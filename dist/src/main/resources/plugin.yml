@@ -21,6 +21,7 @@ softdepend:
   - SkBee
   - skript-placeholders
   - skript-reflect
+  - LevelledMobs
 commands:
   healthbar:
     aliases: hb

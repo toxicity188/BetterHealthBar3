@@ -2,13 +2,13 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.0.21"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "1.7.3" apply false
+    id("io.papermc.paperweight.userdev") version "1.7.4" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20"
 }
 
 
-val minecraft = "1.21.1"
+val minecraft = "1.21.3"
 val folia = "1.20.6" // TODO Bumps version.
 val adventure = "4.17.0"
 val platform = "4.3.4"
@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.3"
+    version = "3.5"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -85,8 +85,9 @@ fun getApiDependencyProject(name: String) = project(name).also {
 
 val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.7.2")
+    .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
-    .dependency("com.github.toxicity188:BetterHud:c3e147bbd3")
+    .dependency("com.github.toxicity188:BetterHud:1.7")
     .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
     .dependency("net.byteflux:libby-bukkit:1.3.0")
     .dependency("com.github.SkriptLang:Skript:2.9.3")
@@ -129,7 +130,8 @@ val nmsVersions = listOf(
     NmsVersion("v1_20_R2"),
     NmsVersion("v1_20_R3"),
     NmsVersion("v1_20_R4"),
-    NmsVersion("v1_21_R1")
+    NmsVersion("v1_21_R1"),
+    NmsVersion("v1_21_R2")
 )
 
 dependencies {
@@ -174,7 +176,7 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            modrinth("betterhud2", "1.6.253")
+            modrinth("betterhud2", "1.6.254")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.3")
         }
