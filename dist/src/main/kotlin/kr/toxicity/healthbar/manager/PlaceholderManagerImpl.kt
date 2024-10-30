@@ -68,7 +68,7 @@ object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
             addPlaceholder("is_mythic_mob") { e: HealthBarCreateEvent ->
                 e.entity.mob() is MythicActiveMob
             }
-            addPlaceholder("is_vanilla_mod") { e: HealthBarCreateEvent ->
+            addPlaceholder("is_vanilla_mob") { e: HealthBarCreateEvent ->
                 e.entity.mob() == null
             }
         }
