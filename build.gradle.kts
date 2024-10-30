@@ -19,7 +19,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.5"
+    version = "3.5.1"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -176,7 +176,7 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            modrinth("betterhud2", "1.6.254")
+            modrinth("betterhud2", "1.7.DEV-264")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.3")
         }

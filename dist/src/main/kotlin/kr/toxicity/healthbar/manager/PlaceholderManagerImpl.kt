@@ -5,12 +5,13 @@ import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.manager.PlaceholderManager
 import kr.toxicity.healthbar.api.placeholder.PlaceholderContainer
 import kr.toxicity.healthbar.pack.PackResource
+import kr.toxicity.healthbar.util.ATTRIBUTE_MAX_HEALTH
+import kr.toxicity.healthbar.util.armor
 import kr.toxicity.healthbar.util.placeholder
 import kr.toxicity.healthbar.util.warn
 import kr.toxicity.healthbar.version.MinecraftVersion
 import org.bukkit.NamespacedKey
 import org.bukkit.Registry
-import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffectType
 import java.util.function.Function
@@ -23,13 +24,16 @@ object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
                 e.entity.entity().health
             }
             addPlaceholder("max_health") { e: HealthBarCreateEvent ->
-                e.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+                e.entity.entity().getAttribute(ATTRIBUTE_MAX_HEALTH)!!.value
             }
             addPlaceholder("health_percentage") { e: HealthBarCreateEvent ->
-                e.entity.entity().health / e.entity.entity().getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+                e.entity.entity().health / e.entity.entity().getAttribute(ATTRIBUTE_MAX_HEALTH)!!.value
             }
             addPlaceholder("absorption") { e: HealthBarCreateEvent ->
                 e.entity.entity().absorptionAmount
+            }
+            addPlaceholder("armor") { e: HealthBarCreateEvent ->
+                e.entity.entity().armor
             }
         }
         PlaceholderContainer.STRING.run {
@@ -63,6 +67,9 @@ object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
             }
             addPlaceholder("is_mythic_mob") { e: HealthBarCreateEvent ->
                 e.entity.mob() is MythicActiveMob
+            }
+            addPlaceholder("is_vanilla_mod") { e: HealthBarCreateEvent ->
+                e.entity.mob() == null
             }
         }
     }
