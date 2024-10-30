@@ -44,7 +44,12 @@ public interface HealthBarOperation<T> {
         return HealthBarOperationCondition.find(clazz, name);
     }
     static <T> @NotNull HealthBarCondition of(@NotNull HealthBarPlaceholder<T> one, @NotNull HealthBarPlaceholder<T> other, @NotNull HealthBarOperation<T> condition) {
-        return t -> condition.invoke(one.value(t), other.value(t));
+        return t -> {
+            var v1 = one.value(t);
+            var v2 = other.value(t);
+            if (v1 == null || v2 == null) return false;
+            return condition.invoke(v1, v2);
+        };
     }
     @SuppressWarnings("unchecked")
     static @NotNull HealthBarCondition of(@NotNull String one, @NotNull String two, @NotNull String condition) {
@@ -52,7 +57,12 @@ public interface HealthBarOperation<T> {
         var parseTwo = PlaceholderContainer.parse(two);
         if (parseOne.type() != parseTwo.type()) throw new RuntimeException("type mismatch: " + parseOne.type().getSimpleName() + " between " + parseTwo.type().getSimpleName() + ".");
         var operation = Objects.requireNonNull(find(parseOne.type(), condition), "Unable to find this operation: " + condition);
-        return p -> operation.invoke(parseOne.value(p), parseTwo.value(p));
+        return p -> {
+            var v1 = parseOne.value(p);
+            var v2 = parseTwo.value(p);
+            if (v1 == null || v2 == null) return false;
+            return operation.invoke(v1, v2);
+        };
     }
 
     static @NotNull HealthBarCondition of(@NotNull ConfigurationSection section) {

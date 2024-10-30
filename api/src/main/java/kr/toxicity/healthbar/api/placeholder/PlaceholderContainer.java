@@ -6,6 +6,7 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -17,7 +18,7 @@ public class PlaceholderContainer<T> {
     private final @NotNull Function<String, T> parser;
     private final @NotNull Function<T, String> stringMapper;
 
-    public static final Pattern PATTERN = Pattern.compile("^(\\((?<type>([a-zA-Z]+))\\))?((?<name>(([a-zA-Z]|\\(|\\)|[0-9]|_|\\.)+))(:(?<argument>([a-zA-Z]|[0-9]|_|\\.|,|)+))?)$");
+    public static final Pattern PATTERN = Pattern.compile("^(\\((?<type>([a-zA-Z]+))\\))?(?<name>(([a-zA-Z]|[0-9]|_|\\.)+))$");
     private static final Map<Class<?>, PlaceholderContainer<?>> CLASS_MAP = new HashMap<>();
     private static final Map<String, PlaceholderContainer<?>> STRING_MAP = new HashMap<>();
 
@@ -79,8 +80,8 @@ public class PlaceholderContainer<T> {
                 return new HealthBarPlaceholder<>() {
                     @NotNull
                     @Override
-                    public T value(@NotNull HealthBarCreateEvent player) {
-                        return function.apply(player);
+                    public T value(@NotNull HealthBarCreateEvent event) {
+                        return function.apply(event);
                     }
 
                     @NotNull
@@ -128,8 +129,8 @@ public class PlaceholderContainer<T> {
 
                 @NotNull
                 @Override
-                public String value(@NotNull HealthBarCreateEvent player) {
-                    return stringMapper.apply(apply.value(player));
+                public String value(@NotNull HealthBarCreateEvent event) {
+                    return stringMapper.apply(apply.value(event));
                 }
             };
         }
@@ -143,7 +144,7 @@ public class PlaceholderContainer<T> {
         }
 
         @Override
-        public @NotNull Object value(@NotNull HealthBarCreateEvent player) {
+        public @NotNull Object value(@NotNull HealthBarCreateEvent event) {
             return value;
         }
     }
@@ -156,9 +157,22 @@ public class PlaceholderContainer<T> {
         }).filter(Objects::nonNull).findFirst().orElseThrow(() -> new RuntimeException("Unable to parse this value: " + value));
     }
 
-    public static HealthBarPlaceholder<?> parse(@NotNull String pattern) {
-        var matcher = PATTERN.matcher(pattern);
-        if (!matcher.find()) return primitive(pattern);
+    public static @NotNull HealthBarPlaceholder<?> parse(@NotNull String pattern) {
+        var index = 0;
+        while (index < pattern.length() && pattern.charAt(index) != ':') {
+            index++;
+        }
+        String main;
+        String argument;
+        if (index < pattern.length()) {
+            main = pattern.substring(0, index);
+            argument = pattern.substring(index + 1);
+        } else {
+            main = pattern;
+            argument = null;
+        }
+        var matcher = PATTERN.matcher(main);
+        if (!matcher.find()) return primitive(main);
         var type = matcher.group("type");
         var cast = type != null ? Objects.requireNonNull(STRING_MAP.get(type), "Unsupported type: " + type) : null;
         var name = matcher.group("name");
@@ -167,7 +181,6 @@ public class PlaceholderContainer<T> {
         if (get == null) return primitive(name);
 
 
-        var argument = matcher.group("argument");
         var list = argument != null ? Arrays.asList(argument.split(",")) : Collections.<String>emptyList();
         if (get.result.requiredArgsCount() > list.size()) throw new RuntimeException("This placeholder requires argument sized at least " + get.result.requiredArgsCount());
         if (cast != null) {
@@ -180,10 +193,17 @@ public class PlaceholderContainer<T> {
                     return (Class<Object>) cast.clazz;
                 }
 
-                @NotNull
+                @Nullable
                 @Override
-                public Object value(@NotNull HealthBarCreateEvent player) {
-                    return cast.parser.apply(string.value(player));
+                public Object value(@NotNull HealthBarCreateEvent event) {
+                    return cast.parser.apply(string.value(event));
+                }
+
+                @Override
+                @SuppressWarnings("unchecked")
+                public @Nullable String stringValue(@NotNull HealthBarCreateEvent event) {
+                    var value = value(event);
+                    return value != null ? ((Function<Object, String>) cast.stringMapper).apply(value) : "<error>";
                 }
             };
         } else return get.value(list);
@@ -202,10 +222,11 @@ public class PlaceholderContainer<T> {
                 }
                 case ']' -> {
                     var result = sb.toString();
-                    var name = subString(result);
-                    var argument = result.length() > name.length() + 1 ? Arrays.asList(result.substring(name.length() + 1).split(",")) : Collections.<String>emptyList();
-                    var find = CLASS_MAP.values().stream().map(f -> f.find(name)).filter(f -> f.ifPresented()).findFirst().orElseThrow(() -> new RuntimeException("Unable to find this placeholder: " + name)).stringValue(argument);
-                    array.add(f -> legacyAdapt(find.value(f)));
+                    var parse = parse(result);
+                    array.add(f -> {
+                        var value = parse.stringValue(f);
+                        return value != null ? legacyAdapt(value) : Component.text("<error>");
+                    });
                     sb.setLength(0);
                 }
                 case '\\' -> skip = true;
@@ -258,14 +279,5 @@ public class PlaceholderContainer<T> {
 
     private static @NotNull Component legacyAdapt0(@NotNull String s) {
         return LegacyComponentSerializer.legacySection().deserialize(s).replaceText(TO_MINI_MESSAGE);
-    }
-
-    private static @NotNull String subString(@NotNull String string) {
-        var sb = new StringBuilder();
-        for (char c1 : string.toCharArray()) {
-            if (':' != c1) sb.append(c1);
-            else break;
-        }
-        return sb.toString();
     }
 }

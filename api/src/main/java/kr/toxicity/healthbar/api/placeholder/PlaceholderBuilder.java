@@ -24,8 +24,8 @@ public interface PlaceholderBuilder<T> {
 
                     @NotNull
                     @Override
-                    public T value(@NotNull HealthBarCreateEvent player) {
-                        return get.apply(player);
+                    public T value(@NotNull HealthBarCreateEvent event) {
+                        return get.apply(event);
                     }
                 };
             }

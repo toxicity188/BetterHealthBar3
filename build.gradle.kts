@@ -173,7 +173,7 @@ tasks {
         finalizedBy(shadowJar)
     }
     runServer {
-        version(minecraft)
+        version("1.21.1")
         pluginJars(fileTree("plugins"))
         downloadPlugins {
             modrinth("betterhud2", "1.7.DEV-264")

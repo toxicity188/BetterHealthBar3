@@ -7,8 +7,13 @@ import org.jetbrains.annotations.Nullable;
 public interface HealthBarPlaceholder<T> {
     @NotNull
     Class<T> type();
-    @NotNull
-    T value(@NotNull HealthBarCreateEvent player);
+    @Nullable
+    T value(@NotNull HealthBarCreateEvent event);
+
+    default @Nullable String stringValue(@NotNull HealthBarCreateEvent event) {
+        var value = value(event);
+        return value != null ? value.toString() : "<error>";
+    }
 
     default @Nullable T cast(@NotNull Object object) {
         return type().isAssignableFrom(object.getClass()) ? type().cast(object) : null;
