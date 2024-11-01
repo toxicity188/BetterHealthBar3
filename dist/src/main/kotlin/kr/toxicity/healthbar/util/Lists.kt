@@ -1,6 +1,7 @@
 package kr.toxicity.healthbar.util
 
-import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 fun <T> List<T>.split(splitSize: Int): List<List<T>> {
@@ -25,14 +26,14 @@ fun <T> List<List<T>>.sum(): List<T> {
 fun <T> List<T>.forEachAsync(block: (T) -> Unit) {
     if (isNotEmpty()) {
         val available = Runtime.getRuntime().availableProcessors()
-        val queue = if (available > size) {
-            LinkedList(map {
+        val tasks = if (available >= size) {
+            map {
                 {
                     block(it)
                 }
-            })
+            }
         } else {
-            val queue = LinkedList<() -> Unit>()
+            val queue = ArrayList<() -> Unit>()
             var i = 0
             val add = (size.toDouble() / available).toInt()
             while (i <= size) {
@@ -46,29 +47,13 @@ fun <T> List<T>.forEachAsync(block: (T) -> Unit) {
             }
             queue
         }
-        object : Thread() {
-            private val index = TaskIndex(queue.size)
-            override fun run() {
-                while (!isInterrupted) {
-                    queue.poll()?.let {
-                        Thread {
-                            runCatching {
-                                it()
-                            }.onFailure { e ->
-                                e.printStackTrace()
-                            }
-                            synchronized(index) {
-                                if (++index.current == index.max) {
-                                    interrupt()
-                                }
-                            }
-                        }.start()
-                    }
-                }
-            }
-        }.run {
-            start()
-            join()
-        }
+        val pool = Executors.newFixedThreadPool(tasks.size)
+        CompletableFuture.allOf(
+            *tasks.map {
+                CompletableFuture.runAsync({
+                    it()
+                }, pool)
+            }.toTypedArray()
+        ).join()
     }
 }

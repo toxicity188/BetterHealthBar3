@@ -4,9 +4,8 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.8"
     id("io.papermc.paperweight.userdev") version "1.7.4" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
-    id("org.jetbrains.dokka") version "1.9.20"
+    id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
-
 
 val minecraft = "1.21.3"
 val folia = "1.20.6" // TODO Bumps version.
@@ -19,7 +18,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.5.1"
+    version = "3.5.2"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -164,7 +163,7 @@ val sourceJar by tasks.creating(Jar::class.java) {
 val dokkaJar by tasks.creating(Jar::class.java) {
     dependsOn(tasks.dokkaHtmlMultiModule)
     archiveClassifier = "dokka"
-    from(layout.buildDirectory.dir("dokka${File.separatorChar}htmlMultiModule").orNull?.asFile)
+    from(layout.buildDirectory.dir("dokka/htmlMultiModule").orNull?.asFile)
 }
 
 tasks {
@@ -173,10 +172,10 @@ tasks {
         finalizedBy(shadowJar)
     }
     runServer {
-        version("1.21.1")
+        version("1.21.1") //TODO set this to 'minecraft' when other plugins support the latest version.
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            modrinth("betterhud2", "1.7.DEV-264")
+            modrinth("betterhud2", "1.7.DEV-266")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.3")
         }
