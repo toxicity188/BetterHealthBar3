@@ -10,6 +10,8 @@ import kr.toxicity.healthbar.util.*
 import org.bstats.bukkit.Metrics
 import org.bukkit.entity.EntityType
 import java.io.File
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.Collections
 import java.util.EnumSet
 
@@ -27,6 +29,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     private var mergeOtherFolder = emptySet<String>()
     private var createPackMemeta = true
     private var enableSelfHost = false
+    private var numberFormat = DecimalFormat.getNumberInstance()
     private var selfHostPort = 8163
     private var blackListEntityType = emptySet<EntityType>()
     private var disableToInvulnerableMob = true
@@ -67,6 +70,11 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
             createPackMemeta = config.getBoolean("create-pack-mcmeta", true)
             enableSelfHost = config.getBoolean("enable-self-host", false)
             selfHostPort = config.getInt("self-host-port", 8163)
+            numberFormat = runCatching {
+                DecimalFormat(config.getString("number-format", "#,###"))
+            }.getOrElse {
+                DecimalFormat.getNumberInstance()
+            }
             blackListEntityType = Collections.unmodifiableSet(EnumSet.copyOf(config.getStringList("blacklist-entity-type").mapNotNull {
                 runCatching {
                     EntityType.valueOf(it.uppercase())
@@ -81,6 +89,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
             }
             useCoreShaders = config.getBoolean("use-core-shaders", true)
             showMeHealthBar = config.getBoolean("show-me-healthbar", true)
+
             if (!metrics) {
                 bstats?.shutdown()
                 bstats = null
@@ -106,6 +115,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     override fun createPackMcmeta(): Boolean = createPackMemeta
     override fun enableSelfHost(): Boolean = enableSelfHost
     override fun selfHostPort(): Int = selfHostPort
+    override fun numberFormat(): NumberFormat = numberFormat
     override fun blacklistEntityType(): Set<EntityType> = blackListEntityType
     override fun disableToInvulnerableMob(): Boolean = disableToInvulnerableMob
     override fun shaders(): CoreShadersOption = shaders

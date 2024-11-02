@@ -11,6 +11,7 @@ merge-other-folder: []
 create-pack-mcmeta: true
 enable-self-host: true
 self-host-port: 8163
+number-format: "#,###"
 blacklist-entity-type:
   - ARMOR_STAND
   - TEXT_DISPLAY

@@ -175,7 +175,7 @@ tasks {
         version("1.21.1") //TODO set this to 'minecraft' when other plugins support the latest version.
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            modrinth("betterhud2", "1.7.DEV-266")
+            modrinth("betterhud2", "1.8")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.3")
         }

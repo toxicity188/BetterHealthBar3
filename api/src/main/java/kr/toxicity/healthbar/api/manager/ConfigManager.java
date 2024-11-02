@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Set;
 
 public interface ConfigManager {
@@ -28,6 +30,7 @@ public interface ConfigManager {
     boolean createPackMcmeta();
     boolean enableSelfHost();
     int selfHostPort();
+    @NotNull NumberFormat numberFormat();
     @NotNull
     @Unmodifiable
     Set<EntityType> blacklistEntityType();

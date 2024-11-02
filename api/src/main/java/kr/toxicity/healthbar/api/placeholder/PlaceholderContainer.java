@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.api.placeholder;
 
+import kr.toxicity.healthbar.api.BetterHealthBar;
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -8,7 +9,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -31,6 +31,23 @@ public class PlaceholderContainer<T> {
         STRING_MAP.put(name, this);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <R> @Nullable PlaceholderContainer<R> find(@NotNull Class<R> clazz) {
+        return (PlaceholderContainer<R>) CLASS_MAP.get(clazz);
+    }
+
+    public @NotNull PlaceholderBuilder.Builder<T> create() {
+        return PlaceholderBuilder.builder(this);
+    }
+
+    @NotNull Class<T> clazz() {
+        return clazz;
+    }
+
+    @NotNull Function<T, String> stringMapper() {
+        return stringMapper;
+    }
+
     public static final PlaceholderContainer<Number> NUMBER = new PlaceholderContainer<>(
             Number.class,
             "number",
@@ -41,7 +58,7 @@ public class PlaceholderContainer<T> {
                     return null;
                 }
             },
-            s -> DecimalFormat.getInstance().format(s)
+            s -> BetterHealthBar.inst().configManager().numberFormat().format(s)
     );
     public static final PlaceholderContainer<String> STRING = new PlaceholderContainer<>(
             String.class,
@@ -78,7 +95,7 @@ public class PlaceholderContainer<T> {
             @Override
             public @NotNull HealthBarPlaceholder<T> build(@NotNull List<String> strings) {
                 return new HealthBarPlaceholder<>() {
-                    @NotNull
+                    @Nullable
                     @Override
                     public T value(@NotNull HealthBarCreateEvent event) {
                         return function.apply(event);
@@ -89,9 +106,18 @@ public class PlaceholderContainer<T> {
                     public Class<T> type() {
                         return clazz;
                     }
+
+                    @Override
+                    public @Nullable String stringValue(@NotNull HealthBarCreateEvent event) {
+                        var value = value(event);
+                        return value != null ? stringMapper.apply(value) : null;
+                    }
                 };
             }
         });
+    }
+    public void addPlaceholder(@NotNull String name, @NotNull PlaceholderBuilder.Builder<T> builder) {
+        addPlaceholder(name, builder.build());
     }
     public void addPlaceholder(@NotNull String name, @NotNull PlaceholderBuilder<T> builder) {
         map.put(name, builder);
@@ -127,10 +153,11 @@ public class PlaceholderContainer<T> {
                     return String.class;
                 }
 
-                @NotNull
+                @Nullable
                 @Override
                 public String value(@NotNull HealthBarCreateEvent event) {
-                    return stringMapper.apply(apply.value(event));
+                    var value = apply.value(event);
+                    return value != null ? value.toString() : null;
                 }
             };
         }
@@ -196,7 +223,8 @@ public class PlaceholderContainer<T> {
                 @Nullable
                 @Override
                 public Object value(@NotNull HealthBarCreateEvent event) {
-                    return cast.parser.apply(string.value(event));
+                    var value = string.value(event);
+                    return value != null ? cast.parser.apply(value) : null;
                 }
 
                 @Override
