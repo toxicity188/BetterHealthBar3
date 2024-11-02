@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.api.condition;
 
 import kr.toxicity.healthbar.api.placeholder.HealthBarPlaceholder;
 import kr.toxicity.healthbar.api.placeholder.PlaceholderContainer;
+import kr.toxicity.healthbar.api.placeholder.PlaceholderOption;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,8 +54,8 @@ public interface HealthBarOperation<T> {
     }
     @SuppressWarnings("unchecked")
     static @NotNull HealthBarCondition of(@NotNull String one, @NotNull String two, @NotNull String condition) {
-        var parseOne = (HealthBarPlaceholder<Object>) PlaceholderContainer.parse(one);
-        var parseTwo = PlaceholderContainer.parse(two);
+        var parseOne = (HealthBarPlaceholder<Object>) PlaceholderContainer.parse(PlaceholderOption.EMPTY, one);
+        var parseTwo = PlaceholderContainer.parse(PlaceholderOption.EMPTY, two);
         if (parseOne.type() != parseTwo.type()) throw new RuntimeException("type mismatch: " + parseOne.type().getSimpleName() + " between " + parseTwo.type().getSimpleName() + ".");
         var operation = Objects.requireNonNull(find(parseOne.type(), condition), "Unable to find this operation: " + condition);
         return p -> {

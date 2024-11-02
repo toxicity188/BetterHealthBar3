@@ -52,6 +52,7 @@ betterhealthbar.reload - Access to reload command
 ./gradlew build
 
 # API
+[![](https://jitpack.io/v/toxicity188/BetterHealthBar3.svg)](https://jitpack.io/#toxicity188/BetterHealthBar3)
 ``` kotlin
 repositories {
   mavenCenteral()

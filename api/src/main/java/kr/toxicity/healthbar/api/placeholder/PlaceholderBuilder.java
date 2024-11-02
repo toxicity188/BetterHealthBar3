@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public interface PlaceholderBuilder<T> {
-    @NotNull HealthBarPlaceholder<T> build(@NotNull List<String> strings);
+    @NotNull HealthBarPlaceholder<T> build(@NotNull PlaceholderOption.Property property, @NotNull List<String> strings);
     int requiredArgsCount();
 
     static <R> @NotNull Builder<R> builder(@NotNull PlaceholderContainer<R> container) {
@@ -22,17 +22,16 @@ public interface PlaceholderBuilder<T> {
     }
 
     class Builder<R> {
-        private final Class<R> clazz;
+        private final PlaceholderContainer<R> container;
         private Function<R, String> stringMapper;
         private Function<List<String>, Function<HealthBarCreateEvent, R>> parser;
         private int argsLength;
         private Builder(@NotNull PlaceholderContainer<R> container) {
-            clazz = container.clazz();
-            stringMapper = container.stringMapper();
+            this.container = container;
         }
 
-        public @NotNull Builder<R> stringMapper(@NotNull Function<R, String> mapper) {
-            stringMapper = Objects.requireNonNull(mapper);
+        public @NotNull Builder<R> stringMapper(@Nullable Function<R, String> mapper) {
+            stringMapper = mapper;
             return this;
         }
         public @NotNull Builder<R> parser(@NotNull Function<List<String>, Function<HealthBarCreateEvent, R>> parser) {
@@ -47,12 +46,14 @@ public interface PlaceholderBuilder<T> {
         public @NotNull PlaceholderBuilder<R> build() {
             return new PlaceholderBuilder<>() {
                 @Override
-                public @NotNull HealthBarPlaceholder<R> build(@NotNull List<String> strings) {
+                public @NotNull HealthBarPlaceholder<R> build(@NotNull PlaceholderOption.Property property, @NotNull List<String> strings) {
                     var valueFunction = parser.apply(strings);
+                    var result = container.propertyResult(property);
+                    var mapper = stringMapper != null ? stringMapper : result.stringMapper();
                     return new HealthBarPlaceholder<>() {
                         @Override
                         public @NotNull Class<R> type() {
-                            return clazz;
+                            return container.clazz();
                         }
 
                         @Override
@@ -63,7 +64,7 @@ public interface PlaceholderBuilder<T> {
                         @Override
                         public @Nullable String stringValue(@NotNull HealthBarCreateEvent event) {
                             var parsed = value(event);
-                            return parsed != null ? stringMapper.apply(parsed) : null;
+                            return parsed != null ? mapper.apply(parsed) : null;
                         }
                     };
                 }

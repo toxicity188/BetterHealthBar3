@@ -7,6 +7,7 @@ import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.layout.TextLayout
 import kr.toxicity.healthbar.api.placeholder.PlaceholderContainer
+import kr.toxicity.healthbar.api.placeholder.PlaceholderOption
 import kr.toxicity.healthbar.api.renderer.TextRenderer
 import kr.toxicity.healthbar.api.text.TextAlign
 import kr.toxicity.healthbar.data.BitmapData
@@ -31,6 +32,9 @@ class TextLayoutImpl(
     companion object {
         private val defaultWidth = WidthKey(Key.key("minecraft", "default"), 0)
     }
+    private val property = section.getConfigurationSection("properties")?.let {
+        PlaceholderOption.of(it)
+    } ?: PlaceholderOption.EMPTY
     private val text = section.getString("text").ifNull("Unable to find 'text' configuration.").run {
         TextManagerImpl.text(this).ifNull("Unable to find this text: $this")
     }
@@ -47,11 +51,13 @@ class TextLayoutImpl(
     private val duration = section.getInt("duration", - 1)
     private val keys = ArrayList<WidthKey>()
     private val pattern = PlaceholderContainer.toString(
+        property,
         section.getString("pattern").ifNull("Unable to find 'pattern' command.")
     )
 
     override fun charWidth(): Map<Int, Int> = textWidth
     override fun align(): TextAlign = align
+    override fun property(): PlaceholderOption.Property = property
     override fun pattern(): Function<HealthBarCreateEvent, Component> = pattern
 
     private class WidthKey(

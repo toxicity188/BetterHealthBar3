@@ -9,7 +9,9 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -17,15 +19,23 @@ public class PlaceholderContainer<T> {
     private final @NotNull Class<T> clazz;
     private final @NotNull Function<String, T> parser;
     private final @NotNull Function<T, String> stringMapper;
+    private final @NotNull BiFunction<PlaceholderOption.Property, PlaceholderContainer<T>, PropertyResult<T>> propertyParser;
 
     public static final Pattern PATTERN = Pattern.compile("^(\\((?<type>([a-zA-Z]+))\\))?(?<name>(([a-zA-Z]|[0-9]|_|\\.)+))$");
     private static final Map<Class<?>, PlaceholderContainer<?>> CLASS_MAP = new HashMap<>();
     private static final Map<String, PlaceholderContainer<?>> STRING_MAP = new HashMap<>();
 
-    public PlaceholderContainer(@NotNull Class<T> clazz, String name, @NotNull Function<String, T> parser, @NotNull Function<T, String> stringMapper) {
+    public PlaceholderContainer(
+            @NotNull Class<T> clazz,
+            String name,
+            @NotNull Function<String, T> parser,
+            @NotNull Function<T, String> stringMapper,
+            @NotNull BiFunction<PlaceholderOption.Property, PlaceholderContainer<T>, PropertyResult<T>> propertyParser
+    ) {
         this.clazz = clazz;
         this.parser = parser;
         this.stringMapper = stringMapper;
+        this.propertyParser = propertyParser;
 
         CLASS_MAP.put(clazz, this);
         STRING_MAP.put(name, this);
@@ -44,9 +54,14 @@ public class PlaceholderContainer<T> {
         return clazz;
     }
 
-    @NotNull Function<T, String> stringMapper() {
-        return stringMapper;
+    @NotNull PropertyResult<T> propertyResult(@NotNull PlaceholderOption.Property property) {
+        return propertyParser.apply(property, this);
     }
+
+    public record PropertyResult<R>(
+        @NotNull Function<String, R> parser,
+        @NotNull Function<R, String> stringMapper
+    ) {}
 
     public static final PlaceholderContainer<Number> NUMBER = new PlaceholderContainer<>(
             Number.class,
@@ -58,7 +73,16 @@ public class PlaceholderContainer<T> {
                     return null;
                 }
             },
-            s -> BetterHealthBar.inst().configManager().numberFormat().format(s)
+            s -> BetterHealthBar.inst().configManager().numberFormat().format(s),
+            (p, c) -> {
+                var mapper = c.stringMapper;
+                var format = p.get(PlaceholderOption.NUMBER_FORMAT);
+                if (format != null) {
+                    var decimal = new DecimalFormat(format);
+                    mapper = decimal::format;
+                }
+                return new PropertyResult<>(c.parser, mapper);
+            }
     );
     public static final PlaceholderContainer<String> STRING = new PlaceholderContainer<>(
             String.class,
@@ -70,7 +94,8 @@ public class PlaceholderContainer<T> {
                 }
                 return null;
             },
-            d -> d
+            d -> d,
+            (p, c) -> new PropertyResult<>(c.parser, c.stringMapper)
     );
     public static final PlaceholderContainer<Boolean> BOOL = new PlaceholderContainer<>(
             Boolean.class,
@@ -80,7 +105,8 @@ public class PlaceholderContainer<T> {
                 case "false" -> false;
                 default -> null;
             },
-            s -> Boolean.toString(s)
+            s -> Boolean.toString(s),
+            (p, c) -> new PropertyResult<>(c.parser, c.stringMapper)
     );
 
     private final Map<String, PlaceholderBuilder<T>> map = new HashMap<>();
@@ -93,7 +119,8 @@ public class PlaceholderContainer<T> {
             }
 
             @Override
-            public @NotNull HealthBarPlaceholder<T> build(@NotNull List<String> strings) {
+            public @NotNull HealthBarPlaceholder<T> build(@NotNull PlaceholderOption.Property property, @NotNull List<String> strings) {
+                var result = propertyResult(property);
                 return new HealthBarPlaceholder<>() {
                     @Nullable
                     @Override
@@ -110,7 +137,7 @@ public class PlaceholderContainer<T> {
                     @Override
                     public @Nullable String stringValue(@NotNull HealthBarCreateEvent event) {
                         var value = value(event);
-                        return value != null ? stringMapper.apply(value) : null;
+                        return value != null ? result.stringMapper.apply(value) : null;
                     }
                 };
             }
@@ -132,20 +159,20 @@ public class PlaceholderContainer<T> {
             result = map.get(name);
         }
 
-        public @NotNull HealthBarPlaceholder<T> value(@NotNull List<String> strings) {
+        public @NotNull HealthBarPlaceholder<T> value(@NotNull PlaceholderOption.Property property, @NotNull List<String> strings) {
             Objects.requireNonNull(result);
             Objects.requireNonNull(strings);
-            return result.build(strings);
+            return result.build(property, strings);
         }
 
         public boolean ifPresented() {
             return result != null;
         }
 
-        public @NotNull HealthBarPlaceholder<String> stringValue(@NotNull List<String> strings) {
+        public @NotNull HealthBarPlaceholder<String> stringValue(@NotNull PlaceholderOption.Property property, @NotNull List<String> strings) {
             Objects.requireNonNull(result);
             Objects.requireNonNull(strings);
-            var apply = result.build(strings);
+            var apply = result.build(property, strings);
             return new HealthBarPlaceholder<>() {
                 @NotNull
                 @Override
@@ -184,7 +211,7 @@ public class PlaceholderContainer<T> {
         }).filter(Objects::nonNull).findFirst().orElseThrow(() -> new RuntimeException("Unable to parse this value: " + value));
     }
 
-    public static @NotNull HealthBarPlaceholder<?> parse(@NotNull String pattern) {
+    public static @NotNull HealthBarPlaceholder<?> parse(@NotNull PlaceholderOption.Property property, @NotNull String pattern) {
         var index = 0;
         while (index < pattern.length() && pattern.charAt(index) != ':') {
             index++;
@@ -211,7 +238,7 @@ public class PlaceholderContainer<T> {
         var list = argument != null ? Arrays.asList(argument.split(",")) : Collections.<String>emptyList();
         if (get.result.requiredArgsCount() > list.size()) throw new RuntimeException("This placeholder requires argument sized at least " + get.result.requiredArgsCount());
         if (cast != null) {
-            var string = get.stringValue(list);
+            var string = get.stringValue(property, list);
             return new HealthBarPlaceholder<>() {
                 @NotNull
                 @Override
@@ -234,10 +261,10 @@ public class PlaceholderContainer<T> {
                     return value != null ? ((Function<Object, String>) cast.stringMapper).apply(value) : "<error>";
                 }
             };
-        } else return get.value(list);
+        } else return get.value(property, list);
     }
 
-    public static @NotNull Function<HealthBarCreateEvent, Component> toString(@NotNull String pattern) {
+    public static @NotNull Function<HealthBarCreateEvent, Component> toString(@NotNull PlaceholderOption.Property property, @NotNull String pattern) {
         var array = new ArrayList<Function<HealthBarCreateEvent, Component>>();
         var sb = new StringBuilder();
         var skip = false;
@@ -250,7 +277,7 @@ public class PlaceholderContainer<T> {
                 }
                 case ']' -> {
                     var result = sb.toString();
-                    var parse = parse(result);
+                    var parse = parse(property, result);
                     array.add(f -> {
                         var value = parse.stringValue(f);
                         return value != null ? legacyAdapt(value) : Component.text("<error>");

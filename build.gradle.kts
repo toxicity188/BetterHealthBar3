@@ -8,7 +8,6 @@ plugins {
 }
 
 val minecraft = "1.21.3"
-val folia = "1.20.6" // TODO Bumps version.
 val adventure = "4.17.0"
 val platform = "4.3.4"
 val targetJavaVersion = 21
@@ -18,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.5.2"
+    version = "3.5.3"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -59,37 +58,28 @@ allprojects {
     }
 }
 
-fun Project.spigot() = also {
-    it.dependencies {
-        compileOnly("org.spigotmc:spigot-api:$minecraft-R0.1-SNAPSHOT")
-        compileOnly("net.kyori:adventure-api:$adventure")
-        compileOnly("net.kyori:adventure-text-minimessage:$adventure")
-        compileOnly("net.kyori:adventure-platform-bukkit:$platform")
-    }
+fun Project.dependency(dependency: Any) = also {
+    it.dependencies.compileOnly(dependency)
 }
+fun Project.spigot() = dependency("org.spigotmc:spigot-api:$minecraft-R0.1-SNAPSHOT")
+    .dependency("net.kyori:adventure-api:$adventure")
+    .dependency("net.kyori:adventure-text-minimessage:$adventure")
+    .dependency("net.kyori:adventure-platform-bukkit:$platform")
 
-fun Project.dependency(name: String) = also {
-    it.dependencies {
-        compileOnly(name)
-    }
-}
+fun Project.paper() = dependency("io.papermc.paper:paper-api:$minecraft-R0.1-SNAPSHOT")
 
 val api = project("api").spigot()
 
-fun getApiDependencyProject(name: String) = project(name).also {
-    it.dependencies {
-        compileOnly(api)
-    }
-}
+fun getApiDependencyProject(name: String) = project(name).dependency(api)
 
 val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.7.2")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
-    .dependency("com.github.toxicity188:BetterHud:1.7")
-    .dependency("net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT")
-    .dependency("net.byteflux:libby-bukkit:1.3.0")
-    .dependency("com.github.SkriptLang:Skript:2.9.3")
+    .dependency("com.github.toxicity188:BetterHud:1.8")
+    .dependency("com.github.toxicity188:BetterCommand:1.0")
+    .dependency("net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT")
+    .dependency("com.github.SkriptLang:Skript:2.9.4")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -108,12 +98,6 @@ val dist = getApiDependencyProject("dist").spigot()
 fun getProject(name: String) = getApiDependencyProject(name).also {
     dist.dependencies {
         compileOnly(it)
-    }
-}
-
-fun Project.folia() = also {
-    it.dependencies {
-        compileOnly("dev.folia:folia-api:$folia-R0.1-SNAPSHOT")
     }
 }
 
@@ -137,7 +121,7 @@ dependencies {
     implementation(api)
     implementation(dist)
     implementation(getProject("scheduler:standard").spigot())
-    implementation(getProject("scheduler:folia").folia())
+    implementation(getProject("scheduler:folia").paper())
     implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.4.2-SNAPSHOT"))
     implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.3-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
@@ -177,7 +161,7 @@ tasks {
         downloadPlugins {
             modrinth("betterhud2", "1.8")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.9.3")
+            hangar("Skript", "2.9.4")
         }
     }
     shadowJar {
@@ -199,7 +183,6 @@ tasks {
         }
     }
     build {
-        finalizedBy(sourceJar)
-        finalizedBy(dokkaJar)
+        finalizedBy(sourceJar, dokkaJar)
     }
 }
