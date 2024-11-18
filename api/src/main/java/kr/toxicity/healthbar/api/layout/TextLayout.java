@@ -24,6 +24,8 @@ public interface TextLayout extends Layout {
     @NotNull
     Function<HealthBarCreateEvent, Component> pattern();
 
+    int height();
+
     @NotNull
     TextRenderer createRenderer(@NotNull HealthBarCreateEvent pair);
 }

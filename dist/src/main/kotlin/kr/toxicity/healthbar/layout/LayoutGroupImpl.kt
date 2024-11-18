@@ -5,10 +5,13 @@ import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.layout.ImageLayout
 import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.layout.TextLayout
+import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.*
 import net.kyori.adventure.key.Key
 import org.bukkit.configuration.ConfigurationSection
+import kotlin.math.max
+import kotlin.math.min
 
 class LayoutGroupImpl(
     private val path: String,
@@ -46,11 +49,24 @@ class LayoutGroupImpl(
             )
         }
     }
+    val min get() = if (ConfigManagerImpl.useCoreShaders()) 0 else min(
+        -max(
+            images.maxOfOrNull {
+                it.y() - (it.image().images().maxOfOrNull { image ->
+                    image.image.image.height
+                } ?: 0)
+            } ?: 0,
+            texts.maxOfOrNull {
+                it.y() - it.height()
+            } ?: 0
+        ),
+        0
+    )
 
-    fun build(resource: PackResource, count: Int) {
+    fun build(resource: PackResource, min: Int, count: Int) {
         val json = JsonArray()
         images.forEach {
-            it.build(resource, count, json)
+            it.build(resource, min, count, json)
         }
         resource.font.add("$name/images.json") {
             JsonObject().apply {
@@ -58,7 +74,7 @@ class LayoutGroupImpl(
             }.save()
         }
         texts.forEach {
-            it.build(resource, count)
+            it.build(resource, min, count)
         }
     }
 

@@ -75,18 +75,18 @@ class HealthBarImpl(
         return s.hashCode()
     }
 
-    private abstract inner class AbstractRenderer(protected val pair: HealthBarCreateEvent): HealthBarRenderer {
-        protected val indexes = groups.mapNotNull {
+    private abstract inner class AbstractRenderer(val pair: HealthBarCreateEvent) : HealthBarRenderer {
+        val indexes = groups.mapNotNull {
             it.group()
         }.associateWith {
             GroupIndex()
         }
 
-        protected val render = groups.map {
+        val render = groups.map {
             RenderedLayout(it,  pair)
         }.toMutableList()
 
-        protected var d = 0
+        var d = 0
 
         override fun hasNext(): Boolean {
             val entity = pair.entity.entity()
@@ -102,7 +102,7 @@ class HealthBarImpl(
     }
     private inner class MultiRenderer(
         pair: HealthBarCreateEvent
-    ): AbstractRenderer(pair) {
+    ) : AbstractRenderer(pair) {
 
         private val displays = render.map {
             it.createPool(pair, indexes)
@@ -147,7 +147,7 @@ class HealthBarImpl(
     }
     private inner class SingleRenderer(
         pair: HealthBarCreateEvent
-    ): AbstractRenderer(pair) {
+    ) : AbstractRenderer(pair) {
 
         private val display = pair.createEntity(render())
 

@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.5.3"
+    version = "3.5.4"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -76,7 +76,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.lumine:Mythic-Dist:5.7.2")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
-    .dependency("com.github.toxicity188:BetterHud:1.8")
+    .dependency("com.github.toxicity188:BetterHud:1.9.1")
     .dependency("com.github.toxicity188:BetterCommand:1.0")
     .dependency("net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.9.4")
@@ -159,7 +159,7 @@ tasks {
         version("1.21.1") //TODO set this to 'minecraft' when other plugins support the latest version.
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            modrinth("betterhud2", "1.8")
+            hangar("BetterHud", "1.9.1")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.4")
         }

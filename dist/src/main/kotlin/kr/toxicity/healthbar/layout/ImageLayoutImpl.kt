@@ -37,7 +37,7 @@ class ImageLayoutImpl(
     override fun listener(): HealthBarListener = listener
     override fun duration(): Int = duration
 
-    fun build(resource: PackResource, count: Int, jsonArray: JsonArray) {
+    fun build(resource: PackResource, max: Int, count: Int, jsonArray: JsonArray) {
         val componentMap = HashMap<BitmapData, WidthComponent>()
         image.images().forEach {
             val list = ArrayList<PixelComponent>()
@@ -48,7 +48,7 @@ class ImageLayoutImpl(
             val newHeight = (it.image.image.height.toDouble() * scale()).roundToInt()
             val div = newHeight.toDouble() / it.image.image.height.toDouble()
             for (i in 0..<count) {
-                val y = y() + groupY() * i
+                val y = y() + groupY() * i + max
                 list.add(componentMap.computeIfAbsent(BitmapData(dir, y, newHeight)) { _ ->
                     val component = parent.index++.parseChar()
                     jsonArray.add(JsonObject().apply {

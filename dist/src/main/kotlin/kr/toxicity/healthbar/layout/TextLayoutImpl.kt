@@ -59,13 +59,14 @@ class TextLayoutImpl(
     override fun align(): TextAlign = align
     override fun property(): PlaceholderOption.Property = property
     override fun pattern(): Function<HealthBarCreateEvent, Component> = pattern
+    override fun height(): Int = height
 
     private class WidthKey(
         val key: Key,
         val x: Int,
     )
 
-    fun build(resource: PackResource, count: Int) {
+    fun build(resource: PackResource, max: Int, count: Int) {
         val dataList = ArrayList<JsonData>()
         val fileParent = "${parent.name}/text/${layer()}"
         text.bitmap().forEachIndexed { index, textBitmap ->
@@ -81,7 +82,7 @@ class TextLayoutImpl(
 
         val map = HashMap<BitmapData, WidthKey>()
         for (i in 0..<count) {
-            val y = y() + groupY() * i
+            val y = y() + groupY() * i + max
             val keyName = "${parent.name}/$name/${i + 1}"
             keys.add(map.computeIfAbsent(BitmapData(keyName, y, height)) {
                 resource.font.add("$keyName.json") {
