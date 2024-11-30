@@ -35,6 +35,7 @@ public interface ConfigManager {
     @Unmodifiable
     Set<EntityType> blacklistEntityType();
     boolean disableToInvulnerableMob();
+    boolean disableToInvisibleMob();
     @NotNull
     CoreShadersOption shaders();
     boolean useCoreShaders();

@@ -11,6 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Predicate;
+
 @Getter
 @Setter
 public class HealthBarCreateEvent extends Event implements Cancellable {
@@ -24,12 +26,23 @@ public class HealthBarCreateEvent extends Event implements Cancellable {
 
     private boolean cancelled;
 
+    private Predicate<HealthBarCreateEvent> predicate = e -> true;
+
     public HealthBarCreateEvent(@NotNull HealthBar healthBar, @NotNull HealthBarTrigger trigger, @NotNull HealthBarPlayer player, @NotNull HealthBarEntity entity) {
         super(true);
         this.healthBar = healthBar;
         this.trigger = trigger;
         this.player = player;
         this.entity = entity;
+    }
+
+    public @NotNull HealthBarCreateEvent addPredicate(@NotNull Predicate<HealthBarCreateEvent> other) {
+        predicate = predicate.and(other);
+        return this;
+    }
+
+    public boolean check() {
+        return predicate.test(this);
     }
 
     @Override

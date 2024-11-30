@@ -75,7 +75,7 @@ class HealthBarImpl(
         return s.hashCode()
     }
 
-    private abstract inner class AbstractRenderer(val pair: HealthBarCreateEvent) : HealthBarRenderer {
+    private abstract inner class AbstractRenderer(val event: HealthBarCreateEvent) : HealthBarRenderer {
         val indexes = groups.mapNotNull {
             it.group()
         }.associateWith {
@@ -83,18 +83,19 @@ class HealthBarImpl(
         }
 
         val render = groups.map {
-            RenderedLayout(it,  pair)
+            RenderedLayout(it,  event)
         }.toMutableList()
 
         var d = 0
 
         override fun hasNext(): Boolean {
-            val entity = pair.entity.entity()
-            val player = pair.player.player()
+            if (!event.check()) return false
+            val entity = event.entity.entity()
+            val player = event.player.player()
             return entity.isValid && entity.world.uid == player.world.uid && player.location.distance(entity.location) < ConfigManagerImpl.lookDistance() && (duration < 0 || ++d <= duration)
         }
         override fun canRender(): Boolean {
-            return conditions.apply(pair)
+            return conditions.apply(event)
         }
         override fun updateTick() {
             d = 0
@@ -179,7 +180,7 @@ class HealthBarImpl(
             } else {
                 removeUnused()
                 val render = render()
-                display.teleport(pair.toEntityLocation())
+                display.teleport(event.toEntityLocation())
                 display.text(render.component.build())
                 return true
             }

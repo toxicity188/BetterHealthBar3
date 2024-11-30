@@ -12,6 +12,7 @@ import kr.toxicity.healthbar.util.PLUGIN
 import kr.toxicity.healthbar.util.asyncTaskTimer
 import kr.toxicity.healthbar.util.call
 import org.bukkit.entity.Player
+import org.bukkit.potion.PotionEffectType
 import java.util.*
 
 class HealthBarPlayerImpl(
@@ -53,8 +54,6 @@ class HealthBarPlayerImpl(
 
     override fun showHealthBar(healthBar: HealthBar, trigger: HealthBarTrigger, entity: HealthBarEntity) {
         if (ConfigManagerImpl.blacklistEntityType().contains(entity.entity().type)) return
-        if (ConfigManagerImpl.disableToInvulnerableMob() && entity.entity().isInvulnerable) return
-        if (!ConfigManagerImpl.showMeHealthBar() && player.uniqueId == entity.entity().uniqueId) return
         entity.mob()?.let {
             if (it.configuration().blacklist()) return
         }
@@ -63,9 +62,17 @@ class HealthBarPlayerImpl(
             trigger,
             this,
             entity
-        )
-        if (!data.call()) return
-        if (!healthBar.condition().apply(data)) return
+        ).addPredicate {
+            when {
+                ConfigManagerImpl.disableToInvulnerableMob() && entity.entity().isInvulnerable -> false
+                ConfigManagerImpl.disableToInvisibleMob() && (entity.entity().isInvisible || entity.entity().hasPotionEffect(PotionEffectType.INVISIBILITY)) -> false
+                !ConfigManagerImpl.showMeHealthBar() && player.uniqueId == entity.entity().uniqueId -> false
+                else -> true
+            }
+        }.addPredicate {
+            healthBar.condition().apply(it)
+        }
+        if (!data.check() || !data.call()) return
         synchronized(updaterMap) {
             updaterMap.computeIfAbsent(entity.entity().uniqueId) {
                 HealthBarUpdaterGroupImpl(this, entity)
