@@ -54,15 +54,19 @@ object CompatibilityManager : BetterHealthBerManager {
                 BetterHudAPI.inst().shaderManager.run {
                     addConstant("DISPLAY_HEIGHT", "8192.0 / 40.0")
                     addTagSupplier(ShaderManager.ShaderType.TEXT_VERTEX) {
-                        val vsh = loadShaderLine("rendertype_text.vsh")
-                        ShaderManager.newTag()
-                            .add("GenerateOtherMainMethod", vsh.range("//GenerateOtherMainMethod"))
+                        if (ConfigManagerImpl.useCoreShaders()) {
+                            val vsh = loadShaderLine("rendertype_text.vsh")
+                            ShaderManager.newTag()
+                                .add("GenerateOtherMainMethod", vsh.range("//GenerateOtherMainMethod"))
+                        } else ShaderManager.newTag()
                     }
                     addTagSupplier(ShaderManager.ShaderType.TEXT_FRAGMENT) {
-                        val fsh = loadShaderLine("rendertype_text.fsh")
-                        ShaderManager.newTag()
-                            .add("GenerateOtherMainMethod", fsh.range("//GenerateOtherMainMethod"))
-                            .add("GenerateOtherDefinedMethod", fsh.range("//GenerateOtherDefinedMethod"))
+                        if (ConfigManagerImpl.useCoreShaders()) {
+                            val fsh = loadShaderLine("rendertype_text.fsh")
+                            ShaderManager.newTag()
+                                .add("GenerateOtherMainMethod", fsh.range("//GenerateOtherMainMethod"))
+                                .add("GenerateOtherDefinedMethod", fsh.range("//GenerateOtherDefinedMethod"))
+                        } else ShaderManager.newTag()
                     }
                 }
             }
