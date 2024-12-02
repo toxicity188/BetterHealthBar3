@@ -64,8 +64,8 @@ dependencies {
 }
 ```
 # License
-This plugin is basically premium plugin, so you have to purchase it in SpigotMC to use it. but i allow you to download source, decompile/compile plugin or rebuild. I want to make this plugin free and get profit only depending on donation. but in BetterHud, there's no one who donate me. so i have make a significant decision: abondon my plugin, or make them premium. But don't worry, i will do my best while i have a time.
+This plugin is basically premium plugin, so you have to purchase it in SpigotMC to use it. but i allow you to download source, decompile/compile plugin or rebuild.
 
 # Extra
-![화면 캡처 2024-12-03 003808](https://github.com/user-attachments/assets/44f6a200-96e0-45f4-8af2-0358eb11001d)
+![화면 캡처 2024-12-03 003808](https://github.com/user-attachments/assets/44f6a200-96e0-45f4-8af2-0358eb11001d)  
 In short, I never do it myself; why don't you request MythicCraft to make a MythicHealthBar too?
