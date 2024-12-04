@@ -1,13 +1,13 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "1.7.4" apply false
+    id("io.papermc.paperweight.userdev") version "1.7.6" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
 
-val minecraft = "1.21.3"
+val minecraft = "1.21.4"
 val adventure = "4.17.0"
 val platform = "4.3.4"
 val targetJavaVersion = 21
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.6"
+    version = "3.7"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -114,7 +114,8 @@ val nmsVersions = listOf(
     NmsVersion("v1_20_R3"),
     NmsVersion("v1_20_R4"),
     NmsVersion("v1_21_R1"),
-    NmsVersion("v1_21_R2")
+    NmsVersion("v1_21_R2"),
+    NmsVersion("v1_21_R3")
 )
 
 dependencies {
@@ -159,7 +160,7 @@ tasks {
         version("1.21.1") //TODO set this to 'minecraft' when other plugins support the latest version.
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.9.2")
+            hangar("BetterHud", "1.9.2.DEV-312")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.4")
         }
