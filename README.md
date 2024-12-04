@@ -40,7 +40,7 @@ This plugin supports ModelEngine, automatically detects mob's height.
 No
 
 # Version
-1.19.4-1.21.3
+1.19.4-1.21.4
 
 # Command
 /healthbar - Reload command
