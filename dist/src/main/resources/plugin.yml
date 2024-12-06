@@ -22,6 +22,7 @@ softdepend:
   - skript-placeholders
   - skript-reflect
   - LevelledMobs
+  - Parties
 commands:
   healthbar:
     aliases: hb

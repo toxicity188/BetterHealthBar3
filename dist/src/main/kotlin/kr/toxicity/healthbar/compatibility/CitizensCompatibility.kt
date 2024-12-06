@@ -9,10 +9,7 @@ class CitizensCompatibility : Compatibility {
     override fun accept() {
         PlaceholderContainer.BOOL.addPlaceholder("citizens_npc", placeholder(0) {
             Function {
-                val entity = it.entity.entity()
-                CitizensAPI.getNPCRegistries().any { r ->
-                    r.isNPC(entity)
-                }
+                CitizensAPI.getNPCRegistry().getByUniqueIdGlobal(it.entity.entity().uniqueId) != null
             }
         })
     }

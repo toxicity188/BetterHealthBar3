@@ -24,6 +24,9 @@ object CompatibilityManager : BetterHealthBerManager {
         "Skript" to {
             SkriptCompatibility()
         },
+        "Parties" to {
+            PartiesCompatibility()
+        },
         "LevelledMobs" to {
             LevelledMobsCompatibility()
         }
