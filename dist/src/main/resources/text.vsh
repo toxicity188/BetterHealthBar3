@@ -12,6 +12,7 @@ uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
 uniform int FogShape;
 uniform vec2 ScreenSize;
+uniform vec3 ChunkOffset;
 
 out float vertexDistance;
 out vec4 vertexColor;
@@ -19,6 +20,7 @@ out vec2 texCoord0;
 out float applyColor;
 
 #define DISPLAY_HEIGHT 8192.0 / 40.0
+#define DISPLAY_THRESHOLD 64.0
 
 float betterhealthbar_fog_distance(vec3 pos, int shape) {
     if (shape == 0) {
@@ -29,6 +31,24 @@ float betterhealthbar_fog_distance(vec3 pos, int shape) {
         return max(distXZ, distY);
     }
 }
+
+//GenerateOtherDefinedMethod
+vec3 betterhealthbar_rotate(vec3 v, vec4 q) {
+    vec3 u = q.xyz;
+    float s = q.w;
+    return 2.0 * dot(u, v) * u + (s * s - dot(u, u)) * v + 2.0 * s * cross(u, v);
+}
+
+vec4 betterhealthbar_toQuaternion(float roll, float pitch, float yaw) {
+    float cr = cos(roll * 0.5);
+    float sr = sin(roll * 0.5);
+    float cp = cos(pitch * 0.5);
+    float sp = sin(pitch * 0.5);
+    float cy = cos(yaw * 0.5);
+    float sy = sin(yaw * 0.5);
+    return vec4(sr * cp * cy - cr * sp * sy, cr * sp * cy + sr * cp * sy, cr * cp * sy - sr * sp * cy, cr * cp * cy + sr * sp * sy);
+}
+//GenerateOtherDefinedMethod
 
 void main() {
     vec3 pos = vec3(Position);
@@ -48,22 +68,14 @@ void main() {
         } else {
             yaw = atan(location.x, -location.z);
         }
-        float x = abs(pos.x) + abs(ModelViewMat[3].x);
-        float y = abs(pos.y) + abs(ModelViewMat[3].y);
-        float z = abs(pos.z) + abs(ModelViewMat[3].z);
-        float length1 = -cos(pitch) * y;
-        float length2 = sin(pitch) * sqrt(pow(x, 2.0) + pow(z, 2.0));
-        if (abs(length1 - length2) >= DISPLAY_HEIGHT / 2 || abs(length1 + length2) >= DISPLAY_HEIGHT / 2) {
+        if (length(Position + ChunkOffset - vec3(ModelViewMat[3])) >= (DISPLAY_HEIGHT / 2)) {
             float alpha = texColor.a;
             if (alpha < 1) {
                 applyColor = 1;
-                float pitchAdd = cos(pitch - 3.1415 / 2) * DISPLAY_HEIGHT;
-                float xAlpha = cos(pitch) * alpha;
-                vec3 alphaVector = vec3(xAlpha * sin(yaw), -sin(pitch) * alpha, -xAlpha * cos(yaw));
-                pos.y += cos(pitch) * DISPLAY_HEIGHT;
-                pos.x += sin(yaw) * pitchAdd;
-                pos.z -= cos(yaw) * pitchAdd;
-                pos += alphaVector / 100;
+                vec3 add = betterhealthbar_rotate(vec3(0, DISPLAY_HEIGHT, alpha / 40), betterhealthbar_toQuaternion(pitch, yaw, 0.0));
+                pos.x += add.x;
+                pos.y += add.y;
+                pos.z -= add.z;
             }
         }
     }

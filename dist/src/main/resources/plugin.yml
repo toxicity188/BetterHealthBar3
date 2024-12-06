@@ -23,6 +23,7 @@ softdepend:
   - skript-reflect
   - LevelledMobs
   - Parties
+  - Nexo
 commands:
   healthbar:
     aliases: hb

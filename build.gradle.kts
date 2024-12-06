@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.7.1"
+    version = "3.7.2"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -30,6 +30,7 @@ allprojects {
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://maven.citizensnpcs.co/repo/")
         maven("https://repo.alessiodp.com/releases/")
+        maven("https://repo.nexomc.com/releases")
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")
@@ -81,6 +82,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.10")
     .dependency("net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.9.5")
+    .dependency("com.nexomc:nexo:0.3.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -161,7 +163,7 @@ tasks {
         version("1.21.1") //TODO set this to 'minecraft' when other plugins support the latest version.
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.10")
+            modrinth("betterhud2", "DrmW1PRU")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.5")
         }

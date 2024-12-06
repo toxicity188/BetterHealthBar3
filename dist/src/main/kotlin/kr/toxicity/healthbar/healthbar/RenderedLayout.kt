@@ -125,6 +125,7 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
                 entity = entity?.apply {
                     teleport(loc)
                     text(finalComp.component.build())
+                    update()
                 } ?: data.createEntity(finalComp, renderer.layer())
             }
 

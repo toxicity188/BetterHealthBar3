@@ -4,7 +4,7 @@ import kr.toxicity.healthbar.api.bedrock.BedrockAdapter;
 import kr.toxicity.healthbar.api.manager.*;
 import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter;
 import kr.toxicity.healthbar.api.nms.NMS;
-import kr.toxicity.healthbar.api.plugin.ReloadResult;
+import kr.toxicity.healthbar.api.plugin.ReloadState;
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -30,7 +30,8 @@ public abstract class BetterHealthBar extends JavaPlugin {
         return Objects.requireNonNull(instance, "BetterHealthBar is not loaded!");
     }
 
-    public abstract @NotNull ReloadResult reload();
+    public abstract boolean hookOtherShaders();
+    public abstract @NotNull ReloadState reload();
     public abstract boolean onReload();
     public abstract @NotNull NMS nms();
     public abstract boolean isPaper();

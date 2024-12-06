@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.pack
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.util.*
 import kr.toxicity.healthbar.version.MinecraftVersion
@@ -36,7 +37,7 @@ class PackResource {
     val dataFolder = DATA_FOLDER
 
     val merge = ListBuilder().apply {
-        if (ConfigManagerImpl.createPackMcmeta()) {
+        if (ConfigManagerImpl.packType() != PackType.NONE && ConfigManagerImpl.createPackMcmeta()) {
             PLUGIN.getResource("icon.png")?.buffered()?.let {
                 add("pack.png") {
                     it.use { stream ->

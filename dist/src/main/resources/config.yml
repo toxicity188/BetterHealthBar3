@@ -8,7 +8,7 @@ default-height: 1
 look-degree: 20
 look-distance: 15
 merge-other-folder: []
-create-pack-mcmeta: true
+create-pack-mcmeta: false
 enable-self-host: true
 self-host-port: 8163
 number-format: "#,###.0"
@@ -20,7 +20,7 @@ blacklist-entity-type:
 disable-to-invulnerable-mob: true
 disable-to-invisible-mob: true
 shaders:
-  rendertype_text.vsh: true
-  rendertype_text.fsh: true
+  text.vsh: true
+  text.fsh: true
 use-core-shaders: true
 show-me-healthbar: true

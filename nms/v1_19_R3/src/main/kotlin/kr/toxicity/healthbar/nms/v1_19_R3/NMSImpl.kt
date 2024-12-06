@@ -241,6 +241,7 @@ class NMSImpl : NMS {
             lineWidth = Int.MAX_VALUE
             brightnessOverride = Brightness(15, 15)
             text = textVanilla(component)
+            viewRange = 1024F
             moveTo(
                 location.x,
                 location.y,
@@ -248,10 +249,24 @@ class NMSImpl : NMS {
                 location.yaw,
                 location.pitch
             )
-            connection.send(ClientboundAddEntityPacket(this))
-            connection.send(ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!))
+            connection.send(ClientboundBundlePacket(listOf(
+                ClientboundAddEntityPacket(this),
+                ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!)
+            )))
         }
         return object : VirtualTextDisplay {
+            override fun shadowRadius(radius: Float) {
+                display.shadowRadius = radius
+            }
+            override fun shadowStrength(strength: Float) {
+                display.shadowStrength = strength
+            }
+            override fun update() {
+                connection.send(ClientboundBundlePacket(listOf(
+                    ClientboundTeleportEntityPacket(display),
+                    ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!)
+                )))
+            }
             override fun teleport(location: Location) {
                 display.moveTo(
                     location.x,
@@ -260,18 +275,15 @@ class NMSImpl : NMS {
                     location.yaw,
                     location.pitch
                 )
-                connection.send(ClientboundTeleportEntityPacket(display))
             }
 
             override fun text(component: Component) {
                 display.text = textVanilla(component)
-                connection.send(ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!))
             }
 
             override fun transformation(location: Vector, scale: Vector) {
                 fun Vector.toVanilla() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
                 display.setTransformation(Transformation(location.toVanilla(), null, scale.toVanilla(), null))
-                connection.send(ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!))
             }
 
             override fun remove() {

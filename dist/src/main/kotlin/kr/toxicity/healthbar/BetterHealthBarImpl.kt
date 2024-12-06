@@ -5,7 +5,6 @@ import kr.toxicity.healthbar.api.bedrock.BedrockAdapter
 import kr.toxicity.healthbar.api.manager.*
 import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter
 import kr.toxicity.healthbar.api.nms.NMS
-import kr.toxicity.healthbar.api.plugin.ReloadResult
 import kr.toxicity.healthbar.api.plugin.ReloadState
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler
 import kr.toxicity.healthbar.bedrock.FloodgateAdapter
@@ -58,8 +57,8 @@ class BetterHealthBarImpl : BetterHealthBar() {
     private val scheduler = if (isFolia) FoliaScheduler() else StandardScheduler()
 
     private val managers = listOf(
-        ConfigManagerImpl,
         CompatibilityManager,
+        ConfigManagerImpl,
         ListenerManagerImpl,
         PlaceholderManagerImpl,
         ImageManagerImpl,
@@ -113,11 +112,10 @@ class BetterHealthBarImpl : BetterHealthBar() {
             if (commandSender.hasPermission("betterhealthbar.reload")) {
                 commandSender.sendMessage("Starts reloading. please wait...")
                 CompletableFuture.runAsync {
-                    val reload = reload()
-                    when (reload.state) {
-                        ReloadState.SUCCESS -> commandSender.sendMessage("Reload success! (${DecimalFormat.getInstance().format(reload.time)} ms)")
-                        ReloadState.FAIL -> commandSender.sendMessage("Failed to reload.")
-                        ReloadState.ON_RELOAD -> commandSender.sendMessage("This plugin is still on reload.")
+                    when (val reload = reload()) {
+                        is ReloadState.Success -> commandSender.sendMessage("Reload success! (${DecimalFormat.getInstance().format(reload.time)} ms)")
+                        is ReloadState.Failure -> commandSender.sendMessage("Failed to reload.")
+                        is ReloadState.OnReload -> commandSender.sendMessage("This plugin is still on reload.")
                     }
                 }
             } else {
@@ -130,9 +128,9 @@ class BetterHealthBarImpl : BetterHealthBar() {
                 it.start()
             }
             log.add("Plugin enabled.")
-            scheduler.task {
-                when (reload().state) {
-                    ReloadState.SUCCESS -> info(*log.toTypedArray())
+            if (!CompatibilityManager.usePackTypeNone) scheduler.task {
+                when (reload()) {
+                    is ReloadState.Success -> info(*log.toTypedArray())
                     else -> {
                         manager.disablePlugin(this)
                     }
@@ -169,8 +167,8 @@ class BetterHealthBarImpl : BetterHealthBar() {
         }
     }
 
-    override fun reload(): ReloadResult {
-        if (onReload) return ReloadResult(ReloadState.ON_RELOAD, 0)
+    override fun reload(): ReloadState {
+        if (onReload) return ReloadState.ON_RELOAD
         val time = System.currentTimeMillis()
         onReload = true
         return runWithHandleException("Error has occurred while reloading.") {
@@ -183,15 +181,14 @@ class BetterHealthBarImpl : BetterHealthBar() {
                 info("Reloading ${it.javaClass.simpleName}...")
                 it.reload(resource)
             }
-            PackGenerator.zip(ConfigManagerImpl.packType(), resource)
             managers.forEach {
                 it.postReload()
             }
             onReload = false
-            ReloadResult(ReloadState.SUCCESS, System.currentTimeMillis() - time)
+            ReloadState.Success(System.currentTimeMillis() - time, PackGenerator.zip(ConfigManagerImpl.packType(), resource))
         }.getOrElse {
             onReload = false
-            ReloadResult(ReloadState.FAIL, System.currentTimeMillis() - time)
+            ReloadState.Failure(it)
         }
     }
 
@@ -237,6 +234,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
     override fun placeholderManager(): PlaceholderManager = PlaceholderManagerImpl
     override fun mobManager(): MobManager = MobManagerImpl
     override fun audiences(): BukkitAudiences = audiences
+    override fun hookOtherShaders(): Boolean = CompatibilityManager.hookOtherShaders
 
     override fun onDisable() {
         runWithHandleException("Error has occurred while disabling.") {

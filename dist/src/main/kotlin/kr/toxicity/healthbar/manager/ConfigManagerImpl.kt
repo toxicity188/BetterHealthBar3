@@ -44,14 +44,14 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
         runWithHandleException("Unable to load config.yml") {
             val config = PluginConfiguration.CONFIG.create()
             debug = config.getBoolean("debug")
-            config.getString("pack-type")?.let {
-                packType = runCatching {
+            packType = if (CompatibilityManager.usePackTypeNone) PackType.NONE else config.getString("pack-type")?.let {
+                runCatching {
                     PackType.valueOf(it.uppercase())
                 }.getOrElse {
                     warn("Unable to find this pack: $it")
                     PackType.FOLDER
                 }
-            }
+            } ?: PackType.FOLDER
             buildFolder = config.getString("build-folder")?.let {
                 File(DATA_FOLDER.parentFile, it.replace('/', File.separatorChar))
             } ?: File(DATA_FOLDER, "build")
@@ -85,8 +85,9 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
             disableToInvisibleMob = config.getBoolean("disable-to-invisible-mob", true)
             config.getConfigurationSection("shaders")?.let { s ->
                 shaders = CoreShadersOption(
-                    s.getBoolean("rendertype_text.vsh", true),
-                    s.getBoolean("rendertype_text.fsh", true)
+                    s.getBoolean("text.vsh", true),
+                    s.getBoolean("text.fsh", true),
+                    s.getBoolean("text.json", true)
                 )
             }
             useCoreShaders = config.getBoolean("use-core-shaders", true)
