@@ -20,5 +20,10 @@ class MythicMobsCompatibility : Compatibility {
                 } ?: "<none>"
             }
         })
+        PlaceholderContainer.NUMBER.addPlaceholder("mythicmobs_level", placeholder(0) {
+            Function { data ->
+                MythicBukkit.inst().mobManager.getMythicMobInstance(data.entity.entity())?.level ?: 0
+            }
+        })
     }
 }

@@ -1,26 +1,32 @@
 package kr.toxicity.healthbar.compatibility
 
-import com.nexomc.nexo.api.events.resourcepack.NexoPrePackGenerateEvent
-import kr.toxicity.healthbar.api.plugin.ReloadState.Failure
-import kr.toxicity.healthbar.api.plugin.ReloadState.OnReload
-import kr.toxicity.healthbar.api.plugin.ReloadState.Success
+import io.th0rgal.oraxen.api.events.OraxenPackGeneratedEvent
+import io.th0rgal.oraxen.utils.VirtualFile
+import kr.toxicity.healthbar.api.plugin.ReloadState.*
 import kr.toxicity.healthbar.manager.CompatibilityManager
 import kr.toxicity.healthbar.util.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import java.io.ByteArrayInputStream
 
-class NexoCompatibility : Compatibility {
+class OraxenCompatibility : Compatibility {
     override fun accept() {
         CompatibilityManager.usePackTypeNone = true
         registerListeners(object : Listener {
             @EventHandler
-            fun NexoPrePackGenerateEvent.generate() {
+            fun OraxenPackGeneratedEvent.generate() {
                 when (val reload = PLUGIN.reload()) {
                     is Success -> {
                         reload.resourcePack.forEach { (key, value) ->
-                            addUnknownFile(key, value)
+                            output.add(
+                                VirtualFile(
+                                    key.substringBeforeLast('/'),
+                                    key.substringAfterLast('/'),
+                                    ByteArrayInputStream(value).buffered()
+                                )
+                            )
                         }
-                        info("Successfully merged with Nexo: (${reload.time} ms)")
+                        info("Successfully merged with Oraxen: (${reload.time} ms)")
                     }
                     is Failure -> {
                         reload.throwable.handleException("Resource pack merge failed.")
@@ -33,8 +39,8 @@ class NexoCompatibility : Compatibility {
             }
         })
         info(
-            "BetterHealthBar hooks Nexo.",
-            "Be sure to use '/nexo reload all' instead of '/healthbar' to generate resource pack."
+            "BetterHealthBar hooks Oraxen.",
+            "Be sure to use '/oraxen reload all' instead of '/healthbar' to generate resource pack."
         )
     }
 }

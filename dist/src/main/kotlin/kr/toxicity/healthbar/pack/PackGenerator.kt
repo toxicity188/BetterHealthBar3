@@ -9,6 +9,7 @@ import java.io.OutputStream
 import java.security.DigestOutputStream
 import java.security.MessageDigest
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -40,7 +41,7 @@ object PackGenerator {
 
     private class NonePack : Pack {
         override fun zip(resource: PackResource): Map<String, ByteArray> {
-            val byteMap = mutableMapOf<String, ByteArray>()
+            val byteMap = ConcurrentHashMap<String, ByteArray>()
             loadShaders { s, bytes ->
                 byteMap[s] = bytes
             }
@@ -89,7 +90,7 @@ object PackGenerator {
         private val textures = namespace.subFolder("textures")
 
         override fun zip(resource: PackResource): Map<String, ByteArray> {
-            val byteMap = mutableMapOf<String, ByteArray>()
+            val byteMap = ConcurrentHashMap<String, ByteArray>()
             fun save(parent: File, target: PackResource.Builder, remove: String) {
                 val n = if (remove.isNotEmpty()) "$remove/${target.dir}" else target.dir
                 val get = target.supplier()
@@ -151,7 +152,7 @@ object PackGenerator {
             ZipOutputStream(stream)
         }
         override fun zip(resource: PackResource): Map<String, ByteArray> {
-            val byteMap = mutableMapOf<String, ByteArray>()
+            val byteMap = ConcurrentHashMap<String, ByteArray>()
             fun save(prefix: String, target: PackResource.Builder) {
                 val get = target.supplier()
                 val name = if (prefix.isNotEmpty()) "$prefix/${target.dir}" else target.dir

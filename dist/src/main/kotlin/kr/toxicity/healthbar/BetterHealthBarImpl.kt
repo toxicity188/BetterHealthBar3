@@ -114,7 +114,10 @@ class BetterHealthBarImpl : BetterHealthBar() {
                 CompletableFuture.runAsync {
                     when (val reload = reload()) {
                         is ReloadState.Success -> commandSender.sendMessage("Reload success! (${DecimalFormat.getInstance().format(reload.time)} ms)")
-                        is ReloadState.Failure -> commandSender.sendMessage("Failed to reload.")
+                        is ReloadState.Failure -> {
+                            commandSender.sendMessage("Failed to reload.")
+                            reload.throwable.handleException("Failed to reload.")
+                        }
                         is ReloadState.OnReload -> commandSender.sendMessage("This plugin is still on reload.")
                     }
                 }
@@ -178,7 +181,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
             }
             val resource = PackResource()
             managers.forEach {
-                info("Reloading ${it.javaClass.simpleName}...")
+                debug("Reloading ${it.javaClass.simpleName}...")
                 it.reload(resource)
             }
             managers.forEach {

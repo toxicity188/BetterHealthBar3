@@ -33,6 +33,9 @@ object CompatibilityManager : BetterHealthBerManager {
         },
         "Nexo" to {
             NexoCompatibility()
+        },
+        "Oraxen" to {
+            OraxenCompatibility()
         }
     )
 

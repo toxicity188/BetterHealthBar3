@@ -31,6 +31,7 @@ allprojects {
         maven("https://maven.citizensnpcs.co/repo/")
         maven("https://repo.alessiodp.com/releases/")
         maven("https://repo.nexomc.com/releases")
+        maven("https://repo.oraxen.com/releases")
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")
@@ -83,6 +84,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.9.5")
     .dependency("com.nexomc:nexo:0.3.0")
+    .dependency("io.th0rgal:oraxen:1.185.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()

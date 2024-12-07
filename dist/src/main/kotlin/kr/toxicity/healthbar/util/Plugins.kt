@@ -39,5 +39,9 @@ fun warn(vararg message: String) {
     }
 }
 
+fun debug(vararg message: String) {
+    if (ConfigManagerImpl.debug()) info(*message)
+}
+
 fun taskLater(delay: Long, block: () -> Unit) = PLUGIN.scheduler().taskLater(delay, block)
 fun asyncTaskTimer(delay: Long, period: Long, block: () -> Unit) = PLUGIN.scheduler().asyncTaskTimer(delay, period, block)

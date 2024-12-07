@@ -12,11 +12,15 @@ fun <T> runWithHandleException(message: String, block: () -> T) = runCatching(bl
 }
 
 fun Throwable.handleException(log: String): Array<String> {
-    if (ConfigManagerImpl.debug()) printStackTrace()
-    return arrayOf(
+    val list = mutableListOf(
         log,
         "Reason: $message"
     )
+    if (ConfigManagerImpl.debug()) list += listOf(
+        "Stack trace:",
+        stackTraceToString()
+    )
+    return list.toTypedArray()
 }
 
 inline fun <reified T : Any> placeholder(length: Int, function: Function<List<String>, Function<HealthBarCreateEvent, T>>): PlaceholderBuilder.Builder<T> {

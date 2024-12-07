@@ -20,7 +20,6 @@ out vec2 texCoord0;
 out float applyColor;
 
 #define DISPLAY_HEIGHT 8192.0 / 40.0
-#define DISPLAY_THRESHOLD 64.0
 
 float betterhealthbar_fog_distance(vec3 pos, int shape) {
     if (shape == 0) {
