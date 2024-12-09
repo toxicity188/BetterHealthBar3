@@ -83,8 +83,8 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.10")
     .dependency("net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.9.5")
-    .dependency("com.nexomc:nexo:0.3.0")
-    .dependency("io.th0rgal:oraxen:1.185.0")
+    .dependency("com.nexomc:nexo:0.4.0")
+    .dependency("io.th0rgal:oraxen:1.186.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
