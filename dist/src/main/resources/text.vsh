@@ -67,7 +67,7 @@ void main() {
         } else {
             yaw = atan(location.x, -location.z);
         }
-        if (length(Position + ChunkOffset - vec3(ModelViewMat[3])) >= (DISPLAY_HEIGHT / 2)) {
+        if (length(Position + ChunkOffset - vec3(invModelViewMat[3])) >= (DISPLAY_HEIGHT / 2)) {
             float alpha = texColor.a;
             if (alpha < 1) {
                 applyColor = 1;
