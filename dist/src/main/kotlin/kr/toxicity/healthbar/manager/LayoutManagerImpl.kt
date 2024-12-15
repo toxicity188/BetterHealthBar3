@@ -4,7 +4,7 @@ import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.manager.LayoutManager
 import kr.toxicity.healthbar.layout.LayoutGroupImpl
 import kr.toxicity.healthbar.pack.PackResource
-import kr.toxicity.healthbar.util.forEachAllYamlAsync
+import kr.toxicity.healthbar.util.forEachAllYaml
 import kr.toxicity.healthbar.util.putSync
 import kr.toxicity.healthbar.util.runWithHandleException
 import kr.toxicity.healthbar.util.subFolder
@@ -29,7 +29,7 @@ object LayoutManagerImpl : LayoutManager, BetterHealthBerManager {
         layoutMap.clear()
         groupData.clear()
 
-        resource.dataFolder.subFolder("layouts").forEachAllYamlAsync { file, s, configurationSection ->
+        resource.dataFolder.subFolder("layouts").forEachAllYaml { file, s, configurationSection ->
             runWithHandleException("Unable to load this layout: $s in ${file.path}") {
                 val layout = LayoutGroupImpl(
                     file.path,

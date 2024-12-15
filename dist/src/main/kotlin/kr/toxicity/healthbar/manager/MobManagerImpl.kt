@@ -8,7 +8,7 @@ import kr.toxicity.healthbar.api.mob.MobProvider
 import kr.toxicity.healthbar.entity.HealthBarEntityImpl
 import kr.toxicity.healthbar.mob.MobConfigurationImpl
 import kr.toxicity.healthbar.pack.PackResource
-import kr.toxicity.healthbar.util.forEachAllYamlAsync
+import kr.toxicity.healthbar.util.forEachAllYaml
 import kr.toxicity.healthbar.util.putSync
 import kr.toxicity.healthbar.util.runWithHandleException
 import kr.toxicity.healthbar.util.subFolder
@@ -25,7 +25,7 @@ object MobManagerImpl : BetterHealthBerManager, MobManager {
 
     override fun reload(resource: PackResource) {
         mobConfigurationMap.clear()
-        resource.dataFolder.subFolder("mobs").forEachAllYamlAsync { file, s, configurationSection ->
+        resource.dataFolder.subFolder("mobs").forEachAllYaml { file, s, configurationSection ->
             runWithHandleException("Unable to load mob: $s in ${file.path}") {
                 val config = MobConfigurationImpl(file.path, configurationSection)
                 mobConfigurationMap.putSync("mob", s) {

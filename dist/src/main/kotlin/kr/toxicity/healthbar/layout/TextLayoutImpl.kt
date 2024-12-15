@@ -11,6 +11,7 @@ import kr.toxicity.healthbar.api.placeholder.PlaceholderOption
 import kr.toxicity.healthbar.api.renderer.TextRenderer
 import kr.toxicity.healthbar.api.text.TextAlign
 import kr.toxicity.healthbar.data.BitmapData
+import kr.toxicity.healthbar.manager.EncodeManager
 import kr.toxicity.healthbar.manager.TextManagerImpl
 import kr.toxicity.healthbar.pack.PackResource
 import kr.toxicity.healthbar.util.*
@@ -70,7 +71,7 @@ class TextLayoutImpl(
         val dataList = ArrayList<JsonData>()
         val fileParent = "${parent.name}/text/${layer()}"
         text.bitmap().forEachIndexed { index, textBitmap ->
-            val fileName = "$fileParent/${index + 1}.png"
+            val fileName = "${encodeKey(EncodeManager.EncodeNamespace.TEXTURES, "$fileParent/${index + 1}")}.png"
             dataList.add(JsonData(
                 "$NAMESPACE:$fileName",
                 textBitmap.array
@@ -83,7 +84,7 @@ class TextLayoutImpl(
         val map = HashMap<BitmapData, WidthKey>()
         for (i in 0..<count) {
             val y = y() + groupY() * i + max
-            val keyName = "${parent.name}/$name/${i + 1}"
+            val keyName = encodeKey(EncodeManager.EncodeNamespace.FONT, "${parent.name}/$name/${i + 1}")
             keys.add(map.computeIfAbsent(BitmapData(keyName, y, height)) {
                 resource.font.add("$keyName.json") {
                     JsonObject().apply {
@@ -106,7 +107,7 @@ class TextLayoutImpl(
                         })
                     }.save()
                 }
-                WidthKey(Key.key(NAMESPACE, keyName), x() + groupX() * i)
+                WidthKey(createAdventureKey(keyName), x() + groupX() * i)
             })
         }
     }

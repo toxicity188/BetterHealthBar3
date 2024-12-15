@@ -40,4 +40,5 @@ public interface ConfigManager {
     CoreShadersOption shaders();
     boolean useCoreShaders();
     boolean showMeHealthBar();
+    boolean resourcePackObfuscation();
 }

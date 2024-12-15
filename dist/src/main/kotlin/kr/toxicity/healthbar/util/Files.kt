@@ -11,7 +11,7 @@ fun File.requireExists() = apply {
     if (!exists()) throw RuntimeException("This file doesn't exist: $path")
 }
 
-fun File.forEachAllYamlAsync(block: (File, String, ConfigurationSection) -> Unit) {
+fun File.forEachAllYaml(block: (File, String, ConfigurationSection) -> Unit) {
     fun getAll(file: File): List<File> {
         return if (file.isDirectory) {
             file.listFiles()?.map { subFile ->
@@ -21,34 +21,16 @@ fun File.forEachAllYamlAsync(block: (File, String, ConfigurationSection) -> Unit
             listOf(file)
         }
     }
-    val list = getAll(this).filter {
+    getAll(this).filter {
         it.extension == "yml"
-    }.mapNotNull {
-        runCatching {
+    }.forEach {
+        runWithHandleException("Unable to load this yml file: ${it.name}") {
             val yaml = it.toYaml()
-            val list = ArrayList<Pair<String, ConfigurationSection>>()
-            yaml.getKeys(false).forEach {
-                yaml.getConfigurationSection(it)?.let { section ->
-                    list.add(it to section)
+            yaml.getKeys(false).forEach { key ->
+                yaml.getConfigurationSection(key)?.let { section ->
+                    block(it, key, section)
                 }
             }
-            if (list.isNotEmpty()) it to list else null
-        }.getOrElse { e ->
-            warn(
-                "Unable to load this yml file: ${it.name}",
-                "Reason: ${e.message}"
-            )
-            null
         }
-    }
-    if (list.isEmpty()) return
-    list.map {
-        {
-            it.second.forEach { pair ->
-                block(it.first, pair.first, pair.second)
-            }
-        }
-    }.forEachAsync {
-        it()
     }
 }

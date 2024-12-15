@@ -3,7 +3,6 @@ package kr.toxicity.healthbar.util
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -42,7 +41,7 @@ val MINI_MESSAGE = MiniMessage.builder()
     .build()
 
 val SPACE_KEY
-    get() = Key.key(NAMESPACE, "space")
+    get() = createAdventureKey("space")
 
 val NEGATIVE_ONE_SPACE_COMPONENT
     get() = WidthComponent(0, Component.text().font(SPACE_KEY).content((ADVENTURE_START_INT - 1).parseChar()))

@@ -37,6 +37,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     private var shaders = CoreShadersOption.DEFAULT
     private var useCoreShaders = true
     private var showMeHealthBar = true
+    private var resourcePackObfuscation = false
 
     private var bstats: Metrics? = null
 
@@ -44,6 +45,8 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
         runWithHandleException("Unable to load config.yml") {
             val config = PluginConfiguration.CONFIG.create()
             debug = config.getBoolean("debug")
+            resourcePackObfuscation = config.getBoolean("resource-pack-obfuscation", false)
+
             packType = if (CompatibilityManager.usePackTypeNone) PackType.NONE else config.getString("pack-type")?.let {
                 runCatching {
                     PackType.valueOf(it.uppercase())
@@ -125,4 +128,5 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     override fun shaders(): CoreShadersOption = shaders
     override fun useCoreShaders(): Boolean = useCoreShaders
     override fun showMeHealthBar(): Boolean = showMeHealthBar
+    override fun resourcePackObfuscation(): Boolean = resourcePackObfuscation
 }

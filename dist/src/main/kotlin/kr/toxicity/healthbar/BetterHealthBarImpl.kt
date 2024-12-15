@@ -57,6 +57,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
     private val scheduler = if (isFolia) FoliaScheduler() else StandardScheduler()
 
     private val managers = listOf(
+        EncodeManager,
         CompatibilityManager,
         ConfigManagerImpl,
         ListenerManagerImpl,

@@ -4,7 +4,7 @@ import kr.toxicity.healthbar.api.healthbar.HealthBar
 import kr.toxicity.healthbar.api.manager.HealthBarManager
 import kr.toxicity.healthbar.healthbar.HealthBarImpl
 import kr.toxicity.healthbar.pack.PackResource
-import kr.toxicity.healthbar.util.forEachAllYamlAsync
+import kr.toxicity.healthbar.util.forEachAllYaml
 import kr.toxicity.healthbar.util.putSync
 import kr.toxicity.healthbar.util.runWithHandleException
 import kr.toxicity.healthbar.util.subFolder
@@ -28,7 +28,7 @@ object HealthBarManagerImpl : HealthBarManager, BetterHealthBerManager {
     override fun reload(resource: PackResource) {
         healthBarMap.clear()
         uuidSet.clear()
-        resource.dataFolder.subFolder("healthbars").forEachAllYamlAsync { file, s, section ->
+        resource.dataFolder.subFolder("healthbars").forEachAllYaml { file, s, section ->
             runWithHandleException("Unable to load this health bar: $s in ${file.path}") {
                 var uuid = UUID.randomUUID()
                 while (!uuidSet.add(uuid)) uuid = UUID.randomUUID()

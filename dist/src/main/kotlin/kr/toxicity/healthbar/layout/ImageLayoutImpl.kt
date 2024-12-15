@@ -10,6 +10,7 @@ import kr.toxicity.healthbar.api.layout.ImageLayout
 import kr.toxicity.healthbar.api.listener.HealthBarListener
 import kr.toxicity.healthbar.api.renderer.ImageRenderer
 import kr.toxicity.healthbar.data.BitmapData
+import kr.toxicity.healthbar.manager.EncodeManager
 import kr.toxicity.healthbar.manager.ImageManagerImpl
 import kr.toxicity.healthbar.manager.ListenerManagerImpl
 import kr.toxicity.healthbar.pack.PackResource
@@ -41,7 +42,7 @@ class ImageLayoutImpl(
         val componentMap = HashMap<BitmapData, WidthComponent>()
         image.images().forEach {
             val list = ArrayList<PixelComponent>()
-            val dir = "${parent.name}/image/${layer()}/${it.name}"
+            val dir = "${parent.name}/image/${layer()}/${it.name}".encodeFile(EncodeManager.EncodeNamespace.TEXTURES)
             resource.textures.add(dir) {
                 it.image.image.withOpacity(layer()).toByteArray()
             }

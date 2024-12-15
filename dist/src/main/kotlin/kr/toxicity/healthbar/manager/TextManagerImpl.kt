@@ -55,7 +55,7 @@ object TextManagerImpl : TextManager, BetterHealthBerManager {
         textMap.clear()
         textMap["default"] = default
         val fonts = resource.dataFolder.subFolder("fonts")
-        resource.dataFolder.subFolder("texts").forEachAllYamlAsync { file, s, configurationSection ->
+        resource.dataFolder.subFolder("texts").forEachAllYaml { file, s, configurationSection ->
             runWithHandleException("Unable to read this text: $s in ${file.path}") {
                 val font = Font.createFont(Font.TRUETYPE_FONT, File(fonts, configurationSection.getString("file").ifNull("Unable to find 'file' configuration.").replace('/', File.separatorChar)).apply {
                     if (!exists()) throw RuntimeException("Unable to find this font: $path")
