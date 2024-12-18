@@ -2,8 +2,10 @@ package kr.toxicity.healthbar.compatibility
 
 import io.th0rgal.oraxen.api.events.OraxenPackGeneratedEvent
 import io.th0rgal.oraxen.utils.VirtualFile
+import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.api.plugin.ReloadState.*
 import kr.toxicity.healthbar.manager.CompatibilityManager
+import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.util.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -15,7 +17,8 @@ class OraxenCompatibility : Compatibility {
         registerListeners(object : Listener {
             @EventHandler
             fun OraxenPackGeneratedEvent.generate() {
-                when (val reload = PLUGIN.reload()) {
+                ConfigManagerImpl.preReload()
+                if (ConfigManagerImpl.packType() == PackType.NONE) when (val reload = PLUGIN.reload()) {
                     is Success -> {
                         reload.resourcePack.forEach { (key, value) ->
                             output.add(

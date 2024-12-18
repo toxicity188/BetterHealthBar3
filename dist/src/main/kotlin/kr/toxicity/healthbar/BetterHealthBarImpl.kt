@@ -5,6 +5,7 @@ import kr.toxicity.healthbar.api.bedrock.BedrockAdapter
 import kr.toxicity.healthbar.api.manager.*
 import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter
 import kr.toxicity.healthbar.api.nms.NMS
+import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.api.plugin.ReloadState
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler
 import kr.toxicity.healthbar.bedrock.FloodgateAdapter
@@ -132,7 +133,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
                 it.start()
             }
             log.add("Plugin enabled.")
-            if (!CompatibilityManager.usePackTypeNone) scheduler.task {
+            if (!CompatibilityManager.usePackTypeNone || ConfigManagerImpl.packType() != PackType.NONE) scheduler.task {
                 when (reload()) {
                     is ReloadState.Success -> info(*log.toTypedArray())
                     else -> {

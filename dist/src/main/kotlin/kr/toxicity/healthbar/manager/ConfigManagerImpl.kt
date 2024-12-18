@@ -41,13 +41,17 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
 
     private var bstats: Metrics? = null
 
+    override fun start() {
+        preReload()
+    }
+
     override fun preReload() {
         runWithHandleException("Unable to load config.yml") {
             val config = PluginConfiguration.CONFIG.create()
             debug = config.getBoolean("debug")
             resourcePackObfuscation = config.getBoolean("resource-pack-obfuscation", false)
 
-            packType = if (CompatibilityManager.usePackTypeNone) PackType.NONE else config.getString("pack-type")?.let {
+            packType = config.getString("pack-type")?.let {
                 runCatching {
                     PackType.valueOf(it.uppercase())
                 }.getOrElse {

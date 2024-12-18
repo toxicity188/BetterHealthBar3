@@ -12,7 +12,7 @@ class CurrentModelEngineAdapter : ModelEngineAdapter {
 
     private val blueprintCache = ExpiringMap.builder()
         .maxSize(256)
-        .expirationPolicy(ExpirationPolicy.CREATED)
+        .expirationPolicy(ExpirationPolicy.ACCESSED)
         .expiration(1, TimeUnit.MINUTES)
         .build<String, Double>()
 
