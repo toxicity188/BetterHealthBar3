@@ -2,7 +2,7 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.1.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "1.7.6" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
@@ -79,8 +79,8 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.10.3")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.10.3")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.11.1")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.11.1")
     .dependency("net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.9.5")
     .dependency("com.nexomc:nexo:0.4.0")
@@ -165,7 +165,7 @@ tasks {
         version("1.21.1") //TODO set this to 'minecraft' when other plugins support the latest version.
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.10.3")
+            hangar("BetterHud", "1.11.1")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.9.5")
         }
