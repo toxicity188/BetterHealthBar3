@@ -3,7 +3,7 @@ package kr.toxicity.healthbar
 import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.bedrock.BedrockAdapter
 import kr.toxicity.healthbar.api.manager.*
-import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter
+import kr.toxicity.healthbar.api.modelengine.ModelAdapter
 import kr.toxicity.healthbar.api.nms.NMS
 import kr.toxicity.healthbar.api.pack.PackType
 import kr.toxicity.healthbar.api.plugin.ReloadState
@@ -21,6 +21,7 @@ import kr.toxicity.healthbar.scheduler.StandardScheduler
 import kr.toxicity.healthbar.util.*
 import kr.toxicity.healthbar.version.MinecraftVersion
 import kr.toxicity.healthbar.version.ModelEngineVersion
+import kr.toxicity.model.api.tracker.EntityTracker
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -52,7 +53,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
         true
     }.getOrDefault(false)
     private var bedrock = BedrockAdapter.NONE
-    private var modelEngine = ModelEngineAdapter.NONE
+    private var model = ModelAdapter.NONE
     private lateinit var nms: NMS
     private lateinit var audiences: BukkitAudiences
     private val scheduler = if (isFolia) FoliaScheduler() else StandardScheduler()
@@ -98,8 +99,12 @@ class BetterHealthBarImpl : BetterHealthBar() {
         manager.getPlugin("ModelEngine")?.let {
             runWithHandleException("Failed to load ModelEngine support.") {
                 val version = ModelEngineVersion(it.description.version)
-                modelEngine = if (version >= ModelEngineVersion.version_4_0_0) CurrentModelEngineAdapter() else LegacyModelEngineAdapter()
+                model = if (version >= ModelEngineVersion.version_4_0_0) CurrentModelEngineAdapter() else LegacyModelEngineAdapter()
                 log.add("ModelEngine support enabled: $version")
+            }
+        } ?: run {
+            if (manager.isPluginEnabled("BetterModel")) model = ModelAdapter {
+                EntityTracker.tracker(it.uniqueId)?.height()
             }
         }
         if (manager.isPluginEnabled("Geyser-Spigot")) {
@@ -200,7 +205,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
     override fun onReload(): Boolean = onReload
     override fun bedrock(): BedrockAdapter = bedrock
     override fun miniMessage(): MiniMessage = MINI_MESSAGE
-    override fun modelEngine(): ModelEngineAdapter = modelEngine
+    override fun modelAdapter(): ModelAdapter = model
     override fun scheduler(): WrappedScheduler = scheduler
     override fun nms(): NMS = nms
     override fun isFolia(): Boolean = isFolia

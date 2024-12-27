@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
-public interface ModelEngineAdapter {
-    ModelEngineAdapter NONE = e -> null;
+public interface ModelAdapter {
+    ModelAdapter NONE = e -> null;
     @Nullable
     Double height(@NotNull Entity entity);
 }

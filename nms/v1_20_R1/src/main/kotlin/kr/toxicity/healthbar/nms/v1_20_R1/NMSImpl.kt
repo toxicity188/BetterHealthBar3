@@ -51,6 +51,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector3f
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -330,12 +331,9 @@ class NMSImpl : NMS {
         }
 
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
-            val playerX = serverPlayer.x
-            val playerY = serverPlayer.y
-            val playerZ = serverPlayer.z
             fun Double.square() = this * this
             entity?.let { e ->
-                if (sqrt((playerX - e.x).square()  + (playerY - e.y).square() + (playerZ - e.z).square()) > plugin.configManager().lookDistance()) return
+                if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
                 val set = HashSet(plugin.healthBarManager().allHealthBars().filter {
                     it.isDefault && it.triggers().contains(trigger)
                 })
@@ -367,25 +365,21 @@ class NMSImpl : NMS {
             }
         }
         private fun getViewedEntity(): List<LivingEntity> {
-            val playerX = serverPlayer.x
-            val playerY = serverPlayer.y
-            val playerZ = serverPlayer.z
 
-            var yaw = serverPlayer.yHeadRot.toDouble()
-            if (yaw < 90) yaw += 90
-            else yaw = -(360 - (yaw + 90))
-            val playerYaw = Math.toRadians(yaw)
+            val playerYaw = Math.toRadians(serverPlayer.yRot.toDouble())
             val playerPitch = Math.toRadians(-serverPlayer.xRot.toDouble())
 
             val degree = plugin.configManager().lookDegree()
 
             return getLevelGetter().all.mapNotNull {
                 if (it is LivingEntity && it !== serverPlayer) {
-                    val x = it.x
-                    val y = it.y
-                    val z = it.z
+                    val x = it.z - serverPlayer.z
+                    val y = it.y - serverPlayer.y
+                    val z = -(it.x - serverPlayer.x)
 
-                    if (abs(atan2(y - playerY, abs(x - playerX)) - playerPitch) <= degree && abs(atan2(z - playerZ, x - playerX) - playerYaw) <= degree) it
+                    val dy = abs(atan2(y, abs(x)) - playerPitch)
+                    val dz = abs(atan2(z, x) - playerYaw)
+                    if ((dy <= degree || dy >= 2 * PI - degree) && (dz <= degree || dz >= 2 * PI - degree)) it
                     else null
                 } else null
             }

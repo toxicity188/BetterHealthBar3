@@ -2,13 +2,13 @@ package kr.toxicity.healthbar.modelengine
 
 import com.ticxo.modelengine.api.ModelEngineAPI
 import com.ticxo.modelengine.api.generator.blueprint.BlueprintBone
-import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter
+import kr.toxicity.healthbar.api.modelengine.ModelAdapter
 import net.jodah.expiringmap.ExpirationPolicy
 import net.jodah.expiringmap.ExpiringMap
 import org.bukkit.entity.Entity
 import java.util.concurrent.TimeUnit
 
-class CurrentModelEngineAdapter : ModelEngineAdapter {
+class CurrentModelEngineAdapter : ModelAdapter {
 
     private val blueprintCache = ExpiringMap.builder()
         .maxSize(256)

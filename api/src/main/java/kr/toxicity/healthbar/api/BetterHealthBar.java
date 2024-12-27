@@ -2,7 +2,7 @@ package kr.toxicity.healthbar.api;
 
 import kr.toxicity.healthbar.api.bedrock.BedrockAdapter;
 import kr.toxicity.healthbar.api.manager.*;
-import kr.toxicity.healthbar.api.modelengine.ModelEngineAdapter;
+import kr.toxicity.healthbar.api.modelengine.ModelAdapter;
 import kr.toxicity.healthbar.api.nms.NMS;
 import kr.toxicity.healthbar.api.plugin.ReloadState;
 import kr.toxicity.healthbar.api.scheduler.WrappedScheduler;
@@ -37,7 +37,7 @@ public abstract class BetterHealthBar extends JavaPlugin {
     public abstract boolean isPaper();
     public abstract boolean isFolia();
     public abstract @NotNull WrappedScheduler scheduler();
-    public abstract @NotNull ModelEngineAdapter modelEngine();
+    public abstract @NotNull ModelAdapter modelAdapter();
     public abstract @NotNull BedrockAdapter bedrock();
     public abstract @NotNull MiniMessage miniMessage();
     public abstract @NotNull BukkitAudiences audiences();

@@ -13,6 +13,7 @@ libraries:
   - "net.kyori:adventure-platform-bukkit:${platform}"
 softdepend:
   - BetterHud
+  - BetterModel
   - ModelEngine
   - MythicMobs
   - PlaceholderAPI

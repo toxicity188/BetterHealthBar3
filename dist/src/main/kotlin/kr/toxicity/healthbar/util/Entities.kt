@@ -17,7 +17,7 @@ val ATTRIBUTE_ARMOR = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(if (Minecra
 
 fun HealthBarCreateEvent.toEntityLocation(): Location {
     return entity.entity().location.apply {
-        y += (PLUGIN.modelEngine().height(entity.entity()) ?: entity.entity().eyeHeight) + ConfigManagerImpl.defaultHeight()
+        y += (PLUGIN.modelAdapter().height(entity.entity()) ?: entity.entity().eyeHeight) + ConfigManagerImpl.defaultHeight()
         entity.mob()?.let {
             y += it.configuration().height()
         }
