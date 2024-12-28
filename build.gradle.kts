@@ -138,7 +138,7 @@ dependencies {
     }
 }
 
-val sourceJar by tasks.creating(Jar::class.java) {
+val sourceJar by tasks.registering(Jar::class) {
     dependsOn(tasks.classes)
     fun getProjectSource(project: Project): Array<File> {
         return if (project.subprojects.isEmpty()) project.sourceSets.main.get().allSource.srcDirs.toTypedArray() else ArrayList<File>().apply {
@@ -151,7 +151,7 @@ val sourceJar by tasks.creating(Jar::class.java) {
     from(*getProjectSource(project))
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
-val dokkaJar by tasks.creating(Jar::class.java) {
+val dokkaJar by tasks.registering(Jar::class) {
     dependsOn(tasks.dokkaHtmlMultiModule)
     archiveClassifier = "dokka"
     from(layout.buildDirectory.dir("dokka/htmlMultiModule").orNull?.asFile)
