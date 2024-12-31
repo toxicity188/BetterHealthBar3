@@ -24,3 +24,4 @@ shaders:
   text.fsh: true
 use-core-shaders: true
 show-me-healthbar: true
+resource-pack-obfuscation: false

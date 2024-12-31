@@ -23,13 +23,17 @@ fun HealthBarCreateEvent.toEntityLocation(): Location {
         }
     }
 }
+
+private const val HEIGHT = 8192.0 / 40.0
+
 fun HealthBarCreateEvent.createEntity(component: WidthComponent, layer: Int = 0): VirtualTextDisplay {
     return PLUGIN.nms().createTextDisplay(player.player(), toEntityLocation(), component.component.build()).apply {
         shadowRadius(healthBar.shadowRadius())
         shadowStrength(healthBar.shadowStrength())
         val scale = healthBar.scale()
+        val multiplier = -(1 - scale.y) * HEIGHT
         transformation(
-            Vector(0.0, if (ConfigManagerImpl.useCoreShaders()) -(1 - scale.y) * 8192 / 40 else 0.0, layer.toDouble() / 4000),
+            Vector(0.0, if (ConfigManagerImpl.useCoreShaders()) -multiplier else HEIGHT + multiplier, layer.toDouble() / 4000),
             scale
         )
     }

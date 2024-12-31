@@ -2,7 +2,7 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.1.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.10" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.7.4"
+    version = "3.8"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -85,7 +85,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.9.5")
     .dependency("com.nexomc:nexo:0.7.0")
-    .dependency("io.th0rgal:oraxen:1.186.0")
+    .dependency("io.th0rgal:oraxen:1.186.1")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()

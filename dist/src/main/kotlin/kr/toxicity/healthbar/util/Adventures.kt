@@ -2,7 +2,6 @@ package kr.toxicity.healthbar.util
 
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
-import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -53,7 +52,7 @@ val EMPTY_WIDTH_COMPONENT
 val EMPTY_PIXEL_COMPONENT
     get() = PixelComponent(0, EMPTY_WIDTH_COMPONENT)
 
-fun Int.toAscent() = if (ConfigManagerImpl.useCoreShaders()) this - 8192 else this
+fun Int.toAscent() = this - 8192
 fun Int.toHeight() = apply {
     if (this > 256) throw RuntimeException("Too large height: $this > 256")
     if (this < 0) throw RuntimeException("Too low height: $this < 0")

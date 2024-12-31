@@ -51,10 +51,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector3f
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.sqrt
+import kotlin.math.*
 
 @Suppress("UNUSED")
 class NMSImpl : NMS {
@@ -329,6 +326,7 @@ class NMSImpl : NMS {
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
             fun Double.square() = this * this
             entity?.let { e ->
+                if (!e.canSee()) return
                 if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
                 val set = HashSet(plugin.healthBarManager().allHealthBars().filter {
                     it.triggers().contains(trigger)
@@ -361,24 +359,30 @@ class NMSImpl : NMS {
             }
         }
         private fun getViewedEntity(): List<LivingEntity> {
+            return getLevelGetter().all
+                .asSequence()
+                .mapNotNull { 
+                    it as? LivingEntity
+                }
+                .filter { 
+                    it !== serverPlayer
+                }
+                .toList()
+        }
 
+        private fun net.minecraft.world.entity.Entity.canSee(): Boolean {
             val playerYaw = Math.toRadians(serverPlayer.yRot.toDouble())
             val playerPitch = Math.toRadians(-serverPlayer.xRot.toDouble())
 
             val degree = plugin.configManager().lookDegree()
 
-            return getLevelGetter().all.mapNotNull {
-                if (it is LivingEntity && it !== serverPlayer) {
-                    val x = it.z - serverPlayer.z
-                    val y = it.y - serverPlayer.y
-                    val z = -(it.x - serverPlayer.x)
+            val x = this.z - serverPlayer.z
+            val y = this.y - serverPlayer.y
+            val z = -(this.x - serverPlayer.x)
 
-                    val dy = abs(atan2(y, abs(x)) - playerPitch)
-                    val dz = abs(atan2(z, x) - playerYaw)
-                    if ((dy <= degree || dy >= 2 * PI - degree) && (dz <= degree || dz >= 2 * PI - degree)) it
-                    else null
-                } else null
-            }
+            val dy = abs(atan2(y, abs(cos(playerYaw) * x - sin(playerYaw) * z)) - playerPitch)
+            val dz = abs(atan2(z, x) - playerYaw)
+            return (dy <= degree || dy >= 2 * PI - degree) && (dz <= degree || dz >= 2 * PI - degree)
         }
 
         @Suppress("UNCHECKED_CAST")

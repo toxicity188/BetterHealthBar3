@@ -41,19 +41,16 @@ object LayoutManagerImpl : LayoutManager, BetterHealthBerManager {
                 }
             }
         }
-        val min = layoutMap.minOfOrNull {
-            it.value.min
-        } ?: 0
         layoutMap.forEach {
             it.value.group()?.let { group ->
                 groupData.computeIfAbsent(group) {
                     Collections.synchronizedSet(HashSet())
                 }.add(it.value)
-            } ?: it.value.build(resource, min, 1)
+            } ?: it.value.build(resource, 1)
         }
         groupData.values.forEach {
             it.forEach { group ->
-                group.build(resource, min, it.size)
+                group.build(resource, it.size)
             }
         }
     }

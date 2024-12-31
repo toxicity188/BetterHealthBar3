@@ -67,7 +67,7 @@ class TextLayoutImpl(
         val x: Int,
     )
 
-    fun build(resource: PackResource, max: Int, count: Int) {
+    fun build(resource: PackResource, count: Int) {
         val dataList = ArrayList<JsonData>()
         val fileParent = "${parent.name}/text/${layer()}"
         text.bitmap().forEachIndexed { index, textBitmap ->
@@ -83,7 +83,7 @@ class TextLayoutImpl(
 
         val map = HashMap<BitmapData, WidthKey>()
         for (i in 0..<count) {
-            val y = y() + groupY() * i + max
+            val y = y() + groupY() * i
             val keyName = encodeKey(EncodeManager.EncodeNamespace.FONT, "${parent.name}/$name/${i + 1}")
             keys.add(map.computeIfAbsent(BitmapData(keyName, y, height)) {
                 resource.font.add("$keyName.json") {
