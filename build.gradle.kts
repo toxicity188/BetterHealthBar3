@@ -2,13 +2,13 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.1.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.10" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
 
 val minecraft = "1.21.4"
-val adventure = "4.17.0"
+val adventure = "4.18.0"
 val platform = "4.3.4"
 val targetJavaVersion = 21
 
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.8"
+    version = "3.8.1"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")

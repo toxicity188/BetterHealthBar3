@@ -33,7 +33,7 @@ fun HealthBarCreateEvent.createEntity(component: WidthComponent, layer: Int = 0)
         val scale = healthBar.scale()
         val multiplier = -(1 - scale.y) * HEIGHT
         transformation(
-            Vector(0.0, if (ConfigManagerImpl.useCoreShaders()) -multiplier else HEIGHT + multiplier, layer.toDouble() / 4000),
+            Vector(0.0, if (ConfigManagerImpl.useCoreShaders()) multiplier else HEIGHT + multiplier, if (ConfigManagerImpl.useCoreShaders()) 0.0 else layer.toDouble() / 4000),
             scale
         )
     }

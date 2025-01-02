@@ -345,7 +345,6 @@ class NMSImpl : NMS {
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
             fun Double.square() = this * this
             entity?.let { e ->
-                if (!e.canSee()) return
                 if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
                 val set = HashSet(plugin.healthBarManager().allHealthBars().filter {
                     it.triggers().contains(trigger)
@@ -384,7 +383,7 @@ class NMSImpl : NMS {
                     it as? LivingEntity
                 }
                 .filter { 
-                    it !== serverPlayer
+                    it !== serverPlayer && it.canSee()
                 }
                 .toList()
         }
