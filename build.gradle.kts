@@ -2,7 +2,7 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.1.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.8.1"
+    version = "3.8.2"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -79,13 +79,13 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.11.1")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.11.1")
-    .dependency("io.github.toxicity188:BetterModel:1.1")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.11.4")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.11.4")
+    .dependency("io.github.toxicity188:BetterModel:1.3.3")
     .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.9.5")
-    .dependency("com.nexomc:nexo:0.7.0")
-    .dependency("io.th0rgal:oraxen:1.186.1")
+    .dependency("com.github.SkriptLang:Skript:2.10.0")
+    .dependency("com.nexomc:nexo:0.9.0")
+    .dependency("io.th0rgal:oraxen:1.188.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -129,10 +129,10 @@ dependencies {
     implementation(dist)
     implementation(getProject("scheduler:standard").spigot())
     implementation(getProject("scheduler:folia").paper())
-    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.4.2-SNAPSHOT"))
+    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.6.0-SNAPSHOT"))
     implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.3-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
-    implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.7"))
+    implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.8"))
     nmsVersions.forEach {
         implementation(project(":nms:${it.name}", configuration = "reobf"))
     }
@@ -166,9 +166,9 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.11.2.348")
+            hangar("BetterHud", "1.11.4")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.9.5")
+            hangar("Skript", "2.10.0")
         }
     }
     shadowJar {

@@ -300,39 +300,12 @@ public class PlaceholderContainer<T> {
         };
     }
 
-    private static @NotNull Component legacyAdapt(@NotNull String string) {
-        var sb1 = new StringBuilder();
-        var sb2 = Component.text();
-        var skip = false;
-        for (char c : string.toCharArray()) {
-            if (!skip) switch (c) {
-                case '<' -> {
-                    sb2.append(legacyAdapt0(sb1.toString()));
-                    sb1.setLength(0);
-                    sb1.append(c);
-                }
-                case '>' -> {
-                    sb1.append(c);
-                    sb2.append(Component.text(sb1.toString()));
-                    sb1.setLength(0);
-                }
-                case '\\' -> {
-                    sb1.append(c);
-                    skip = true;
-                }
-                default -> sb1.append(c);
-            } else sb1.append(c);
-        }
-        if (!sb1.isEmpty()) sb2.append(legacyAdapt0(sb1.toString()));
-        return sb2.build();
-    }
-
     private static final TextReplacementConfig TO_MINI_MESSAGE = TextReplacementConfig.builder()
             .match(Pattern.compile(".+"))
             .replacement((r, b) -> MiniMessage.miniMessage().deserialize(r.group()))
             .build();
 
-    private static @NotNull Component legacyAdapt0(@NotNull String s) {
+    private static @NotNull Component legacyAdapt(@NotNull String s) {
         return LegacyComponentSerializer.legacySection().deserialize(s).replaceText(TO_MINI_MESSAGE);
     }
 }
