@@ -7,18 +7,24 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public enum PlaceholderOption {
-    NUMBER_FORMAT("#,###")
+    NUMBER_FORMAT("#,###", ConfigurationSection::getString),
+    UNCOLORED(false, ConfigurationSection::getBoolean)
     ;
-    private final @NotNull String defaultValue;
+    private final @NotNull Object defaultValue;
+    private final BiFunction<ConfigurationSection, String, Object> mapper;
 
     public static final Property EMPTY = new Property(Arrays.stream(values()).collect(Collectors.toMap(v -> v, v -> v.defaultValue)));
 
     public static @NotNull Property of(@NotNull ConfigurationSection section) {
-        return new Property(Arrays.stream(values()).collect(Collectors.toMap(v -> v, v -> section.getString(v.configName(), v.defaultValue))));
+        return new Property(Arrays.stream(values()).collect(Collectors.toMap(v -> v, v -> {
+            var get = v.mapper.apply(section, v.configName());
+            return get != null ? get : v.defaultValue;
+        })));
     }
 
     public @NotNull String configName() {
@@ -27,9 +33,9 @@ public enum PlaceholderOption {
 
     @RequiredArgsConstructor
     public static final class Property {
-        private final Map<PlaceholderOption, String> map;
+        private final Map<PlaceholderOption, Object> map;
 
-        public @Nullable String get(@NotNull PlaceholderOption option) {
+        public @Nullable Object get(@NotNull PlaceholderOption option) {
             return map.get(option);
         }
     }

@@ -18,12 +18,7 @@ class PlaceholderAPICompatibility : Compatibility {
         PlaceholderContainer.STRING.addPlaceholder("papi_entity", placeholder(1) {
             val papi = if (it[0].startsWith('%')) it[0] else "%${it[0]}%"
             Function { d ->
-                val entity = d.entity.entity()
-                if (entity is Player) {
-                    PlaceholderAPI.setPlaceholders(entity, papi)
-                } else {
-                    ""
-                }
+                PlaceholderAPI.setPlaceholders(d.entity.entity() as? Player ?: return@Function "", papi)
             }
         })
     }

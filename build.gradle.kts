@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "2.1.10"
     id("io.github.goooler.shadow") version "8.1.8"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
@@ -84,7 +84,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.toxicity188:BetterModel:1.3.3")
     .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.10.0")
-    .dependency("com.nexomc:nexo:0.9.0")
+    .dependency("com.nexomc:nexo:0.10.0")
     .dependency("io.th0rgal:oraxen:1.188.0")
     .also {
         it.tasks.processResources {

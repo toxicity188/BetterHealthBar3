@@ -140,7 +140,7 @@ class TextLayoutImpl(
                     if (s.hasDecoration(TextDecoration.BOLD)) i++
                     if (s.hasDecoration(TextDecoration.ITALIC)) i++
                     it.content().codePoints().map { c ->
-                        if (c == ' '.code) 4 else (textWidth[c] ?: 0) + 1 + i
+                        (if (c == ' '.code) 4 else (textWidth[c] ?: 0) + 1) + i
                     }.sum()
                 } ?: 0) + component.children().sumOf {
                     length(it)

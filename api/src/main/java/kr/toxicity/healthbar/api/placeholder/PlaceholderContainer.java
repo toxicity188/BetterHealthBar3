@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +28,7 @@ public class PlaceholderContainer<T> {
 
     public PlaceholderContainer(
             @NotNull Class<T> clazz,
-            String name,
+            @NotNull String name,
             @NotNull Function<String, T> parser,
             @NotNull Function<T, String> stringMapper,
             @NotNull BiFunction<PlaceholderOption.Property, PlaceholderContainer<T>, PropertyResult<T>> propertyParser
@@ -76,7 +77,7 @@ public class PlaceholderContainer<T> {
             s -> BetterHealthBar.inst().configManager().numberFormat().format(s),
             (p, c) -> {
                 var mapper = c.stringMapper;
-                var format = p.get(PlaceholderOption.NUMBER_FORMAT);
+                var format = (String) p.get(PlaceholderOption.NUMBER_FORMAT);
                 if (format != null) {
                     var decimal = new DecimalFormat(format);
                     mapper = decimal::format;
@@ -95,7 +96,12 @@ public class PlaceholderContainer<T> {
                 return null;
             },
             d -> d,
-            (p, c) -> new PropertyResult<>(c.parser, c.stringMapper)
+            (p, c) -> {
+                var uncolored = (Boolean) p.get(PlaceholderOption.UNCOLORED);
+                if (Boolean.TRUE.equals(uncolored)) {
+                    return new PropertyResult<>(c.parser, s -> ChatColor.stripColor(c.stringMapper.apply(s)));
+                } else return new PropertyResult<>(c.parser, c.stringMapper);
+            }
     );
     public static final PlaceholderContainer<Boolean> BOOL = new PlaceholderContainer<>(
             Boolean.class,
