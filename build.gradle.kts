@@ -81,9 +81,9 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.11.4")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.11.4")
-    .dependency("io.github.toxicity188:BetterModel:1.3.3")
+    .dependency("io.github.toxicity188:BetterModel:1.4")
     .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.10.0")
+    .dependency("com.github.SkriptLang:Skript:2.10.1")
     .dependency("com.nexomc:nexo:0.10.0")
     .dependency("io.th0rgal:oraxen:1.188.0")
     .also {
@@ -168,7 +168,7 @@ tasks {
         downloadPlugins {
             hangar("BetterHud", "1.11.4")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.10.0")
+            hangar("Skript", "2.10.1")
         }
     }
     shadowJar {
