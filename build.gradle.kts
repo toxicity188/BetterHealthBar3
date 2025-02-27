@@ -8,7 +8,7 @@ plugins {
 }
 
 val minecraft = "1.21.4"
-val adventure = "4.18.0"
+val adventure = "4.19.0"
 val platform = "4.3.4"
 val targetJavaVersion = 21
 
@@ -81,11 +81,11 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.11.4")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.11.4")
-    .dependency("io.github.toxicity188:BetterModel:1.4")
+    .dependency("io.github.toxicity188:BetterModel:1.4.1")
     .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.10.1")
     .dependency("com.nexomc:nexo:0.10.0")
-    .dependency("io.th0rgal:oraxen:1.188.0")
+    .dependency("io.th0rgal:oraxen:1.189.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -166,7 +166,7 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.11.4")
+            modrinth("betterhud2", "ZLvJPfBN")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.10.1")
         }

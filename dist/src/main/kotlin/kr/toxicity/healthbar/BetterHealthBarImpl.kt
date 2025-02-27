@@ -45,7 +45,7 @@ import java.util.jar.JarFile
 class BetterHealthBarImpl : BetterHealthBar() {
 
     private val isFolia = runCatching {
-        Class.forName("io.papermc.paper.threadedregions.scheduler.FoliaAsyncScheduler")
+        Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
         true
     }.getOrDefault(false)
     private val isPaper = isFolia || runCatching {
