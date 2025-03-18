@@ -2,7 +2,7 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.1.10"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
@@ -23,8 +23,6 @@ allprojects {
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.opencollab.dev/main/")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://mvn.lumine.io/repository/maven-public/")
-        maven("https://jitpack.io/")
         maven("https://repo.skriptlang.org/releases")
         maven("https://repo.alessiodp.com/releases/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -32,6 +30,8 @@ allprojects {
         maven("https://repo.alessiodp.com/releases/")
         maven("https://repo.nexomc.com/releases")
         maven("https://repo.oraxen.com/releases")
+        maven("https://jitpack.io/")
+        maven("https://mvn.lumine.io/repository/maven-public/")
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")
@@ -75,16 +75,16 @@ val api = project("api").spigot()
 fun getApiDependencyProject(name: String) = project(name).dependency(api)
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.7.2")
+    .dependency("io.lumine:Mythic-Dist:5.8.1")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.11.4")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.11.4")
-    .dependency("io.github.toxicity188:BetterModel:1.4.1")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.12")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12")
+    .dependency("io.github.toxicity188:BetterModel:1.4.2")
     .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.10.1")
-    .dependency("com.nexomc:nexo:0.10.0")
+    .dependency("com.github.SkriptLang:Skript:2.10.2")
+    .dependency("com.nexomc:nexo:1.1.0")
     .dependency("io.th0rgal:oraxen:1.189.0")
     .also {
         it.tasks.processResources {
@@ -168,7 +168,7 @@ tasks {
         downloadPlugins {
             modrinth("betterhud2", "ZLvJPfBN")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.10.1")
+            hangar("Skript", "2.10.2")
         }
     }
     shadowJar {
