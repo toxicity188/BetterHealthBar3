@@ -64,6 +64,7 @@ class HealthBarPlayerImpl(
             entity
         ).addPredicate {
             when {
+                ConfigManagerImpl.disableToVehicleMob() && entity.entity().passengers.isNotEmpty() -> false
                 ConfigManagerImpl.disableToInvulnerableMob() && entity.entity().isInvulnerable -> false
                 ConfigManagerImpl.disableToInvisibleMob() && (entity.entity().isInvisible || entity.entity().hasPotionEffect(PotionEffectType.INVISIBILITY)) -> false
                 !ConfigManagerImpl.showMeHealthBar() && player.uniqueId == entity.entity().uniqueId -> false

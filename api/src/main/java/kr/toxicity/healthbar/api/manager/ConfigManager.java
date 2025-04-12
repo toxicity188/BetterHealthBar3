@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Set;
 
@@ -34,6 +33,7 @@ public interface ConfigManager {
     @NotNull
     @Unmodifiable
     Set<EntityType> blacklistEntityType();
+    boolean disableToVehicleMob();
     boolean disableToInvulnerableMob();
     boolean disableToInvisibleMob();
     @NotNull

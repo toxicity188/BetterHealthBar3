@@ -9,12 +9,7 @@ val PLUGIN
     get() = BetterHealthBar.inst()
 
 val DATA_FOLDER
-    get() = PLUGIN.dataFolder.apply {
-        if (!exists()) {
-            mkdir()
-            PLUGIN.loadAssets("default", this)
-        }
-    }
+    get() = PLUGIN.dataFolder
 
 val NAMESPACE
     get() = ConfigManagerImpl.namespace()

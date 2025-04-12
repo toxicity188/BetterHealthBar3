@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.1.20"
     id("io.github.goooler.shadow") version "8.1.8"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.16" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
@@ -8,7 +8,7 @@ plugins {
 }
 
 val minecraft = "1.21.4"
-val adventure = "4.19.0"
+val adventure = "4.20.0"
 val platform = "4.3.4"
 val targetJavaVersion = 21
 
@@ -42,15 +42,6 @@ allprojects {
         test {
             useJUnitPlatform()
         }
-        compileJava {
-            options.compilerArgs.addAll(listOf("-source", "17", "-target", "17"))
-            options.encoding = Charsets.UTF_8.name()
-        }
-        compileKotlin {
-            compilerOptions {
-                freeCompilerArgs.addAll(listOf("-jvm-target", "17"))
-            }
-        }
     }
     java {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
@@ -75,16 +66,16 @@ val api = project("api").spigot()
 fun getApiDependencyProject(name: String) = project(name).dependency(api)
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.8.1")
+    .dependency("io.lumine:Mythic-Dist:5.8.2")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.12")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12")
-    .dependency("io.github.toxicity188:BetterModel:1.4.2")
-    .dependency("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.1")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.1")
+    .dependency("io.github.toxicity188:BetterModel:1.4.3")
+    .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.10.2")
-    .dependency("com.nexomc:nexo:1.1.0")
+    .dependency("com.nexomc:nexo:1.3.0")
     .dependency("io.th0rgal:oraxen:1.189.0")
     .also {
         it.tasks.processResources {
@@ -121,7 +112,8 @@ val nmsVersions = listOf(
     NmsVersion("v1_20_R4"),
     NmsVersion("v1_21_R1"),
     NmsVersion("v1_21_R2"),
-    NmsVersion("v1_21_R3")
+    NmsVersion("v1_21_R3"),
+    NmsVersion("v1_21_R4")
 )
 
 dependencies {
@@ -129,8 +121,8 @@ dependencies {
     implementation(dist)
     implementation(getProject("scheduler:standard").spigot())
     implementation(getProject("scheduler:folia").paper())
-    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.6.0-SNAPSHOT"))
-    implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.3-SNAPSHOT"))
+    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.6.2-SNAPSHOT"))
+    implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.4-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
     implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.8"))
     nmsVersions.forEach {
@@ -166,7 +158,9 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            modrinth("betterhud2", "ZLvJPfBN")
+            hangar("BetterHud", "1.12.1")
+            hangar("ViaVersion", "5.3.1")
+            hangar("ViaBackwards", "5.3.1")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.10.2")
         }

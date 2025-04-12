@@ -17,6 +17,7 @@ blacklist-entity-type:
   - TEXT_DISPLAY
   - BLOCK_DISPLAY
   - ITEM_DISPLAY
+disable-to-vehicle-mob: true
 disable-to-invulnerable-mob: true
 disable-to-invisible-mob: true
 shaders:

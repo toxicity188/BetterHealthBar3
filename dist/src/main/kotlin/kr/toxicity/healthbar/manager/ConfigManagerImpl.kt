@@ -32,6 +32,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     private var numberFormat = DecimalFormat.getNumberInstance()
     private var selfHostPort = 8163
     private var blackListEntityType = emptySet<EntityType>()
+    private var disableToVehicleMob = true
     private var disableToInvulnerableMob = true
     private var disableToInvisibleMob = true
     private var shaders = CoreShadersOption.DEFAULT
@@ -88,6 +89,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
                     EntityType.valueOf(it.uppercase())
                 }.getOrNull()
             }))
+            disableToVehicleMob = config.getBoolean("disable-to-vehicle-mob", true)
             disableToInvulnerableMob = config.getBoolean("disable-to-invulnerable-mob", true)
             disableToInvisibleMob = config.getBoolean("disable-to-invisible-mob", true)
             config.getConfigurationSection("shaders")?.let { s ->
@@ -127,6 +129,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     override fun selfHostPort(): Int = selfHostPort
     override fun numberFormat(): NumberFormat = numberFormat
     override fun blacklistEntityType(): Set<EntityType> = blackListEntityType
+    override fun disableToVehicleMob(): Boolean = disableToVehicleMob
     override fun disableToInvulnerableMob(): Boolean = disableToInvulnerableMob
     override fun disableToInvisibleMob(): Boolean = disableToInvisibleMob
     override fun shaders(): CoreShadersOption = shaders

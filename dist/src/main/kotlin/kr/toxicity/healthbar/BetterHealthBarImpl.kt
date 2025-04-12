@@ -38,6 +38,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.text.DecimalFormat
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.BiConsumer
 import java.util.jar.JarFile
 
@@ -72,13 +73,13 @@ class BetterHealthBarImpl : BetterHealthBar() {
         PlayerManagerImpl,
     )
 
-    @Volatile
-    private var onReload = false
+    private val onReload = AtomicBoolean()
 
     override fun onEnable() {
         val log = ArrayList<String>()
         val manager = Bukkit.getPluginManager()
         nms = when (MinecraftVersion.current) {
+            MinecraftVersion.version1_21_5 -> kr.toxicity.healthbar.nms.v1_21_R4.NMSImpl()
             MinecraftVersion.version1_21_4 -> kr.toxicity.healthbar.nms.v1_21_R3.NMSImpl()
             MinecraftVersion.version1_21_2, MinecraftVersion.version1_21_3 -> kr.toxicity.healthbar.nms.v1_21_R2.NMSImpl()
             MinecraftVersion.version1_21, MinecraftVersion.version1_21_1 -> kr.toxicity.healthbar.nms.v1_21_R1.NMSImpl()
@@ -139,11 +140,13 @@ class BetterHealthBarImpl : BetterHealthBar() {
             }
             log.add("Plugin enabled.")
             if (!CompatibilityManager.usePackTypeNone || ConfigManagerImpl.packType() != PackType.NONE) scheduler.task {
-                when (reload()) {
+                when (val result = reload(true)) {
                     is ReloadState.Success -> info(*log.toTypedArray())
-                    else -> {
+                    is ReloadState.Failure -> {
+                        result.throwable.handleException("Error has been occurred.")
                         manager.disablePlugin(this)
                     }
+                    is ReloadState.OnReload -> manager.disablePlugin(this)
                 }
             }
         }
@@ -177,12 +180,20 @@ class BetterHealthBarImpl : BetterHealthBar() {
         }
     }
 
-    override fun reload(): ReloadState {
-        if (onReload) return ReloadState.ON_RELOAD
+    override fun reload(): ReloadState = reload(false)
+    private fun reload(firstReload: Boolean): ReloadState {
+        if (!onReload.compareAndSet(false, true)) return ReloadState.ON_RELOAD
         val time = System.currentTimeMillis()
-        onReload = true
+        var shouldGenerate = !firstReload
         return runWithHandleException("Error has occurred while reloading.") {
             PackUploader.stop()
+            DATA_FOLDER.run {
+                if (!exists()) {
+                    shouldGenerate = true
+                    mkdir()
+                    PLUGIN.loadAssets("default", this)
+                }
+            }
             managers.forEach {
                 it.preReload()
             }
@@ -194,15 +205,15 @@ class BetterHealthBarImpl : BetterHealthBar() {
             managers.forEach {
                 it.postReload()
             }
-            onReload = false
-            ReloadState.Success(System.currentTimeMillis() - time, PackGenerator.zip(ConfigManagerImpl.packType(), resource))
+            ReloadState.Success(System.currentTimeMillis() - time, PackGenerator.zip(if (shouldGenerate) ConfigManagerImpl.packType() else PackType.NONE, resource))
         }.getOrElse {
-            onReload = false
             ReloadState.Failure(it)
+        }.apply {
+            onReload.set(false)
         }
     }
 
-    override fun onReload(): Boolean = onReload
+    override fun onReload(): Boolean = onReload.get()
     override fun bedrock(): BedrockAdapter = bedrock
     override fun miniMessage(): MiniMessage = MINI_MESSAGE
     override fun modelAdapter(): ModelAdapter = model

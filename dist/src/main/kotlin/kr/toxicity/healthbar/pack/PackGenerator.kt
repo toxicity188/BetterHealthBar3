@@ -26,15 +26,15 @@ object PackGenerator {
             if (ConfigManagerImpl.shaders().renderTypeJson) PLUGIN.getResource("rendertype_text.json")?.buffered()?.use {
                 consumer("assets/minecraft/shaders/core/rendertype_text.json", it.readAllBytes())
             }
-            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("text.fsh")?.buffered()?.use {
+            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")?.buffered()?.use {
                 val read = it.readAllBytes()
-                consumer("assets/minecraft/shaders/core/text.fsh", read)
-                consumer("assets/minecraft/shaders/text.fsh", read)
+                consumer("assets/minecraft/shaders/core/rendertype_text.fsh", read)
+                consumer("assets/minecraft/shaders/rendertype_text.fsh", read)
             }
-            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("text.vsh")?.buffered()?.use {
+            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()?.use {
                 val read = it.readAllBytes()
-                consumer("assets/minecraft/shaders/core/text.vsh", read)
-                consumer("assets/minecraft/shaders/text.vsh", read)
+                consumer("assets/minecraft/shaders/core/rendertype_text.vsh", read)
+                consumer("assets/minecraft/shaders/rendertype_text.vsh", read)
             }
         }
     }
