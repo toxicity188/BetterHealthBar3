@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
 
-val minecraft = "1.21.4"
+val minecraft = "1.21.5"
 val adventure = "4.20.0"
 val platform = "4.3.4"
 val targetJavaVersion = 21
