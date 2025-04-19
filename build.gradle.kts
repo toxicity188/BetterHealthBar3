@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.8.2"
+    version = "3.8.3"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -72,11 +72,11 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.1")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.1")
-    .dependency("io.github.toxicity188:BetterModel:1.4.3")
+    .dependency("io.github.toxicity188:BetterModel:1.5")
     .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.10.2")
+    .dependency("com.github.SkriptLang:Skript:2.11.0")
     .dependency("com.nexomc:nexo:1.3.0")
-    .dependency("io.th0rgal:oraxen:1.189.0")
+    .dependency("io.th0rgal:oraxen:1.190.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -159,10 +159,10 @@ tasks {
         pluginJars(fileTree("plugins"))
         downloadPlugins {
             hangar("BetterHud", "1.12.1")
-            hangar("ViaVersion", "5.3.1")
-            hangar("ViaBackwards", "5.3.1")
+            hangar("ViaVersion", "5.3.2")
+            hangar("ViaBackwards", "5.3.2")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.10.2")
+            hangar("Skript", "2.11.0")
         }
     }
     shadowJar {
