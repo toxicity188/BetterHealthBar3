@@ -36,6 +36,7 @@ import org.bukkit.Location
 import org.bukkit.WorldBorder
 import org.bukkit.craftbukkit.v1_19_R3.CraftServer
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftLivingEntity
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_19_R3.persistence.CraftPersistentDataContainer
@@ -111,15 +112,23 @@ class NMSImpl : NMS {
             CraftChatMessage.fromJSON(GsonComponentSerializer.gson().serialize(it))
         }
     }
+    private val entityGetter = CraftEntity::class.java.getDeclaredField("entity").apply {
+        isAccessible = true
+    }.let {
+        { e: CraftEntity ->
+            it[e] as net.minecraft.world.entity.Entity
+        }
+    }
 
     override fun foliaAdapt(player: Player): Player {
-        val handle = (player as CraftPlayer).handle
-        return object : CraftPlayer(Bukkit.getServer() as CraftServer, handle) {
+        player as CraftPlayer
+        fun vanillaPlayer() = entityGetter(player) as ServerPlayer
+        return object : CraftPlayer(Bukkit.getServer() as CraftServer, vanillaPlayer()) {
             override fun getPersistentDataContainer(): CraftPersistentDataContainer {
                 return player.persistentDataContainer
             }
             override fun getHandle(): ServerPlayer {
-                return handle
+                return vanillaPlayer()
             }
             override fun getHealth(): Double {
                 return player.health
@@ -185,13 +194,14 @@ class NMSImpl : NMS {
     }
 
     override fun foliaAdapt(entity: org.bukkit.entity.LivingEntity): org.bukkit.entity.LivingEntity {
-        val handle = (entity as CraftLivingEntity).handle
-        return object : CraftLivingEntity(Bukkit.getServer() as CraftServer, handle) {
+        entity as CraftLivingEntity
+        fun vanillaEntity() = entityGetter(entity) as LivingEntity
+        return object : CraftLivingEntity(Bukkit.getServer() as CraftServer, vanillaEntity()) {
             override fun getPersistentDataContainer(): CraftPersistentDataContainer {
                 return entity.persistentDataContainer
             }
             override fun getHandle(): LivingEntity {
-                return handle
+                return vanillaEntity()
             }
             override fun getEquipment(): EntityEquipment? {
                 return entity.equipment
@@ -305,6 +315,7 @@ class NMSImpl : NMS {
     private inner class PlayerInjection(val player: HealthBarPlayer) : ChannelDuplexHandler() {
         private val serverPlayer = (player.player() as CraftPlayer).handle
         private val connection = serverPlayer.connection
+        private val foliaAdapted = foliaAdapt(player.player())
         private val world = player.player().world
 
         init {
@@ -323,38 +334,31 @@ class NMSImpl : NMS {
 
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
             fun Double.square() = this * this
-            entity?.let { e ->
-                if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
-                val set = HashSet(plugin.healthBarManager().allHealthBars().filter {
-                    it.isDefault && it.triggers().contains(trigger)
-                })
-                fun add(sync: Boolean = false) {
-                    val bukkit = e.bukkitEntity
-                    if (bukkit is CraftLivingEntity && bukkit.isValid) {
-                        val adapt = plugin.mobManager().entity(if (bukkit is Player) foliaAdapt(bukkit) else foliaAdapt(bukkit))
-                        val types = adapt.mob()?.configuration()?.types()
-                        val packet = PacketTrigger(trigger, handle)
-                        val run = Runnable {
-                            set.filter {
-                                (adapt.mob()?.configuration()?.ignoreDefault() != true && it.isDefault) || (types != null && it.applicableTypes().any { t ->
-                                    types.contains(t)
-                                })
-                            }.forEach {
-                                player.showHealthBar(it, packet, adapt)
-                            }
-                            adapt.mob()?.configuration()?.healthBars()?.forEach {
-                                player.showHealthBar(it, packet, adapt)
-                            }
-                        }
-                        if (sync) plugin.scheduler().asyncTask(run)
-                        else run.run()
-                    }
+            val e = entity ?: return
+            if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
+            val set = plugin.healthBarManager().allHealthBars().filter {
+                it.triggers().contains(trigger)
+            }.toSet()
+            val bukkit = e.bukkitEntity
+            if (bukkit is CraftLivingEntity && bukkit.isValid) {
+                val adapt = plugin.mobManager().entity(
+                    if (bukkit is Player) injectionMap[bukkit.uniqueId]?.foliaAdapted ?: return else foliaAdapt(bukkit)
+                )
+                val types = adapt.mob()?.configuration()?.types()
+                val packet = PacketTrigger(trigger, handle)
+                set.filter {
+                    (adapt.mob()?.configuration()?.ignoreDefault() != true && it.isDefault) || (types != null && it.applicableTypes().any { t ->
+                        types.contains(t)
+                    })
+                }.forEach {
+                    player.showHealthBar(it, packet, adapt)
                 }
-                if (plugin.isFolia) plugin.scheduler().task(world, e.x.toInt() shr 4, e.z.toInt() shr 4) {
-                    add(true)
-                } else add()
+                adapt.mob()?.configuration()?.healthBars()?.forEach {
+                    player.showHealthBar(it, packet, adapt)
+                }
             }
         }
+
         private fun getViewedEntity(): List<LivingEntity> {
             return getLevelGetter().all
                 .asSequence()

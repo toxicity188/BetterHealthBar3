@@ -8,14 +8,12 @@ import kr.toxicity.healthbar.util.forEachAllYaml
 import kr.toxicity.healthbar.util.putSync
 import kr.toxicity.healthbar.util.runWithHandleException
 import kr.toxicity.healthbar.util.subFolder
-import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 object HealthBarManagerImpl : HealthBarManager, BetterHealthBerManager {
 
     private val healthBarMap = ConcurrentHashMap<String, HealthBarImpl>()
-    private val uuidSet = Collections.synchronizedSet(HashSet<UUID>())
 
     override fun healthBar(name: String): HealthBar? {
         return healthBarMap[name]
@@ -27,15 +25,12 @@ object HealthBarManagerImpl : HealthBarManager, BetterHealthBerManager {
 
     override fun reload(resource: PackResource) {
         healthBarMap.clear()
-        uuidSet.clear()
         resource.dataFolder.subFolder("healthbars").forEachAllYaml { file, s, section ->
             runWithHandleException("Unable to load this health bar: $s in ${file.path}") {
-                var uuid = UUID.randomUUID()
-                while (!uuidSet.add(uuid)) uuid = UUID.randomUUID()
                 val healthBar = HealthBarImpl(
                     file.path,
                     s,
-                    uuid,
+                    UUID.randomUUID(),
                     section
                 )
                 healthBarMap.putSync("healthbar", s) {

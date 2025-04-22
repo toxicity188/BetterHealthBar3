@@ -43,7 +43,6 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     private var bstats: Metrics? = null
 
     override fun start() {
-        preReload()
     }
 
     override fun preReload() {
@@ -55,7 +54,7 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
             packType = config.getString("pack-type")?.let {
                 runCatching {
                     PackType.valueOf(it.uppercase())
-                }.getOrElse {
+                }.getOrElse { _ ->
                     warn("Unable to find this pack: $it")
                     PackType.FOLDER
                 }

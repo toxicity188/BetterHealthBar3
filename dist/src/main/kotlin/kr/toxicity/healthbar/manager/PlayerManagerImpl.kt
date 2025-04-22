@@ -32,7 +32,7 @@ object PlayerManagerImpl : PlayerManager, BetterHealthBerManager {
             fun join(e: PlayerJoinEvent) {
                 val player = e.player
                 if (PLUGIN.bedrock().isBedrockPlayer(player.uniqueId)) return
-                playerMap[player.uniqueId] = HealthBarPlayerImpl(PLUGIN.nms().foliaAdapt(player))
+                playerMap[player.uniqueId] = HealthBarPlayerImpl(player)
                 taskLater(20) {
                     PackUploader.apply(player)
                 }
