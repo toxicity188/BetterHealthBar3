@@ -72,10 +72,10 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.1")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.1")
-    .dependency("io.github.toxicity188:BetterModel:1.5")
+    .dependency("io.github.toxicity188:BetterModel:1.5.2")
     .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.11.0")
-    .dependency("com.nexomc:nexo:1.3.0")
+    .dependency("com.nexomc:nexo:1.4.0")
     .dependency("io.th0rgal:oraxen:1.190.0")
     .also {
         it.tasks.processResources {

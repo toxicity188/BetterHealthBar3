@@ -15,6 +15,7 @@ import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.trigger.PacketTrigger
 import net.kyori.adventure.bossbar.BossBar
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -140,6 +141,15 @@ class NMSImpl : NMS {
             override fun getEnderChest(): Inventory {
                 return player.enderChest
             }
+
+            override fun getCooldown(key: Key): Int {
+                return player.getCooldown(key)
+            }
+
+            override fun setCooldown(key: Key, i: Int) {
+                return player.setCooldown(key, i)
+            }
+
             override fun isOp(): Boolean {
                 return player.isOp
             }
