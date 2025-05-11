@@ -243,12 +243,14 @@ class NMSImpl : NMS {
     override fun createTextDisplay(player: Player, location: Location, component: Component): VirtualTextDisplay {
         val connection = (player as CraftPlayer).handle.connection
         val display = TextDisplay(EntityType.TEXT_DISPLAY, (player.world as CraftWorld).handle).apply {
-            billboardConstraints = Display.BillboardConstraints.CENTER
-            interpolationDuration = 1
+            text = textVanilla(component)
             backgroundColor = 0
             lineWidth = Int.MAX_VALUE
+        }
+        (display as Display).run { //To prevent method name collision in Spigot mapping
+            billboardConstraints = Display.BillboardConstraints.CENTER
+            interpolationDuration = 1
             brightnessOverride = Brightness(15, 15)
-            text = textVanilla(component)
             viewRange = 1024F
             moveTo(
                 location.x,

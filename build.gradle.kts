@@ -8,8 +8,8 @@ plugins {
 }
 
 val minecraft = "1.21.5"
-val adventure = "4.20.0"
-val platform = "4.3.4"
+val adventure = "4.21.0"
+val platform = "4.4.0"
 val targetJavaVersion = 21
 
 allprojects {
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.8.3"
+    version = "3.8.4"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -70,12 +70,12 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.1")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.1")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.2")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.2")
     .dependency("io.github.toxicity188:BetterModel:1.5.2")
     .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.11.0")
-    .dependency("com.nexomc:nexo:1.4.0")
+    .dependency("com.github.SkriptLang:Skript:2.11.1")
+    .dependency("com.nexomc:nexo:1.5.0")
     .dependency("io.th0rgal:oraxen:1.190.0")
     .also {
         it.tasks.processResources {
@@ -158,11 +158,11 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.12.1")
+            //hangar("BetterHud", "1.12.2")
             hangar("ViaVersion", "5.3.2")
             hangar("ViaBackwards", "5.3.2")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.11.0")
+            hangar("Skript", "2.11.1")
         }
     }
     shadowJar {
