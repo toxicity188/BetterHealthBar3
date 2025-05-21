@@ -1,8 +1,8 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "2.1.20"
+    kotlin("jvm") version "2.1.21"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
@@ -72,10 +72,10 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.2")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.2")
-    .dependency("io.github.toxicity188:BetterModel:1.5.2")
+    .dependency("io.github.toxicity188:BetterModel:1.6.0")
     .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.11.1")
-    .dependency("com.nexomc:nexo:1.5.0")
+    .dependency("com.nexomc:nexo:1.6.0")
     .dependency("io.th0rgal:oraxen:1.190.0")
     .also {
         it.tasks.processResources {
