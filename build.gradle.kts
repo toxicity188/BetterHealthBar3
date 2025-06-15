@@ -66,15 +66,15 @@ val api = project("api").spigot()
 fun getApiDependencyProject(name: String) = project(name).dependency(api)
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.8.2")
+    .dependency("io.lumine:Mythic-Dist:5.9.1")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.2")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.2")
-    .dependency("io.github.toxicity188:BetterModel:1.6.0")
+    .dependency("io.github.toxicity188:BetterModel:1.6.1")
     .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.11.1")
+    .dependency("com.github.SkriptLang:Skript:2.11.2")
     .dependency("com.nexomc:nexo:1.6.0")
     .dependency("io.th0rgal:oraxen:1.190.0")
     .also {
@@ -162,7 +162,7 @@ tasks {
             hangar("ViaVersion", "5.3.2")
             hangar("ViaBackwards", "5.3.2")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.11.1")
+            hangar("Skript", "2.11.2")
         }
     }
     shadowJar {
