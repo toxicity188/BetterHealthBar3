@@ -36,8 +36,8 @@ class TextLayoutImpl(
     private val property = section.getConfigurationSection("properties")?.let {
         PlaceholderOption.of(it)
     } ?: PlaceholderOption.EMPTY
-    private val text = section.getString("text").ifNull("Unable to find 'text' configuration.").run {
-        TextManagerImpl.text(this).ifNull("Unable to find this text: $this")
+    private val text = section.getString("text").ifNull { "Unable to find 'text' configuration." }.run {
+        TextManagerImpl.text(this).ifNull { "Unable to find this text: $this" }
     }
     private val height = (text.height().toDouble() * scale()).roundToInt().toHeight()
     private val textWidth = Collections.unmodifiableMap(HashMap<Int, Int>().apply {
@@ -46,14 +46,14 @@ class TextLayoutImpl(
             put(it.key, (it.value * div).roundToInt())
         }
     })
-    private val align = section.getString("align").ifNull("Unable to find 'align' command.").run {
+    private val align = section.getString("align").ifNull { "Unable to find 'align' command." }.run {
         TextAlign.valueOf(uppercase())
     }
     private val duration = section.getInt("duration", - 1)
     private val keys = ArrayList<WidthKey>()
     private val pattern = PlaceholderContainer.toString(
         property,
-        section.getString("pattern").ifNull("Unable to find 'pattern' command.")
+        section.getString("pattern").ifNull { "Unable to find 'pattern' command." }
     )
 
     override fun charWidth(): Map<Int, Int> = textWidth

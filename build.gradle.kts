@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    kotlin("jvm") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
     id("io.github.goooler.shadow") version "8.1.8"
     id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
@@ -8,7 +8,7 @@ plugins {
 }
 
 val minecraft = "1.21.5"
-val adventure = "4.21.0"
+val adventure = "4.23.0"
 val platform = "4.4.0"
 val targetJavaVersion = 21
 
@@ -70,13 +70,11 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.12.2")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.12.2")
-    .dependency("io.github.toxicity188:BetterModel:1.6.1")
-    .dependency("net.citizensnpcs:citizens-main:2.0.38-SNAPSHOT")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.0")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.0")
+    .dependency("io.github.toxicity188:BetterModel:1.7.0")
+    .dependency("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.11.2")
-    .dependency("com.nexomc:nexo:1.6.0")
-    .dependency("io.th0rgal:oraxen:1.190.0")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -113,7 +111,8 @@ val nmsVersions = listOf(
     NmsVersion("v1_21_R1"),
     NmsVersion("v1_21_R2"),
     NmsVersion("v1_21_R3"),
-    NmsVersion("v1_21_R4")
+    NmsVersion("v1_21_R4"),
+    NmsVersion("v1_21_R5")
 )
 
 dependencies {
@@ -158,9 +157,9 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            //hangar("BetterHud", "1.12.2")
-            hangar("ViaVersion", "5.3.2")
-            hangar("ViaBackwards", "5.3.2")
+            hangar("BetterHud", "1.13.0")
+            hangar("ViaVersion", "5.4.0")
+            hangar("ViaBackwards", "5.4.0")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.11.2")
         }

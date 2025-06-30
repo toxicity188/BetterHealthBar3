@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
-import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 const val NEW_LAYER_INT = 0xA0000
@@ -17,20 +16,7 @@ val LEGACY = LegacyComponentSerializer.builder()
     .build()
 
 val MINI_MESSAGE = MiniMessage.builder()
-    .tags(
-        TagResolver.resolver(
-        StandardTags.decorations(),
-        StandardTags.color(),
-        StandardTags.gradient(),
-        StandardTags.rainbow(),
-        StandardTags.translatable(),
-        StandardTags.translatableFallback(),
-        StandardTags.transition(),
-        StandardTags.insertion(),
-        StandardTags.selector(),
-        StandardTags.score(),
-        StandardTags.nbt(),
-    )).postProcessor {
+    .tags(TagResolver.standard()).postProcessor {
         val style = it.style()
         it.style(style.decorations(TextDecoration.entries.associateWith { d ->
             val deco = style.decoration(d)

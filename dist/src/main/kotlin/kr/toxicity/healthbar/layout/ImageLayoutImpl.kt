@@ -24,8 +24,8 @@ class ImageLayoutImpl(
     layer: Int,
     section: ConfigurationSection
 ): ImageLayout, LayoutImpl(layer, section) {
-    private val image = section.getString("image").ifNull("Unable to find 'image' configuration.").run {
-        ImageManagerImpl.image(this).ifNull("Unable to find this image: $this")
+    private val image = section.getString("image").ifNull { "Unable to find 'image' configuration." }.run {
+        ImageManagerImpl.image(this).ifNull { "Unable to find this image: $this" }
     }
     private val components = ArrayList<List<PixelComponent>>()
     private val listener = section.getConfigurationSection("listener")?.let {

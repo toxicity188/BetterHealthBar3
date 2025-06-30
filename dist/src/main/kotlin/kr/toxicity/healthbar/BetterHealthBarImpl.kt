@@ -21,7 +21,7 @@ import kr.toxicity.healthbar.scheduler.StandardScheduler
 import kr.toxicity.healthbar.util.*
 import kr.toxicity.healthbar.version.MinecraftVersion
 import kr.toxicity.healthbar.version.ModelEngineVersion
-import kr.toxicity.model.api.tracker.EntityTracker
+import kr.toxicity.model.api.tracker.EntityTrackerRegistry
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -79,6 +79,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
         val log = ArrayList<String>()
         val manager = Bukkit.getPluginManager()
         nms = when (MinecraftVersion.current) {
+            MinecraftVersion.version1_21_6 -> kr.toxicity.healthbar.nms.v1_21_R5.NMSImpl()
             MinecraftVersion.version1_21_5 -> kr.toxicity.healthbar.nms.v1_21_R4.NMSImpl()
             MinecraftVersion.version1_21_4 -> kr.toxicity.healthbar.nms.v1_21_R3.NMSImpl()
             MinecraftVersion.version1_21_2, MinecraftVersion.version1_21_3 -> kr.toxicity.healthbar.nms.v1_21_R2.NMSImpl()
@@ -105,7 +106,9 @@ class BetterHealthBarImpl : BetterHealthBar() {
             }
         } ?: run {
             if (manager.isPluginEnabled("BetterModel")) model = ModelAdapter {
-                EntityTracker.tracker(it.uniqueId)?.height()
+                EntityTrackerRegistry.registry(it.uniqueId)?.trackers()?.maxOfOrNull { t ->
+                    t.height()
+                }
             }
         }
         if (manager.isPluginEnabled("Geyser-Spigot")) {

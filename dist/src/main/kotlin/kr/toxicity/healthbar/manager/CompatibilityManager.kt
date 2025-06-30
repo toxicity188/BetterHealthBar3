@@ -30,12 +30,6 @@ object CompatibilityManager : BetterHealthBerManager {
         },
         "BetterHud" to {
             BetterHudCompatibility()
-        },
-        "Nexo" to {
-            NexoCompatibility()
-        },
-        "Oraxen" to {
-            OraxenCompatibility()
         }
     )
 

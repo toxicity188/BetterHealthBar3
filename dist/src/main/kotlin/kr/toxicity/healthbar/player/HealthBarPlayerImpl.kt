@@ -63,6 +63,8 @@ class HealthBarPlayerImpl(
             this,
             entity
         ).addPredicate {
+            player.canSee(entity.entity())
+        }.addPredicate {
             when {
                 ConfigManagerImpl.disableToVehicleMob() && entity.entity().passengers.isNotEmpty() -> false
                 ConfigManagerImpl.disableToInvulnerableMob() && entity.entity().isInvulnerable -> false

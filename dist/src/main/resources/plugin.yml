@@ -24,8 +24,6 @@ softdepend:
   - skript-reflect
   - LevelledMobs
   - Parties
-  - Nexo
-  - Oraxen
 commands:
   healthbar:
     aliases: hb
