@@ -1,7 +1,6 @@
 package kr.toxicity.healthbar.layout
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
@@ -87,25 +86,19 @@ class TextLayoutImpl(
             val keyName = encodeKey(EncodeManager.EncodeNamespace.FONT, "${parent.name}/$name/${i + 1}")
             keys.add(map.computeIfAbsent(BitmapData(keyName, y, height)) {
                 resource.font.add("$keyName.json") {
-                    JsonObject().apply {
-                        add("providers", JsonArray().apply {
-                            add(JsonObject().apply {
-                                addProperty("type", "space")
-                                add("advances", JsonObject().apply {
-                                    addProperty(" ", 4)
-                                })
-                            })
-                            dataList.forEach {
-                                add(JsonObject().apply {
-                                    addProperty("type", "bitmap")
-                                    addProperty("file", it.file)
-                                    addProperty("ascent", y.toAscent())
-                                    addProperty("height", height)
-                                    add("chars", it.chars)
-                                })
-                            }
-                        })
-                    }.save()
+                    val elements = arrayOf(jsonObjectOf(
+                        "type" to "space",
+                        "advances" to jsonObjectOf(" " to 4)
+                    )) + dataList.map { data ->
+                        jsonObjectOf(
+                            "type" to "bitmap",
+                            "file" to data.file,
+                            "ascent" to y.toAscent(),
+                            "height" to height,
+                            "chars" to data.chars,
+                        )
+                    }
+                    jsonObjectOf("providers" to jsonArrayOf(*elements)).save()
                 }
                 WidthKey(createAdventureKey(keyName), x() + groupX() * i)
             })

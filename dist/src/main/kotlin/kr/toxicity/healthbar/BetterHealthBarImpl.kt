@@ -79,7 +79,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
         val log = ArrayList<String>()
         val manager = Bukkit.getPluginManager()
         nms = when (MinecraftVersion.current) {
-            MinecraftVersion.version1_21_6 -> kr.toxicity.healthbar.nms.v1_21_R5.NMSImpl()
+            MinecraftVersion.version1_21_6, MinecraftVersion.version1_21_7 -> kr.toxicity.healthbar.nms.v1_21_R5.NMSImpl()
             MinecraftVersion.version1_21_5 -> kr.toxicity.healthbar.nms.v1_21_R4.NMSImpl()
             MinecraftVersion.version1_21_4 -> kr.toxicity.healthbar.nms.v1_21_R3.NMSImpl()
             MinecraftVersion.version1_21_2, MinecraftVersion.version1_21_3 -> kr.toxicity.healthbar.nms.v1_21_R2.NMSImpl()
@@ -171,10 +171,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
                             if (player.isOp) {
                                 player.info(Component.text("New BetterHealthBar version found: $body"))
                                 player.info(Component.text("Download: https://www.spigotmc.org/resources/115559")
-                                    .clickEvent(ClickEvent.clickEvent(
-                                        ClickEvent.Action.OPEN_URL,
-                                        "https://www.spigotmc.org/resources/115559"
-                                    )))
+                                    .clickEvent(ClickEvent.openUrl("https://www.spigotmc.org/resources/115559")))
                             }
                         }
                     }, this)

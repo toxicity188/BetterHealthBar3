@@ -282,7 +282,7 @@ class NMSImpl : NMS {
             }
             override fun update() {
                 connection.send(ClientboundBundlePacket(listOf(
-                    ClientboundTeleportEntityPacket.teleport(display.id, PositionMoveRotation.of(display), emptySet(), display.onGround),
+                    ClientboundEntityPositionSyncPacket(display.id, PositionMoveRotation.of(display), display.onGround),
                     ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!)
                 )))
             }

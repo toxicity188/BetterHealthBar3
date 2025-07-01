@@ -24,20 +24,14 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
         private val data: HealthBarCreateEvent,
         private val indexes: Map<String, GroupIndex>
     ) {
-        private val imagesEntity = images.map {
+        private val entities = (images.map {
             RenderedEntity(it)
-        }.toMutableList()
-        private val textsEntity = texts.map {
+        } + texts.map {
             RenderedEntity(it)
-        }.toMutableList()
+        }).toMutableList()
 
         fun displays() = ArrayList<VirtualTextDisplay>().apply {
-            imagesEntity.forEach {
-                it.entity?.let { e ->
-                    add(e)
-                }
-            }
-            textsEntity.forEach {
+            entities.forEach {
                 it.entity?.let { e ->
                     add(e)
                 }
@@ -47,19 +41,13 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
         var max = 0
 
         fun update(): Boolean {
-            imagesEntity.removeIf {
+            entities.removeIf {
                 !it.has()
             }
-            textsEntity.removeIf {
-                !it.has()
-            }
-            val imageMap = imagesEntity.filter {
+            val imageMap = entities.filter {
                 it.can()
             }
-            val textMap = textsEntity.filter {
-                it.can()
-            }
-            if (imageMap.isEmpty() && textMap.isEmpty()) return false
+            if (imageMap.isEmpty()) return false
             val count = group?.let { s ->
                 indexes[s]
             }?.next() ?: 0
@@ -67,33 +55,21 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             imageMap.forEach {
                 it.update(count)
             }
-            textMap.forEach {
-                it.update(count)
-            }
             return true
         }
 
         fun create(max: Int) {
-            val imageMap = imagesEntity.filter {
-                it.can()
-            }
-            val textMap = textsEntity.filter {
+            val imageMap = entities.filter {
                 it.can()
             }
             val loc = data.toEntityLocation()
             imageMap.forEach {
                 it.create(max, loc)
             }
-            textMap.forEach {
-                it.create(max, loc)
-            }
         }
 
         fun remove() {
-            imagesEntity.forEach {
-                it.remove()
-            }
-            textsEntity.forEach {
+            entities.forEach {
                 it.remove()
             }
         }

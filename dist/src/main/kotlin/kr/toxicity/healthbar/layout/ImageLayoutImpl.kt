@@ -52,15 +52,13 @@ class ImageLayoutImpl(
                 val y = y() + groupY() * i
                 list.add(componentMap.computeIfAbsent(BitmapData(dir, y, newHeight)) { _ ->
                     val component = parent.index++.parseChar()
-                    jsonArray.add(JsonObject().apply {
-                        addProperty("type", "bitmap")
-                        addProperty("file", "$NAMESPACE:$dir")
-                        addProperty("ascent", y.toAscent())
-                        addProperty("height", newHeight.toHeight())
-                        add("chars", JsonArray().apply {
-                            add(component)
-                        })
-                    })
+                    jsonArray.add(jsonObjectOf(
+                        "type" to "bitmap",
+                        "file" to "$NAMESPACE:$dir",
+                        "ascent" to y.toAscent(),
+                        "height" to newHeight.toHeight(),
+                        "chars" to jsonArrayOf(component)
+                    ))
                     WidthComponent((it.image.image.width.toDouble() * div).roundToInt(), Component.text()
                         .font(parent.imageKey())
                         .content(component)

@@ -21,28 +21,33 @@ object PackGenerator {
         fun zip(resource: PackResource): Map<String, ByteArray>
     }
 
-    private fun loadShaders(consumer: (String, ByteArray) -> Unit) {
-        if (ConfigManagerImpl.useCoreShaders() && ! CompatibilityManager.hookOtherShaders) {
-            if (ConfigManagerImpl.shaders().renderTypeJson) PLUGIN.getResource("rendertype_text.json")?.buffered()?.use {
-                consumer("assets/minecraft/shaders/core/rendertype_text.json", it.readAllBytes())
+    private fun loadBuiltInAssets(consumer: (String, ByteArray) -> Unit) {
+        PLUGIN.getResource("icon.png")?.buffered()?.use {
+            consumer("pack.png", it.readAllBytes())
+        }
+        if (!ConfigManagerImpl.useCoreShaders() || CompatibilityManager.hookOtherShaders) {
+            consumer("pack.mcmeta", PACK_MCMETA.save())
+            return
+        }
+        OVERLAYS.forEachIndexed { i, overlay ->
+            val parent = if (i == 0) "assets/minecraft/shaders/core/" else "${overlay.directory}/assets/minecraft/shaders/core/"
+            if (ConfigManagerImpl.shaders().renderTypeJson) PLUGIN.getResource("${overlay.directory}/rendertype_text.json")?.buffered()?.use {
+                consumer("$parent/rendertype_text.json", it.readAllBytes())
             }
-            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("rendertype_text.fsh")?.buffered()?.use {
-                val read = it.readAllBytes()
-                consumer("assets/minecraft/shaders/core/rendertype_text.fsh", read)
-                consumer("assets/minecraft/shaders/rendertype_text.fsh", read)
+            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("${overlay.directory}/rendertype_text.fsh")?.buffered()?.use {
+                consumer("$parent/rendertype_text.fsh", it.readAllBytes())
             }
-            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("rendertype_text.vsh")?.buffered()?.use {
-                val read = it.readAllBytes()
-                consumer("assets/minecraft/shaders/core/rendertype_text.vsh", read)
-                consumer("assets/minecraft/shaders/rendertype_text.vsh", read)
+            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("${overlay.directory}/rendertype_text.vsh")?.buffered()?.use {
+                consumer("$parent/rendertype_text.vsh", it.readAllBytes())
             }
         }
+        consumer("pack.mcmeta", PACK_MCMETA_WITH_OVERLAY.save())
     }
 
     private class NonePack : Pack {
         override fun zip(resource: PackResource): Map<String, ByteArray> {
             val byteMap = ConcurrentHashMap<String, ByteArray>()
-            loadShaders { s, bytes ->
+            loadBuiltInAssets { s, bytes ->
                 byteMap[s] = bytes
             }
             fun save(target: PackResource.Builder, remove: String) {
@@ -104,7 +109,7 @@ object PackGenerator {
             resource.merge.forEachAsync {
                 save(parent, it, "")
             }
-            loadShaders { s, byteArray ->
+            loadBuiltInAssets { s, byteArray ->
                 byteMap[s] = byteArray
                 assetsMap.remove(s)
                 File(parent, s).apply {
@@ -166,7 +171,7 @@ object PackGenerator {
             resource.merge.forEachAsync {
                 save("", it)
             }
-            loadShaders { s: String, byte: ByteArray ->
+            loadBuiltInAssets { s: String, byte: ByteArray ->
                 byteMap[s] = byte
                 synchronized(zip) {
                     zip.putNextEntry(ZipEntry(s))

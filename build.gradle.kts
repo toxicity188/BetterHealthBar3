@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.8.4"
+    version = "3.9.0"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -28,8 +28,6 @@ allprojects {
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://maven.citizensnpcs.co/repo/")
         maven("https://repo.alessiodp.com/releases/")
-        maven("https://repo.nexomc.com/releases")
-        maven("https://repo.oraxen.com/releases")
         maven("https://jitpack.io/")
         maven("https://mvn.lumine.io/repository/maven-public/")
     }
@@ -158,8 +156,8 @@ tasks {
         pluginJars(fileTree("plugins"))
         downloadPlugins {
             hangar("BetterHud", "1.13.0")
-            hangar("ViaVersion", "5.4.0")
-            hangar("ViaBackwards", "5.4.0")
+            hangar("ViaVersion", "5.4.1")
+            hangar("ViaBackwards", "5.4.1")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.11.2")
         }
