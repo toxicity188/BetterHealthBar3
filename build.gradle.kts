@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.9.0"
+    version = "3.9.1"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -64,13 +64,13 @@ val api = project("api").spigot()
 fun getApiDependencyProject(name: String) = project(name).dependency(api)
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.9.1")
+    .dependency("io.lumine:Mythic-Dist:5.9.3")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
-    .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.0")
-    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.0")
-    .dependency("io.github.toxicity188:BetterModel:1.7.0")
+    .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.1")
+    .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.1")
+    .dependency("io.github.toxicity188:BetterModel:1.8.0")
     .dependency("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.11.2")
     .also {
@@ -155,7 +155,7 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.13.0")
+            hangar("BetterHud", "1.13.1")
             hangar("ViaVersion", "5.4.1")
             hangar("ViaBackwards", "5.4.1")
             hangar("PlaceholderAPI", "2.11.6")

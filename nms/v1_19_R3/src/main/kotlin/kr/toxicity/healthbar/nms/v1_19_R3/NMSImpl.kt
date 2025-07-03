@@ -18,6 +18,7 @@ import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.network.Connection
+import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.*
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -251,7 +252,7 @@ class NMSImpl : NMS {
             billboardConstraints = Display.BillboardConstraints.CENTER
             interpolationDuration = 1
             brightnessOverride = Brightness(15, 15)
-            viewRange = 1024F
+            viewRange = 10F
             moveTo(
                 location.x,
                 location.y,
@@ -272,10 +273,13 @@ class NMSImpl : NMS {
                 display.shadowStrength = strength
             }
             override fun update() {
-                connection.send(ClientboundBundlePacket(listOf(
-                    ClientboundTeleportEntityPacket(display),
-                    ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!)
-                )))
+                val packets = mutableListOf<Packet<ClientGamePacketListener>>(
+                    ClientboundTeleportEntityPacket(display)
+                )
+                display.entityData.packDirty()?.let { 
+                    packets += ClientboundSetEntityDataPacket(display.id, it)
+                }
+                connection.send(ClientboundBundlePacket(packets))
             }
             override fun teleport(location: Location) {
                 display.moveTo(
