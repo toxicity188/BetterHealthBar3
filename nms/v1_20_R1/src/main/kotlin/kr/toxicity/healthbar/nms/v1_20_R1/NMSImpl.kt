@@ -257,10 +257,10 @@ class NMSImpl : NMS {
                 location.yaw,
                 location.pitch
             )
-            connection.send(ClientboundBundlePacket(listOf(
+            connection.send(listOf(
                 ClientboundAddEntityPacket(this),
                 ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!)
-            )))
+            ).toBundlePacket())
         }
         return object : VirtualTextDisplay {
             override fun shadowRadius(radius: Float) {
@@ -276,7 +276,7 @@ class NMSImpl : NMS {
                 display.entityData.packDirty()?.let { 
                     packets += ClientboundSetEntityDataPacket(display.id, it)
                 }
-                connection.send(ClientboundBundlePacket(packets))
+                connection.send(packets.toBundlePacket())
             }
             override fun teleport(location: Location) {
                 display.moveTo(

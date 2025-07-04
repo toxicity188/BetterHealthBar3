@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
 
-val minecraft = "1.21.5"
+val minecraft = "1.21.7"
 val adventure = "4.23.0"
 val platform = "4.4.0"
 val targetJavaVersion = 21
@@ -34,6 +34,9 @@ allprojects {
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")
         implementation("net.jodah:expiringmap:0.5.11")
+        implementation("com.github.toxicity188:SharedPackets:1.0.0") {
+            exclude("net.kyori")
+        }
         testImplementation(kotlin("test"))
     }
     tasks {
@@ -64,7 +67,7 @@ val api = project("api").spigot()
 fun getApiDependencyProject(name: String) = project(name).dependency(api)
 
 val dist = getApiDependencyProject("dist").spigot()
-    .dependency("io.lumine:Mythic-Dist:5.9.3")
+    .dependency("io.lumine:Mythic-Dist:5.9.5")
     .dependency("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     .dependency("me.clip:placeholderapi:2.11.6")
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
@@ -176,6 +179,7 @@ tasks {
         prefix("kotlin")
         prefix("org.bstats")
         prefix("net.jodah.expiringmap")
+        prefix("kr.toxicity.library")
         dependencies {
             exclude(dependency("org.jetbrains:annotations:13.0"))
         }
