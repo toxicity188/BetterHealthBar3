@@ -2,7 +2,7 @@ plugins {
     `java-library`
     kotlin("jvm") version "2.2.0"
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.paperweight.userdev") version "2.0.0-SNAPSHOT" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18" apply false
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
@@ -73,7 +73,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.1")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.1")
-    .dependency("io.github.toxicity188:BetterModel:1.8.0")
+    .dependency("io.github.toxicity188:BetterModel:1.8.1")
     .dependency("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.11.2")
     .also {
@@ -121,7 +121,7 @@ dependencies {
     implementation(dist)
     implementation(getProject("scheduler:standard").spigot())
     implementation(getProject("scheduler:folia").paper())
-    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.6.2-SNAPSHOT"))
+    implementation(getProject("bedrock:geyser").spigot().dependency("org.geysermc.geyser:api:2.8.1-SNAPSHOT"))
     implementation(getProject("bedrock:floodgate").spigot().dependency("org.geysermc.floodgate:api:2.2.4-SNAPSHOT"))
     implementation(getProject("modelengine:legacy").spigot().dependency("com.ticxo.modelengine:api:R3.2.0"))
     implementation(getProject("modelengine:current").spigot().dependency("com.ticxo.modelengine:ModelEngine:R4.0.8"))

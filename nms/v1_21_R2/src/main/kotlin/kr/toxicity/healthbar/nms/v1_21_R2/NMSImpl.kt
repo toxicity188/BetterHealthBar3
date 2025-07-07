@@ -18,7 +18,6 @@ import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.network.Connection
-import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.*
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
@@ -278,13 +277,13 @@ class NMSImpl : NMS {
                 display.shadowStrength = strength
             }
             override fun update() {
-                val packets = mutableListOf<Packet<ClientGamePacketListener>>(
-                    ClientboundEntityPositionSyncPacket(display.id, PositionMoveRotation.of(display), display.onGround)
-                )
+                val sync = ClientboundEntityPositionSyncPacket(display.id, PositionMoveRotation.of(display), display.onGround)
                 display.entityData.packDirty()?.let {
-                    packets += ClientboundSetEntityDataPacket(display.id, it)
-                }
-                connection.send(packets.toBundlePacket())
+                    connection.send(listOf(
+                        sync,
+                        ClientboundSetEntityDataPacket(display.id, it)
+                    ).toBundlePacket())
+                } ?: connection.send(sync)
             }
             override fun teleport(location: Location) {
                 display.moveTo(
@@ -297,7 +296,7 @@ class NMSImpl : NMS {
             }
 
             override fun text(component: Component) {
-                display.text = textVanilla(component)
+                display.text = textVanilla(component.compact())
             }
 
             override fun transformation(location: Vector, scale: Vector) {

@@ -296,7 +296,7 @@ class NMSImpl : NMS {
             }
 
             override fun text(component: Component) {
-                display.text = textVanilla(component)
+                display.text = textVanilla(component.compact())
             }
 
             override fun transformation(location: Vector, scale: Vector) {
