@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.9.1"
+    version = "3.9.2"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -33,7 +33,7 @@ allprojects {
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")
-        implementation("net.jodah:expiringmap:0.5.11")
+        compileOnly("net.jodah:expiringmap:0.5.11")
         implementation("com.github.toxicity188:SharedPackets:1.0.0") {
             exclude("net.kyori")
         }
@@ -178,10 +178,9 @@ tasks {
         }
         prefix("kotlin")
         prefix("org.bstats")
-        prefix("net.jodah.expiringmap")
         prefix("kr.toxicity.library")
         dependencies {
-            exclude(dependency("org.jetbrains:annotations:13.0"))
+            exclude(dependency("org.jetbrains:annotations:26.0.2"))
         }
     }
     build {

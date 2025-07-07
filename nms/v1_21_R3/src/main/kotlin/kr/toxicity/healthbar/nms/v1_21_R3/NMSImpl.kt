@@ -8,6 +8,7 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
 import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.entity.LookAnchor
+import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.nms.NMS
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
@@ -53,6 +54,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector3f
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.*
 
 @Suppress("UNUSED")
@@ -331,6 +333,15 @@ class NMSImpl : NMS {
         private val world = player.player().world
         private val connection = serverPlayer.connection
         private val foliaAdapted = foliaAdapt(player.player())
+        private val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
+        private val task = BetterHealthBar.inst().scheduler().asyncTaskTimer(1, 1) {
+            var task: (() -> Unit)?
+            do {
+                task = taskQueue.poll()?.also { 
+                    it()
+                }
+            } while (task != null)
+        }
 
         init {
             val pipeLine = getConnection(connection).channel.pipeline()
@@ -340,23 +351,25 @@ class NMSImpl : NMS {
         }
 
         fun uninject() {
+            task.cancel()
             val channel = getConnection(connection).channel
             channel.eventLoop().submit {
                 channel.pipeline().remove(BetterHealthBar.NAMESPACE)
             }
         }
+            
 
+        private fun Double.square() = this * this
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
-            fun Double.square() = this * this
             val e = entity ?: return
-            if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
-            val set = plugin.healthBarManager().allHealthBars().filter {
-                it.triggers().contains(trigger)
-            }.toSet()
             val bukkit = e.bukkitEntity
-            if (bukkit is CraftLivingEntity && bukkit.isValid) {
+            if (bukkit is CraftLivingEntity && bukkit.isValid) taskQueue.add task@ {
+                if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return@task
+                val set = plugin.healthBarManager().allHealthBars().filter {
+                    it.triggers().contains(trigger)
+                }.toSet()
                 val adapt = plugin.mobManager().entity(
-                    if (bukkit is Player) injectionMap[bukkit.uniqueId]?.foliaAdapted ?: return else foliaAdapt(bukkit)
+                    if (bukkit is Player) injectionMap[bukkit.uniqueId]?.foliaAdapted ?: return@task else foliaAdapt(bukkit)
                 )
                 val types = adapt.mob()?.configuration()?.types()
                 val packet = PacketTrigger(trigger, handle)
@@ -423,8 +436,10 @@ class NMSImpl : NMS {
 
         override fun channelRead(ctx: ChannelHandlerContext?, msg: Any?) {
             when (msg) {
-                is ServerboundMovePlayerPacket -> getViewedEntity().forEach {
-                    show(msg, HealthBarTriggerType.LOOK, it)
+                is ServerboundMovePlayerPacket -> taskQueue.add {
+                    getViewedEntity().forEach {
+                        show(msg, HealthBarTriggerType.LOOK, it)
+                    }
                 }
             }
             super.channelRead(ctx, msg)
