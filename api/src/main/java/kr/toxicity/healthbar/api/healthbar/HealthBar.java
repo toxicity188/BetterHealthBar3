@@ -24,9 +24,6 @@ public interface HealthBar extends HealthBarConfiguration {
     @NotNull
     Vector scale();
 
-    float shadowRadius();
-    float shadowStrength();
-
     @NotNull
     Set<String> applicableTypes();
 

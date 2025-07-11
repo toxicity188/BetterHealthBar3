@@ -8,7 +8,6 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
 import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.entity.LookAnchor
-import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.nms.NMS
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
@@ -361,10 +360,9 @@ class NMSImpl : NMS {
 
         private fun Double.square() = this * this
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
-            val e = entity ?: return
-            val bukkit = e.bukkitEntity
-            if (bukkit is CraftLivingEntity && bukkit.isValid) taskQueue.add task@ {
-                if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return@task
+            if (entity is LivingEntity && !entity.isDeadOrDying && entity.removalReason == null) taskQueue.add task@ {
+                val bukkit = entity.bukkitLivingEntity
+                if (sqrt((serverPlayer.x - entity.x).square()  + (serverPlayer.y - entity.y).square() + (serverPlayer.z - entity.z).square()) > plugin.configManager().lookDistance()) return@task
                 val set = plugin.healthBarManager().allHealthBars().filter {
                     it.triggers().contains(trigger)
                 }.toSet()

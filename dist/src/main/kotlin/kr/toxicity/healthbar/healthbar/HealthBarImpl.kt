@@ -46,8 +46,6 @@ class HealthBarImpl(
             it.getDouble("z", 1.0)
         )
     } ?: Vector(1, 1, 1)
-    private val shadowRadius = section.getDouble("shadow-radius", 0.0).toFloat()
-    private val shadowStrength = section.getDouble("shadow-strength", 1.0).toFloat()
 
     override fun path(): String = path
     override fun uuid(): UUID = uuid
@@ -57,8 +55,6 @@ class HealthBarImpl(
     override fun condition(): HealthBarCondition = conditions
     override fun isDefault(): Boolean = isDefault
     override fun scale(): Vector = Vector(scale.x, scale.y, scale.z)
-    override fun shadowRadius(): Float = shadowRadius
-    override fun shadowStrength(): Float = shadowStrength
 
     override fun duration(): Int = duration
 

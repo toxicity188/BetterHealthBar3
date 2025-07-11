@@ -73,7 +73,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.1")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.1")
-    .dependency("io.github.toxicity188:BetterModel:1.8.1")
+    .dependency("io.github.toxicity188:BetterModel:1.9.0")
     .dependency("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.11.2")
     .also {
