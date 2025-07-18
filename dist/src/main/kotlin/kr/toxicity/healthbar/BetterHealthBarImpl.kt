@@ -79,7 +79,7 @@ class BetterHealthBarImpl : BetterHealthBar() {
         val log = ArrayList<String>()
         val manager = Bukkit.getPluginManager()
         nms = when (MinecraftVersion.current) {
-            MinecraftVersion.version1_21_6, MinecraftVersion.version1_21_7 -> kr.toxicity.healthbar.nms.v1_21_R5.NMSImpl()
+            MinecraftVersion.version1_21_6, MinecraftVersion.version1_21_7, MinecraftVersion.version1_21_8 -> kr.toxicity.healthbar.nms.v1_21_R5.NMSImpl()
             MinecraftVersion.version1_21_5 -> kr.toxicity.healthbar.nms.v1_21_R4.NMSImpl()
             MinecraftVersion.version1_21_4 -> kr.toxicity.healthbar.nms.v1_21_R3.NMSImpl()
             MinecraftVersion.version1_21_2, MinecraftVersion.version1_21_3 -> kr.toxicity.healthbar.nms.v1_21_R2.NMSImpl()

@@ -350,7 +350,7 @@ class NMSImpl : NMS {
         private fun Double.square() = this * this
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
             if (entity is LivingEntity && !entity.isDeadOrDying && entity.removalReason == null) taskQueue.add task@ {
-                val bukkit = entity.bukkitLivingEntity
+                val bukkit = entity.bukkitEntity as org.bukkit.entity.LivingEntity
                 if (sqrt((serverPlayer.x - entity.x).square()  + (serverPlayer.y - entity.y).square() + (serverPlayer.z - entity.z).square()) > plugin.configManager().lookDistance()) return@task
                 val set = plugin.healthBarManager().allHealthBars().filter {
                     it.triggers().contains(trigger)
