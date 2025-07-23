@@ -9,6 +9,7 @@ import io.papermc.paper.chunk.system.entity.EntityLookup
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.nms.NMS
+import kr.toxicity.healthbar.api.nms.PacketBundler
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
@@ -233,12 +234,12 @@ class NMSImpl : NMS {
         }
     }
 
-    override fun createTextDisplay(player: Player, location: Location, component: Component): VirtualTextDisplay {
-        val connection = (player as CraftPlayer).handle.connection
-        val display = TextDisplay(EntityType.TEXT_DISPLAY, (player.world as CraftWorld).handle).apply {
+    override fun createBundler(): PacketBundler = bundlerOf()
+    override fun createTextDisplay(location: Location, component: Component): VirtualTextDisplay {
+        val display = TextDisplay(EntityType.TEXT_DISPLAY, (location.world as CraftWorld).handle).apply {
             billboardConstraints = Display.BillboardConstraints.CENTER
             entityData.run {
-                set(Display.DATA_POS_ROT_INTERPOLATION_DURATION_ID, 1)
+                set(Display.DATA_POS_ROT_INTERPOLATION_DURATION_ID, 3)
                 set(TextDisplay.DATA_BACKGROUND_COLOR_ID, 0)
                 set(TextDisplay.DATA_LINE_WIDTH_ID, Int.MAX_VALUE)
             }
@@ -252,26 +253,37 @@ class NMSImpl : NMS {
                 location.yaw,
                 location.pitch
             )
-            connection.send(listOf(
-                ClientboundAddEntityPacket(this),
-                ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!)
-            ).toBundlePacket())
         }
         return object : VirtualTextDisplay {
+            override fun spawn(bundler: PacketBundler) {
+                display.run {
+                    bundler += ClientboundAddEntityPacket(
+                        id,
+                        uuid,
+                        x,
+                        y,
+                        z,
+                        xRot,
+                        yRot,
+                        type,
+                        0,
+                        deltaMovement,
+                        yHeadRot.toDouble()
+                    )
+                    bundler += ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!)
+                }
+            }
             override fun shadowRadius(radius: Float) {
                 display.shadowRadius = radius
             }
             override fun shadowStrength(strength: Float) {
                 display.shadowStrength = strength
             }
-            override fun update() {
-                val sync = ClientboundTeleportEntityPacket(display)
+            override fun update(bundler: PacketBundler) {
+                bundler += ClientboundTeleportEntityPacket(display)
                 display.entityData.packDirty()?.let {
-                    connection.send(listOf(
-                        sync,
-                        ClientboundSetEntityDataPacket(display.id, it)
-                    ).toBundlePacket())
-                } ?: connection.send(sync)
+                    bundler += ClientboundSetEntityDataPacket(display.id, it)
+                }
             }
             override fun teleport(location: Location) {
                 display.moveTo(
@@ -292,8 +304,8 @@ class NMSImpl : NMS {
                 display.setTransformation(Transformation(location.toVanilla(), null, scale.toVanilla(), null))
             }
 
-            override fun remove() {
-                connection.send(ClientboundRemoveEntitiesPacket(display.id))
+            override fun remove(bundler: PacketBundler) {
+                bundler += ClientboundRemoveEntitiesPacket(display.id)
             }
         }
     }

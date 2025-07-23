@@ -13,7 +13,8 @@ public interface NMS {
     @NotNull
     LivingEntity foliaAdapt(@NotNull LivingEntity entity);
 
-    @NotNull VirtualTextDisplay createTextDisplay(@NotNull Player player, @NotNull Location location, @NotNull Component component);
+    @NotNull VirtualTextDisplay createTextDisplay(@NotNull Location location, @NotNull Component component);
+    @NotNull PacketBundler createBundler();
 
     void inject(@NotNull HealthBarPlayer player);
     void uninject(@NotNull HealthBarPlayer player);

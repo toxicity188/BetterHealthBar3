@@ -154,7 +154,7 @@ object TextManagerImpl : TextManager, BetterHealthBerManager {
                     save(list)
                 } else {
                     val sub = list.split(SPLIT_SIZE)
-                    save(sub.subList(0, sub.lastIndex).sum())
+                    save(sub.subList(0, sub.lastIndex).flatten())
                     save(sub.last())
                 }
             }

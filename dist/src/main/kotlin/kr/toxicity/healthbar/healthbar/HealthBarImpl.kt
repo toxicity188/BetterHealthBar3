@@ -110,10 +110,12 @@ class HealthBarImpl(
         }.toMutableList()
 
         override fun work(): Boolean {
+            val bundler = PLUGIN.nms().createBundler()
             if (!hasNext() || displays.isEmpty()) {
                 displays.forEach {
-                    it.remove()
+                    it.remove(bundler)
                 }
+                bundler.send(event)
                 return false
             } else {
                 indexes.values.forEach {
@@ -123,34 +125,42 @@ class HealthBarImpl(
                 var max = 0
                 val pool = ArrayList<RenderedLayout.RenderedEntityPool>()
                 displays.forEach {
-                    if (it.update()) {
+                    if (it.update(bundler)) {
                         result = true
                         if (max < it.max) max = it.max
                         pool.add(it)
                     }
                 }
                 pool.forEach {
-                    it.create(max)
+                    it.create(max, bundler)
                 }
+                bundler.send(event)
                 return result
             }
         }
 
-        override fun displays(): List<VirtualTextDisplay> = displays.map {
+        override fun displays(): List<VirtualTextDisplay> = displays.flatMap {
             it.displays()
-        }.sum()
+        }
 
         override fun stop() {
+            val bundler = PLUGIN.nms().createBundler()
             displays.forEach {
-                it.remove()
+                it.remove(bundler)
             }
+            bundler.send(event)
         }
     }
     private inner class SingleRenderer(
         pair: HealthBarCreateEvent
     ) : AbstractRenderer(pair) {
 
-        private val display = pair.createEntity(render())
+        private val display = pair.createEntity(render()).apply {
+            PLUGIN.nms().createBundler().run {
+                spawn(this)
+                send(pair)
+            }
+        }
 
         private fun removeUnused() {
             indexes.values.forEach {
@@ -168,21 +178,26 @@ class HealthBarImpl(
         }
 
         override fun stop() {
-            display.remove()
+            val bundler = PLUGIN.nms().createBundler()
+            display.remove(bundler)
+            bundler.send(event)
         }
 
         override fun displays(): List<VirtualTextDisplay> = listOf(display)
 
         override fun work(): Boolean {
+            val bundler = PLUGIN.nms().createBundler()
             if (!hasNext() || render.isEmpty()) {
-                display.remove()
+                display.remove(bundler)
+                bundler.send(event)
                 return false
             } else {
                 removeUnused()
                 val render = render()
                 display.teleport(event.toEntityLocation())
                 display.text(render.component.build())
-                display.update()
+                display.update(bundler)
+                bundler.send(event)
                 return true
             }
         }

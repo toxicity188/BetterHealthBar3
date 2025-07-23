@@ -68,7 +68,7 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
                             type,
                             section.getStringList("files").ifEmpty {
                                 throw RuntimeException("'files' list is empty.")
-                            }.map { t ->
+                            }.flatMap { t ->
                                 var name = t.replace('/', File.separatorChar)
                                 var frame = 1
                                 val matcher = framePattern.matcher(name)
@@ -86,7 +86,7 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
                                 (0..<(mainFrame * frame).coerceAtLeast(1)).map {
                                     targetFile
                                 }
-                            }.sum()
+                            }
                         )
                     }
                 }

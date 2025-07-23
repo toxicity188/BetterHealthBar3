@@ -3,6 +3,7 @@ package kr.toxicity.healthbar.healthbar
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.layout.LayoutGroup
+import kr.toxicity.healthbar.api.nms.PacketBundler
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.ImageRenderer
 import kr.toxicity.healthbar.api.renderer.PixelRenderer
@@ -30,22 +31,18 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             RenderedEntity(it)
         }).toMutableList()
 
-        fun displays() = ArrayList<VirtualTextDisplay>().apply {
-            entities.forEach {
-                it.entity?.let { e ->
-                    add(e)
-                }
-            }
+        fun displays() = entities.mapNotNull {
+            it.entity
         }
 
         var max = 0
 
-        fun update(): Boolean {
+        fun update(bundler: PacketBundler): Boolean {
             entities.removeIf {
-                !it.has()
+                !it.hasNext()
             }
             val imageMap = entities.filter {
-                it.can()
+                it.canBeRendered(bundler)
             }
             if (imageMap.isEmpty()) return false
             val count = group?.let { s ->
@@ -58,19 +55,19 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             return true
         }
 
-        fun create(max: Int) {
+        fun create(max: Int, bundler: PacketBundler) {
             val imageMap = entities.filter {
-                it.can()
+                it.canBeRendered(bundler)
             }
             val loc = data.toEntityLocation()
             imageMap.forEach {
-                it.create(max, loc)
+                it.create(max, loc, bundler)
             }
         }
 
-        fun remove() {
+        fun remove(bundler: PacketBundler) {
             entities.forEach {
-                it.remove()
+                it.remove(bundler)
             }
         }
 
@@ -80,29 +77,31 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             var entity: VirtualTextDisplay? = null
             var comp = EMPTY_PIXEL_COMPONENT
 
-            fun remove() {
-                entity?.remove()
+            fun remove(bundler: PacketBundler) {
+                entity?.remove(bundler)
             }
 
-            fun can(): Boolean {
+            fun canBeRendered(bundler: PacketBundler): Boolean {
                 val result = renderer.canRender()
                 if (!result) {
-                    entity?.remove()
+                    remove(bundler)
                     entity = null
                 }
                 return result
             }
 
-            fun has() = renderer.hasNext()
+            fun hasNext() = renderer.hasNext()
 
-            fun create(max: Int, loc: Location) {
+            fun create(max: Int, loc: Location, bundler: PacketBundler) {
                 val length = comp.pixel + comp.component.width
                 val finalComp = comp.pixel.toSpaceComponent() + comp.component + (-length + max).toSpaceComponent() + NEW_LAYER
                 entity = entity?.apply {
                     teleport(loc)
                     text(finalComp.component.build())
-                    update()
-                } ?: data.createEntity(finalComp, renderer.layer())
+                    update(bundler)
+                } ?: data.createEntity(finalComp, renderer.layer()).apply {
+                    spawn(bundler)
+                }
             }
 
             fun update(count: Int) {

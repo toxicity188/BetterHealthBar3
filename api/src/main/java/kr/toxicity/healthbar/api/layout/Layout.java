@@ -10,6 +10,7 @@ public interface Layout {
     int groupX();
     int groupY();
     double scale();
+    int shadowColor();
     @NotNull
     HealthBarCondition condition();
 }

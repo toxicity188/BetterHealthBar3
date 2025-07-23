@@ -143,7 +143,7 @@ class TextLayoutImpl(
                 length(target),
                 Component.text().append(target.font(key.key))
             )
-            return component.toPixelComponent(key.x + when (align) {
+            return component.shadowColor(shadowColor()).toPixelComponent(key.x + when (align) {
                 TextAlign.LEFT -> 0
                 TextAlign.CENTER -> -component.width / 2
                 TextAlign.RIGHT -> -component.width

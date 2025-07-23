@@ -27,7 +27,7 @@ fun HealthBarCreateEvent.toEntityLocation(): Location {
 private const val HEIGHT = 8192.0 / 40.0
 
 fun HealthBarCreateEvent.createEntity(component: WidthComponent, layer: Int = 0): VirtualTextDisplay {
-    return PLUGIN.nms().createTextDisplay(player.player(), toEntityLocation(), component.component.build()).apply {
+    return PLUGIN.nms().createTextDisplay(toEntityLocation(), component.component.build()).apply {
         val scale = healthBar.scale()
         val multiplier = -(1 - scale.y) * HEIGHT
         transformation(

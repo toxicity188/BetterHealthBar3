@@ -14,9 +14,9 @@ fun File.requireExists() = apply {
 fun File.forEachAllYaml(block: (File, String, ConfigurationSection) -> Unit) {
     fun getAll(file: File): List<File> {
         return if (file.isDirectory) {
-            file.listFiles()?.map { subFile ->
+            file.listFiles()?.flatMap { subFile ->
                 getAll(subFile)
-            }?.sum() ?: ArrayList()
+            } ?: ArrayList()
         } else {
             listOf(file)
         }

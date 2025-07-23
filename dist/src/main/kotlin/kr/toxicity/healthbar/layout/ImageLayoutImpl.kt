@@ -1,7 +1,6 @@
 package kr.toxicity.healthbar.layout
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
@@ -63,7 +62,7 @@ class ImageLayoutImpl(
                         .font(parent.imageKey())
                         .content(component)
                         .append(NEGATIVE_ONE_SPACE_COMPONENT.component)
-                    )
+                    ).shadowColor(shadowColor())
                 }.toPixelComponent(x() + groupX() * i))
             }
             components.add(list)

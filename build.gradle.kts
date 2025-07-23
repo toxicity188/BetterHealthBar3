@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.20" //TODO set this to 2.0.0 when stable version is released.
 }
 
-val minecraft = "1.21.7"
+val minecraft = "1.21.8"
 val adventure = "4.23.0"
 val platform = "4.4.0"
 val targetJavaVersion = 21
@@ -73,7 +73,7 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.1")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.1")
-    .dependency("io.github.toxicity188:BetterModel:1.9.3")
+    .dependency("io.github.toxicity188:BetterModel:1.10.0")
     .dependency("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     .dependency("com.github.SkriptLang:Skript:2.12.0")
     .also {
@@ -158,8 +158,7 @@ tasks {
         version(minecraft)
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("BetterHud", "1.13.1")
-            hangar("ViaVersion", "5.4.2-SNAPSHOT+782")
+            hangar("BetterHud", "1.13.2")
             hangar("PlaceholderAPI", "2.11.6")
             hangar("Skript", "2.12.0")
         }

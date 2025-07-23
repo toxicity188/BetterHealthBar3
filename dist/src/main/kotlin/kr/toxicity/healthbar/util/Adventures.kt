@@ -2,7 +2,9 @@ package kr.toxicity.healthbar.util
 
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
+import kr.toxicity.healthbar.version.MinecraftVersion
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.ShadowColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
@@ -55,3 +57,7 @@ fun Int.parseChar(): String {
 }
 
 fun WidthComponent.toPixelComponent(int: Int) = PixelComponent(int, this)
+
+fun WidthComponent.shadowColor(color: Int) = apply {
+    if (MinecraftVersion.current.canUseShadowColor) component.shadowColor(ShadowColor.shadowColor(color))
+}

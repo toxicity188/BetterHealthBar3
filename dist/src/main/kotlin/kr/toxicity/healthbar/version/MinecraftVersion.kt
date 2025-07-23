@@ -58,6 +58,8 @@ data class MinecraftVersion(
         )
     }
 
+    val canUseShadowColor get() = this >= version1_21_4
+
     constructor(string: String): this(string.split('.'))
     constructor(string: List<String>): this(
         if (string.isNotEmpty()) string[0].toInt() else 0,
