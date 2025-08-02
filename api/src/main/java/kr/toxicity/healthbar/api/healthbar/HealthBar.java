@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.api.healthbar;
 
 import kr.toxicity.healthbar.api.condition.HealthBarCondition;
 import kr.toxicity.healthbar.api.configuration.HealthBarConfiguration;
+import kr.toxicity.healthbar.api.equation.HealthBarEquation;
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent;
 import kr.toxicity.healthbar.api.layout.LayoutGroup;
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer;
@@ -39,4 +40,6 @@ public interface HealthBar extends HealthBarConfiguration {
     HealthBarRenderer createRenderer(@NotNull HealthBarCreateEvent pair);
     @NotNull
     HealthBarCondition condition();
+
+    @NotNull HealthBarEquation positionEquation();
 }

@@ -8,6 +8,10 @@ default_healthbar:
   triggers:
     - damage
     - look
+  position-equation:
+    x: 0
+    y: 0.0625sin(t / 20 * pi)
+    z: 0
   groups:
     - default_layout
     - mob_effect_absorption

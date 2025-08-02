@@ -12,6 +12,7 @@ libraries:
   - "net.kyori:adventure-text-minimessage:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
   - "net.jodah:expiringmap:0.5.11"
+  - "net.objecthunter:exp4j:0.4.8"
 softdepend:
   - BetterHud
   - BetterModel

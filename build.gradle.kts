@@ -8,7 +8,7 @@ plugins {
 }
 
 val minecraft = "1.21.8"
-val adventure = "4.23.0"
+val adventure = "4.24.0"
 val platform = "4.4.0"
 val targetJavaVersion = 21
 
@@ -17,7 +17,7 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.dokka")
     group = "kr.toxicity.healthbar"
-    version = "3.9.2"
+    version = "3.9.3"
     repositories {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
@@ -73,9 +73,10 @@ val dist = getApiDependencyProject("dist").spigot()
     .dependency("com.alessiodp.parties:parties-bukkit:3.2.16")
     .dependency("io.github.toxicity188:BetterHud-standard-api:1.13.1")
     .dependency("io.github.toxicity188:BetterHud-bukkit-api:1.13.1")
-    .dependency("io.github.toxicity188:BetterModel:1.10.0")
+    .dependency("io.github.toxicity188:BetterModel:1.10.2")
     .dependency("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
-    .dependency("com.github.SkriptLang:Skript:2.12.0")
+    .dependency("com.github.SkriptLang:Skript:2.12.1")
+    .dependency("net.objecthunter:exp4j:0.4.8")
     .also {
         it.tasks.processResources {
             filteringCharset = Charsets.UTF_8.name()
@@ -160,7 +161,7 @@ tasks {
         downloadPlugins {
             hangar("BetterHud", "1.13.2")
             hangar("PlaceholderAPI", "2.11.6")
-            hangar("Skript", "2.12.0")
+            hangar("Skript", "2.12.1")
         }
     }
     shadowJar {

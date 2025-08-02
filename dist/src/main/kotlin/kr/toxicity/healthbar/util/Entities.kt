@@ -15,19 +15,21 @@ import org.bukkit.util.Vector
 val ATTRIBUTE_MAX_HEALTH = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(if (MinecraftVersion.current >= MinecraftVersion.version1_21_2) "max_health" else "generic.max_health"))!!
 val ATTRIBUTE_ARMOR = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(if (MinecraftVersion.current >= MinecraftVersion.version1_21_2) "armor" else "generic.armor"))!!
 
-fun HealthBarCreateEvent.toEntityLocation(): Location {
+fun HealthBarCreateEvent.toEntityLocation(t: Double): Location = toEntityLocation(healthBar.positionEquation().evaluate(t))
+fun HealthBarCreateEvent.toEntityLocation(vector: Vector): Location {
     return entity.entity().location.apply {
         y += (PLUGIN.modelAdapter().height(entity.entity()) ?: entity.entity().eyeHeight) + ConfigManagerImpl.defaultHeight()
         entity.mob()?.let {
             y += it.configuration().height()
         }
+        add(vector.rotateAroundY(-Math.toRadians(yaw.toDouble())))
     }
 }
 
 private const val HEIGHT = 8192.0 / 40.0
 
-fun HealthBarCreateEvent.createEntity(component: WidthComponent, layer: Int = 0): VirtualTextDisplay {
-    return PLUGIN.nms().createTextDisplay(toEntityLocation(), component.component.build()).apply {
+fun HealthBarCreateEvent.createEntity(loc: Location, component: WidthComponent, layer: Int = 0): VirtualTextDisplay {
+    return PLUGIN.nms().createTextDisplay(loc, component.component.build()).apply {
         val scale = healthBar.scale()
         val multiplier = -(1 - scale.y) * HEIGHT
         transformation(

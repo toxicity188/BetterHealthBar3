@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.healthbar
 
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.condition.HealthBarCondition
+import kr.toxicity.healthbar.api.equation.HealthBarEquation
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.healthbar.HealthBar
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
@@ -9,6 +10,7 @@ import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
+import kr.toxicity.healthbar.equation.HealthBarEquationImpl
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.manager.LayoutManagerImpl
 import kr.toxicity.healthbar.util.*
@@ -46,6 +48,9 @@ class HealthBarImpl(
             it.getDouble("z", 1.0)
         )
     } ?: Vector(1, 1, 1)
+    private val positionEquation = section.getConfigurationSection("position-equation")?.let {
+        HealthBarEquationImpl(it)
+    } ?: HealthBarEquationImpl.zero
 
     override fun path(): String = path
     override fun uuid(): UUID = uuid
@@ -55,6 +60,7 @@ class HealthBarImpl(
     override fun condition(): HealthBarCondition = conditions
     override fun isDefault(): Boolean = isDefault
     override fun scale(): Vector = Vector(scale.x, scale.y, scale.z)
+    override fun positionEquation(): HealthBarEquation = positionEquation
 
     override fun duration(): Int = duration
 
@@ -87,6 +93,8 @@ class HealthBarImpl(
         }.toMutableList()
 
         var d = 0
+        private var tick = 0.0
+        val position get() = event.toEntityLocation(tick++)
 
         override fun hasNext(): Boolean {
             if (!event.check()) return false
@@ -131,8 +139,9 @@ class HealthBarImpl(
                         pool.add(it)
                     }
                 }
+                val pos = position
                 pool.forEach {
-                    it.create(max, bundler)
+                    it.create(pos, max, bundler)
                 }
                 bundler.send(event)
                 return result
@@ -155,7 +164,7 @@ class HealthBarImpl(
         pair: HealthBarCreateEvent
     ) : AbstractRenderer(pair) {
 
-        private val display = pair.createEntity(render()).apply {
+        private val display = pair.createEntity(position,render()).apply {
             PLUGIN.nms().createBundler().run {
                 spawn(this)
                 send(pair)
@@ -194,7 +203,7 @@ class HealthBarImpl(
             } else {
                 removeUnused()
                 val render = render()
-                display.teleport(event.toEntityLocation())
+                display.teleport(position)
                 display.text(render.component.build())
                 display.update(bundler)
                 bundler.send(event)

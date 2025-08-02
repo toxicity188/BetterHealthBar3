@@ -55,11 +55,10 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             return true
         }
 
-        fun create(max: Int, bundler: PacketBundler) {
+        fun create(loc: Location, max: Int, bundler: PacketBundler) {
             val imageMap = entities.filter {
                 it.canBeRendered(bundler)
             }
-            val loc = data.toEntityLocation()
             imageMap.forEach {
                 it.create(max, loc, bundler)
             }
@@ -99,7 +98,7 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
                     teleport(loc)
                     text(finalComp.component.build())
                     update(bundler)
-                } ?: data.createEntity(finalComp, renderer.layer()).apply {
+                } ?: data.createEntity(loc, finalComp, renderer.layer()).apply {
                     spawn(bundler)
                 }
             }
