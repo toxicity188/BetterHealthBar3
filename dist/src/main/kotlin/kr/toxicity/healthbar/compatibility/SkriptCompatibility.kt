@@ -18,7 +18,7 @@ class SkriptCompatibility : Compatibility {
         Skript.registerExpression(ExprHealthBarEntity::class.java, Entity::class.java, ExpressionType.SIMPLE, "healthbar entity")
 
         PlaceholderContainer.STRING.addPlaceholder("skript_variable", placeholder(1) { args ->
-            val value = VariableString.newInstance(args.joinToString(",")).ifNull("Invalid variable.")
+            val value = VariableString.newInstance(args.joinToString(",")).ifNull { "Invalid variable." }
             Function {
                 value.getSingle(it) ?: "<none>"
             }

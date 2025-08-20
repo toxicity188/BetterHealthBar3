@@ -55,9 +55,7 @@ class LayoutGroupImpl(
             it.build(resource, count, json)
         }
         resource.font.add("$encodedName.json") {
-            JsonObject().apply {
-                add("providers", json)
-            }.save()
+            jsonObjectOf("providers" to json).save()
         }
         texts.forEach {
             it.build(resource, count)

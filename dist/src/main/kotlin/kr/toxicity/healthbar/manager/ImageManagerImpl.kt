@@ -25,10 +25,10 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
         val images = resource.dataFolder.subFolder("assets")
         resource.dataFolder.subFolder("images").forEachAllYaml { file, s, section ->
             runWithHandleException("Unable to load this image: $s in ${file.path}") {
-                val typeValue = section.getString("type").ifNull("Unable to find 'type' configuration.")
+                val typeValue = section.getString("type").ifNull { "Unable to find 'type' configuration." }
                 val image = when (val type = ImageType.valueOf(typeValue.uppercase())) {
                     ImageType.SINGLE -> {
-                        val name = section.getString("file").ifNull("Unable to find 'file' configuration.")
+                        val name = section.getString("file").ifNull { "Unable to find 'file' configuration." }
                             .replace('/', File.separatorChar)
                         val fileName = "${s}_${if (name.contains(File.separatorChar)) name.substringAfterLast(File.separatorChar) else name}"
                         HealthBarImageImpl(
@@ -39,15 +39,15 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
                                 .requireExists()
                                 .toImage()
                                 .removeEmptyWidth()
-                                .ifNull("Invalid image.")
+                                .ifNull { "Invalid image." }
                                 .toNamed(fileName))
                         )
                     }
                     ImageType.LISTENER -> {
-                        val splitType = section.getString("split-type").ifNull("Unable to find 'split-type' configuration.").run {
+                        val splitType = section.getString("split-type").ifNull { "Unable to find 'split-type' configuration." }.run {
                             SplitType.valueOf(uppercase())
                         }
-                        val name = section.getString("file").ifNull("Unable to find 'file' configuration.")
+                        val name = section.getString("file").ifNull { "Unable to find 'file' configuration." }
                             .replace('/', File.separatorChar)
                         val fileName = "${s}_${if (name.contains(File.separatorChar)) name.substringAfterLast(File.separatorChar) else name}"
                         HealthBarImageImpl(
@@ -57,7 +57,7 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
                                 .requireExists()
                                 .toImage()
                                 .removeEmptyWidth()
-                                .ifNull("Invalid image.")
+                                .ifNull { "Invalid image." }
                                 .toNamed(fileName), section.getInt("split", 1).coerceAtLeast(1))
                         )
                     }
@@ -68,7 +68,7 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
                             type,
                             section.getStringList("files").ifEmpty {
                                 throw RuntimeException("'files' list is empty.")
-                            }.map { t ->
+                            }.flatMap { t ->
                                 var name = t.replace('/', File.separatorChar)
                                 var frame = 1
                                 val matcher = framePattern.matcher(name)
@@ -81,12 +81,12 @@ object ImageManagerImpl : ImageManager, BetterHealthBerManager {
                                     .requireExists()
                                     .toImage()
                                     .removeEmptyWidth()
-                                    .ifNull("Invalid image.")
+                                    .ifNull { "Invalid image." }
                                     .toNamed(fileName)
                                 (0..<(mainFrame * frame).coerceAtLeast(1)).map {
                                     targetFile
                                 }
-                            }.sum()
+                            }
                         )
                     }
                 }

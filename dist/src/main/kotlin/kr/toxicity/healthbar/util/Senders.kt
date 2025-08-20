@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.util
 
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -15,7 +16,7 @@ private val EMPTY_DECORATION = TextDecoration.entries.associateWith {
 }
 
 val CommandSender.adventure
-    get() = PLUGIN.audiences().sender(this)
+    get() = if (this is Audience) this else PLUGIN.audiences().sender(this)
 
 fun CommandSender.info(component: Component) = adventure.sendMessage(
     Component.text()

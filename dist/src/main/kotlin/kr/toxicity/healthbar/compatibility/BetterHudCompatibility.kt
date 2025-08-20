@@ -35,7 +35,7 @@ class BetterHudCompatibility : Compatibility {
             addConstant("DISPLAY_HEIGHT", "8192.0 / 40.0")
             addTagSupplier(ShaderManager.ShaderType.TEXT_VERTEX) {
                 if (ConfigManagerImpl.useCoreShaders()) {
-                    val vsh = loadShaderLine("rendertype_text.vsh")
+                    val vsh = loadShaderLine("betterhealthbar_legacy/rendertype_text.vsh")
                     ShaderManager.newTag()
                         .add("GenerateOtherMainMethod", vsh.range("//GenerateOtherMainMethod"))
                         .add("GenerateOtherDefinedMethod", vsh.range("//GenerateOtherDefinedMethod"))
@@ -43,7 +43,7 @@ class BetterHudCompatibility : Compatibility {
             }
             addTagSupplier(ShaderManager.ShaderType.TEXT_FRAGMENT) {
                 if (ConfigManagerImpl.useCoreShaders()) {
-                    val fsh = loadShaderLine("rendertype_text.fsh")
+                    val fsh = loadShaderLine("betterhealthbar_legacy/rendertype_text.fsh")
                     ShaderManager.newTag()
                         .add("GenerateOtherMainMethod", fsh.range("//GenerateOtherMainMethod"))
                         .add("GenerateOtherDefinedMethod", fsh.range("//GenerateOtherDefinedMethod"))

@@ -15,13 +15,6 @@ fun <T> List<T>.split(splitSize: Int): List<List<T>> {
     return result
 }
 
-fun <T> List<List<T>>.sum(): List<T> {
-    val result = ArrayList<T>()
-    forEach {
-        result.addAll(it)
-    }
-    return result
-}
 
 fun <T> List<T>.forEachAsync(block: (T) -> Unit) {
     if (isNotEmpty()) {
@@ -47,13 +40,14 @@ fun <T> List<T>.forEachAsync(block: (T) -> Unit) {
             }
             queue
         }
-        val pool = Executors.newFixedThreadPool(tasks.size)
-        CompletableFuture.allOf(
-            *tasks.map {
-                CompletableFuture.runAsync({
-                    it()
-                }, pool)
-            }.toTypedArray()
-        ).join()
+        Executors.newFixedThreadPool(tasks.size).use { pool ->
+            CompletableFuture.allOf(
+                *tasks.map {
+                    CompletableFuture.runAsync({
+                        it()
+                    }, pool)
+                }.toTypedArray()
+            ).join()
+        }
     }
 }

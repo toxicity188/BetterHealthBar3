@@ -9,6 +9,7 @@ import io.papermc.paper.chunk.system.entity.EntityLookup
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
 import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.api.nms.NMS
+import kr.toxicity.healthbar.api.nms.PacketBundler
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.player.HealthBarPlayer
 import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
@@ -51,6 +52,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector3f
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -235,9 +237,9 @@ class NMSImpl : NMS {
         }
     }
 
-    override fun createTextDisplay(player: Player, location: Location, component: Component): VirtualTextDisplay {
-        val connection = (player as CraftPlayer).handle.connection
-        val display = TextDisplay(EntityType.TEXT_DISPLAY, (player.world as CraftWorld).handle).apply {
+    override fun createBundler(): PacketBundler = bundlerOf()
+    override fun createTextDisplay(location: Location, component: Component): VirtualTextDisplay {
+        val display = TextDisplay(EntityType.TEXT_DISPLAY, (location.world as CraftWorld).handle).apply {
             text = textVanilla(component)
             entityData.run {
                 set(TextDisplay.DATA_BACKGROUND_COLOR_ID, 0)
@@ -248,7 +250,7 @@ class NMSImpl : NMS {
             billboardConstraints = Display.BillboardConstraints.CENTER
             interpolationDuration = 1
             brightnessOverride = Brightness(15, 15)
-            viewRange = 1024F
+            viewRange = 10F
             moveTo(
                 location.x,
                 location.y,
@@ -256,23 +258,37 @@ class NMSImpl : NMS {
                 location.yaw,
                 location.pitch
             )
-            connection.send(ClientboundBundlePacket(listOf(
-                ClientboundAddEntityPacket(this),
-                ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!)
-            )))
         }
         return object : VirtualTextDisplay {
+            override fun spawn(bundler: PacketBundler) {
+                display.run {
+                    bundler += ClientboundAddEntityPacket(
+                        id,
+                        uuid,
+                        x,
+                        y,
+                        z,
+                        xRot,
+                        yRot,
+                        type,
+                        0,
+                        deltaMovement,
+                        yHeadRot.toDouble()
+                    )
+                    bundler += ClientboundSetEntityDataPacket(id, entityData.nonDefaultValues!!)
+                }
+            }
             override fun shadowRadius(radius: Float) {
                 display.shadowRadius = radius
             }
             override fun shadowStrength(strength: Float) {
                 display.shadowStrength = strength
             }
-            override fun update() {
-                connection.send(ClientboundBundlePacket(listOf(
-                    ClientboundTeleportEntityPacket(display),
-                    ClientboundSetEntityDataPacket(display.id, display.entityData.nonDefaultValues!!)
-                )))
+            override fun update(bundler: PacketBundler) {
+                bundler += ClientboundTeleportEntityPacket(display)
+                display.entityData.packDirty()?.let {
+                    bundler += ClientboundSetEntityDataPacket(display.id, it)
+                }
             }
             override fun teleport(location: Location) {
                 display.moveTo(
@@ -285,7 +301,7 @@ class NMSImpl : NMS {
             }
 
             override fun text(component: Component) {
-                display.text = textVanilla(component)
+                display.text = textVanilla(component.compact())
             }
 
             override fun transformation(location: Vector, scale: Vector) {
@@ -293,8 +309,8 @@ class NMSImpl : NMS {
                 display.setTransformation(Transformation(location.toVanilla(), null, scale.toVanilla(), null))
             }
 
-            override fun remove() {
-                connection.send(ClientboundRemoveEntitiesPacket(display.id))
+            override fun remove(bundler: PacketBundler) {
+                bundler += ClientboundRemoveEntitiesPacket(display.id)
             }
         }
     }
@@ -315,7 +331,15 @@ class NMSImpl : NMS {
         private val serverPlayer = (player.player() as CraftPlayer).handle
         private val connection = serverPlayer.connection
         private val foliaAdapted = foliaAdapt(player.player())
-        private val world = player.player().world
+        private val taskQueue = ConcurrentLinkedQueue<() -> Unit>()
+        private val task = BetterHealthBar.inst().scheduler().asyncTaskTimer(1, 1) {
+            var task: (() -> Unit)?
+            do {
+                task = taskQueue.poll()?.also { 
+                    it()
+                }
+            } while (task != null)
+        }
 
         init {
             val pipeLine = getConnection(connection).channel.pipeline()
@@ -325,23 +349,23 @@ class NMSImpl : NMS {
         }
 
         fun uninject() {
+            task.cancel()
             val channel = getConnection(connection).channel
             channel.eventLoop().submit {
                 channel.pipeline().remove(BetterHealthBar.NAMESPACE)
             }
         }
 
+        private fun Double.square() = this * this
         private fun show(handle: Any, trigger: HealthBarTriggerType, entity: net.minecraft.world.entity.Entity?) {
-            fun Double.square() = this * this
-            val e = entity ?: return
-            if (sqrt((serverPlayer.x - e.x).square()  + (serverPlayer.y - e.y).square() + (serverPlayer.z - e.z).square()) > plugin.configManager().lookDistance()) return
-            val set = plugin.healthBarManager().allHealthBars().filter {
-                it.triggers().contains(trigger)
-            }.toSet()
-            val bukkit = e.bukkitEntity
-            if (bukkit is CraftLivingEntity && bukkit.isValid) {
+            if (entity is LivingEntity && !entity.isDeadOrDying && entity.removalReason == null) taskQueue.add task@ {
+                val bukkit = entity.bukkitEntity as org.bukkit.entity.LivingEntity
+                if (sqrt((serverPlayer.x - entity.x).square()  + (serverPlayer.y - entity.y).square() + (serverPlayer.z - entity.z).square()) > plugin.configManager().lookDistance()) return@task
+                val set = plugin.healthBarManager().allHealthBars().filter {
+                    it.triggers().contains(trigger)
+                }.toSet()
                 val adapt = plugin.mobManager().entity(
-                    if (bukkit is Player) injectionMap[bukkit.uniqueId]?.foliaAdapted ?: return else foliaAdapt(bukkit)
+                    if (bukkit is Player) injectionMap[bukkit.uniqueId]?.foliaAdapted ?: return@task else foliaAdapt(bukkit)
                 )
                 val types = adapt.mob()?.configuration()?.types()
                 val packet = PacketTrigger(trigger, handle)
@@ -408,8 +432,10 @@ class NMSImpl : NMS {
 
         override fun channelRead(ctx: ChannelHandlerContext?, msg: Any?) {
             when (msg) {
-                is ServerboundMovePlayerPacket -> getViewedEntity().forEach {
-                    show(msg, HealthBarTriggerType.LOOK, it)
+                is ServerboundMovePlayerPacket -> taskQueue.add {
+                    getViewedEntity().forEach {
+                        show(msg, HealthBarTriggerType.LOOK, it)
+                    }
                 }
             }
             super.channelRead(ctx, msg)

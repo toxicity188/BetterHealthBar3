@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.util
 
 import kr.toxicity.healthbar.api.condition.HealthBarCondition
 import kr.toxicity.healthbar.api.condition.HealthBarOperation
+import kr.toxicity.healthbar.equation.TEquation
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -27,6 +28,9 @@ fun ConfigurationSection.forEachSubConfigurationIndexed(block: (Int, Configurati
         }
     }
 }
+fun ConfigurationSection.getAsEquation(key: String) = getString(key)?.let {
+    TEquation(it)
+} ?: TEquation.zero
 fun ConfigurationSection.toCondition(): HealthBarCondition = run {
     var condition = HealthBarCondition.TRUE
     getConfigurationSection("conditions")?.forEachSubConfiguration { _, configurationSection ->

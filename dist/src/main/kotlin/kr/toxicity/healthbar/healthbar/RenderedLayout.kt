@@ -3,6 +3,7 @@ package kr.toxicity.healthbar.healthbar
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
 import kr.toxicity.healthbar.api.layout.LayoutGroup
+import kr.toxicity.healthbar.api.nms.PacketBundler
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.ImageRenderer
 import kr.toxicity.healthbar.api.renderer.PixelRenderer
@@ -24,42 +25,26 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
         private val data: HealthBarCreateEvent,
         private val indexes: Map<String, GroupIndex>
     ) {
-        private val imagesEntity = images.map {
+        private val entities = (images.map {
             RenderedEntity(it)
-        }.toMutableList()
-        private val textsEntity = texts.map {
+        } + texts.map {
             RenderedEntity(it)
-        }.toMutableList()
+        }).toMutableList()
 
-        fun displays() = ArrayList<VirtualTextDisplay>().apply {
-            imagesEntity.forEach {
-                it.entity?.let { e ->
-                    add(e)
-                }
-            }
-            textsEntity.forEach {
-                it.entity?.let { e ->
-                    add(e)
-                }
-            }
+        fun displays() = entities.mapNotNull {
+            it.entity
         }
 
         var max = 0
 
-        fun update(): Boolean {
-            imagesEntity.removeIf {
-                !it.has()
+        fun update(bundler: PacketBundler): Boolean {
+            entities.removeIf {
+                !it.hasNext()
             }
-            textsEntity.removeIf {
-                !it.has()
+            val imageMap = entities.filter {
+                it.canBeRendered(bundler)
             }
-            val imageMap = imagesEntity.filter {
-                it.can()
-            }
-            val textMap = textsEntity.filter {
-                it.can()
-            }
-            if (imageMap.isEmpty() && textMap.isEmpty()) return false
+            if (imageMap.isEmpty()) return false
             val count = group?.let { s ->
                 indexes[s]
             }?.next() ?: 0
@@ -67,34 +52,21 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             imageMap.forEach {
                 it.update(count)
             }
-            textMap.forEach {
-                it.update(count)
-            }
             return true
         }
 
-        fun create(max: Int) {
-            val imageMap = imagesEntity.filter {
-                it.can()
+        fun create(loc: Location, max: Int, bundler: PacketBundler) {
+            val imageMap = entities.filter {
+                it.canBeRendered(bundler)
             }
-            val textMap = textsEntity.filter {
-                it.can()
-            }
-            val loc = data.toEntityLocation()
             imageMap.forEach {
-                it.create(max, loc)
-            }
-            textMap.forEach {
-                it.create(max, loc)
+                it.create(max, loc, bundler)
             }
         }
 
-        fun remove() {
-            imagesEntity.forEach {
-                it.remove()
-            }
-            textsEntity.forEach {
-                it.remove()
+        fun remove(bundler: PacketBundler) {
+            entities.forEach {
+                it.remove(bundler)
             }
         }
 
@@ -104,29 +76,31 @@ class RenderedLayout(group: LayoutGroup, pair: HealthBarCreateEvent) {
             var entity: VirtualTextDisplay? = null
             var comp = EMPTY_PIXEL_COMPONENT
 
-            fun remove() {
-                entity?.remove()
+            fun remove(bundler: PacketBundler) {
+                entity?.remove(bundler)
             }
 
-            fun can(): Boolean {
+            fun canBeRendered(bundler: PacketBundler): Boolean {
                 val result = renderer.canRender()
                 if (!result) {
-                    entity?.remove()
+                    remove(bundler)
                     entity = null
                 }
                 return result
             }
 
-            fun has() = renderer.hasNext()
+            fun hasNext() = renderer.hasNext()
 
-            fun create(max: Int, loc: Location) {
+            fun create(max: Int, loc: Location, bundler: PacketBundler) {
                 val length = comp.pixel + comp.component.width
                 val finalComp = comp.pixel.toSpaceComponent() + comp.component + (-length + max).toSpaceComponent() + NEW_LAYER
                 entity = entity?.apply {
                     teleport(loc)
                     text(finalComp.component.build())
-                    update()
-                } ?: data.createEntity(finalComp, renderer.layer())
+                    update(bundler)
+                } ?: data.createEntity(loc, finalComp, renderer.layer()).apply {
+                    spawn(bundler)
+                }
             }
 
             fun update(count: Int) {

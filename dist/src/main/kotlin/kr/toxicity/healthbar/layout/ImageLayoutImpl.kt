@@ -1,7 +1,6 @@
 package kr.toxicity.healthbar.layout
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
@@ -24,8 +23,8 @@ class ImageLayoutImpl(
     layer: Int,
     section: ConfigurationSection
 ): ImageLayout, LayoutImpl(layer, section) {
-    private val image = section.getString("image").ifNull("Unable to find 'image' configuration.").run {
-        ImageManagerImpl.image(this).ifNull("Unable to find this image: $this")
+    private val image = section.getString("image").ifNull { "Unable to find 'image' configuration." }.run {
+        ImageManagerImpl.image(this).ifNull { "Unable to find this image: $this" }
     }
     private val components = ArrayList<List<PixelComponent>>()
     private val listener = section.getConfigurationSection("listener")?.let {
@@ -52,20 +51,18 @@ class ImageLayoutImpl(
                 val y = y() + groupY() * i
                 list.add(componentMap.computeIfAbsent(BitmapData(dir, y, newHeight)) { _ ->
                     val component = parent.index++.parseChar()
-                    jsonArray.add(JsonObject().apply {
-                        addProperty("type", "bitmap")
-                        addProperty("file", "$NAMESPACE:$dir")
-                        addProperty("ascent", y.toAscent())
-                        addProperty("height", newHeight.toHeight())
-                        add("chars", JsonArray().apply {
-                            add(component)
-                        })
-                    })
+                    jsonArray.add(jsonObjectOf(
+                        "type" to "bitmap",
+                        "file" to "$NAMESPACE:$dir",
+                        "ascent" to y.toAscent(),
+                        "height" to newHeight.toHeight(),
+                        "chars" to jsonArrayOf(component)
+                    ))
                     WidthComponent((it.image.image.width.toDouble() * div).roundToInt(), Component.text()
                         .font(parent.imageKey())
                         .content(component)
                         .append(NEGATIVE_ONE_SPACE_COMPONENT.component)
-                    )
+                    ).shadowColor(shadowColor())
                 }.toPixelComponent(x() + groupX() * i))
             }
             components.add(list)

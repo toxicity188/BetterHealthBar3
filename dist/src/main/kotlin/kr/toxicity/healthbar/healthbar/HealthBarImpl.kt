@@ -2,6 +2,7 @@ package kr.toxicity.healthbar.healthbar
 
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.condition.HealthBarCondition
+import kr.toxicity.healthbar.api.equation.HealthBarEquation
 import kr.toxicity.healthbar.api.healthbar.GroupIndex
 import kr.toxicity.healthbar.api.healthbar.HealthBar
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
@@ -9,6 +10,7 @@ import kr.toxicity.healthbar.api.trigger.HealthBarTriggerType
 import kr.toxicity.healthbar.api.layout.LayoutGroup
 import kr.toxicity.healthbar.api.nms.VirtualTextDisplay
 import kr.toxicity.healthbar.api.renderer.HealthBarRenderer
+import kr.toxicity.healthbar.equation.HealthBarEquationImpl
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import kr.toxicity.healthbar.manager.LayoutManagerImpl
 import kr.toxicity.healthbar.util.*
@@ -28,7 +30,7 @@ class HealthBarImpl(
     private val groups = section.getStringList("groups").ifEmpty {
         throw RuntimeException("'groups' list is empty.")
     }.map {
-        LayoutManagerImpl.name(it).ifNull("Unable to find this layout: $it")
+        LayoutManagerImpl.name(it).ifNull { "Unable to find this layout: $it" }
     }
     private val triggers = Collections.unmodifiableSet(EnumSet.copyOf(section.getStringList("triggers").ifEmpty {
         throw RuntimeException("'triggers' list is empty.")
@@ -46,8 +48,9 @@ class HealthBarImpl(
             it.getDouble("z", 1.0)
         )
     } ?: Vector(1, 1, 1)
-    private val shadowRadius = section.getDouble("shadow-radius", 0.0).toFloat()
-    private val shadowStrength = section.getDouble("shadow-strength", 1.0).toFloat()
+    private val positionEquation = section.getConfigurationSection("position-equation")?.let {
+        HealthBarEquationImpl(it)
+    } ?: HealthBarEquationImpl.zero
 
     override fun path(): String = path
     override fun uuid(): UUID = uuid
@@ -57,8 +60,7 @@ class HealthBarImpl(
     override fun condition(): HealthBarCondition = conditions
     override fun isDefault(): Boolean = isDefault
     override fun scale(): Vector = Vector(scale.x, scale.y, scale.z)
-    override fun shadowRadius(): Float = shadowRadius
-    override fun shadowStrength(): Float = shadowStrength
+    override fun positionEquation(): HealthBarEquation = positionEquation
 
     override fun duration(): Int = duration
 
@@ -91,6 +93,8 @@ class HealthBarImpl(
         }.toMutableList()
 
         var d = 0
+        private var tick = 0.0
+        val position get() = event.toEntityLocation(tick++)
 
         override fun hasNext(): Boolean {
             if (!event.check()) return false
@@ -114,10 +118,12 @@ class HealthBarImpl(
         }.toMutableList()
 
         override fun work(): Boolean {
+            val bundler = PLUGIN.nms().createBundler()
             if (!hasNext() || displays.isEmpty()) {
                 displays.forEach {
-                    it.remove()
+                    it.remove(bundler)
                 }
+                bundler.send(event)
                 return false
             } else {
                 indexes.values.forEach {
@@ -127,34 +133,43 @@ class HealthBarImpl(
                 var max = 0
                 val pool = ArrayList<RenderedLayout.RenderedEntityPool>()
                 displays.forEach {
-                    if (it.update()) {
+                    if (it.update(bundler)) {
                         result = true
                         if (max < it.max) max = it.max
                         pool.add(it)
                     }
                 }
+                val pos = position
                 pool.forEach {
-                    it.create(max)
+                    it.create(pos, max, bundler)
                 }
+                bundler.send(event)
                 return result
             }
         }
 
-        override fun displays(): List<VirtualTextDisplay> = displays.map {
+        override fun displays(): List<VirtualTextDisplay> = displays.flatMap {
             it.displays()
-        }.sum()
+        }
 
         override fun stop() {
+            val bundler = PLUGIN.nms().createBundler()
             displays.forEach {
-                it.remove()
+                it.remove(bundler)
             }
+            bundler.send(event)
         }
     }
     private inner class SingleRenderer(
         pair: HealthBarCreateEvent
     ) : AbstractRenderer(pair) {
 
-        private val display = pair.createEntity(render())
+        private val display = pair.createEntity(position,render()).apply {
+            PLUGIN.nms().createBundler().run {
+                spawn(this)
+                send(pair)
+            }
+        }
 
         private fun removeUnused() {
             indexes.values.forEach {
@@ -172,21 +187,26 @@ class HealthBarImpl(
         }
 
         override fun stop() {
-            display.remove()
+            val bundler = PLUGIN.nms().createBundler()
+            display.remove(bundler)
+            bundler.send(event)
         }
 
         override fun displays(): List<VirtualTextDisplay> = listOf(display)
 
         override fun work(): Boolean {
+            val bundler = PLUGIN.nms().createBundler()
             if (!hasNext() || render.isEmpty()) {
-                display.remove()
+                display.remove(bundler)
+                bundler.send(event)
                 return false
             } else {
                 removeUnused()
                 val render = render()
-                display.teleport(event.toEntityLocation())
+                display.teleport(position)
                 display.text(render.component.build())
-                display.update()
+                display.update(bundler)
+                bundler.send(event)
                 return true
             }
         }

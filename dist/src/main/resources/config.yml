@@ -8,7 +8,6 @@ default-height: 1
 look-degree: 20
 look-distance: 15
 merge-other-folder: []
-create-pack-mcmeta: false
 enable-self-host: true
 self-host-port: 8163
 number-format: "#,###.0"

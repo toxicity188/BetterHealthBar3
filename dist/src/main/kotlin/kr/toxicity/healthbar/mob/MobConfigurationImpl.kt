@@ -15,7 +15,7 @@ class MobConfigurationImpl(
     private val blacklist = section.getBoolean("blacklist")
     private val ignoreDefault = section.getBoolean("ignore-default")
     private val healthBars = section.getStringList("healthbars").map {
-        HealthBarManagerImpl.healthBar(it).ifNull("Unable to find this health bar: $it")
+        HealthBarManagerImpl.healthBar(it).ifNull { "Unable to find this health bar: $it" }
     }.toSet()
 
     override fun types(): Set<String> = types

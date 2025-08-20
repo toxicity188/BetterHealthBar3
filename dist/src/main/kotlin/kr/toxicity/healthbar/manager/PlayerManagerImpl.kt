@@ -52,7 +52,7 @@ object PlayerManagerImpl : PlayerManager, BetterHealthBerManager {
     }
 
     override fun player(player: Player): HealthBarPlayer {
-        return playerMap[player.uniqueId].ifNull("This player is not online.")
+        return playerMap[player.uniqueId].ifNull { "This player is not online." }
     }
     override fun player(uuid: UUID): HealthBarPlayer? {
         return playerMap[uuid]

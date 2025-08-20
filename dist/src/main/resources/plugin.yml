@@ -11,6 +11,8 @@ libraries:
   - "net.kyori:adventure-api:${adventure}"
   - "net.kyori:adventure-text-minimessage:${adventure}"
   - "net.kyori:adventure-platform-bukkit:${platform}"
+  - "net.jodah:expiringmap:0.5.11"
+  - "net.objecthunter:exp4j:0.4.8"
 softdepend:
   - BetterHud
   - BetterModel
@@ -24,8 +26,6 @@ softdepend:
   - skript-reflect
   - LevelledMobs
   - Parties
-  - Nexo
-  - Oraxen
 commands:
   healthbar:
     aliases: hb

@@ -5,7 +5,7 @@ import kr.toxicity.healthbar.api.placeholder.PlaceholderBuilder
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import java.util.function.Function
 
-fun <T> T?.ifNull(message: String): T & Any = this ?: throw RuntimeException(message)
+fun <T> T?.ifNull(lazyMessage: () -> String): T & Any = this ?: throw RuntimeException(lazyMessage())
 
 fun <T> runWithHandleException(message: String, block: () -> T) = runCatching(block).onFailure {
     warn(*it.handleException(message))
@@ -24,7 +24,7 @@ fun Throwable.handleException(log: String): Array<String> {
 }
 
 inline fun <reified T : Any> placeholder(length: Int, function: Function<List<String>, Function<HealthBarCreateEvent, T>>): PlaceholderBuilder.Builder<T> {
-    return PlaceholderBuilder.builder(T::class.java).ifNull("Unable to find this type: ${T::class.java.simpleName}")
+    return PlaceholderBuilder.builder(T::class.java).ifNull { "Unable to find this type: ${T::class.java.simpleName}" }
         .argsLength(length)
         .parser(function)
 }

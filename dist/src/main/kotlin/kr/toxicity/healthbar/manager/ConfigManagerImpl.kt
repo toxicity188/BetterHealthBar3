@@ -27,7 +27,6 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     private var lookDegree = 20.0
     private var lookDistance = 20.0
     private var mergeOtherFolder = emptySet<String>()
-    private var createPackMemeta = true
     private var enableSelfHost = false
     private var numberFormat = DecimalFormat.getNumberInstance()
     private var selfHostPort = 8163
@@ -75,7 +74,6 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
             mergeOtherFolder = config.getStringList("merge-other-folder").map {
                 it.replace('/', File.separatorChar)
             }.toSet()
-            createPackMemeta = config.getBoolean("create-pack-mcmeta", true)
             enableSelfHost = config.getBoolean("enable-self-host", false)
             selfHostPort = config.getInt("self-host-port", 8163)
             numberFormat = runCatching {
@@ -123,7 +121,6 @@ object ConfigManagerImpl : ConfigManager, BetterHealthBerManager {
     override fun lookDegree(): Double = lookDegree
     override fun lookDistance(): Double = lookDistance
     override fun mergeOtherFolder(): Set<String> = mergeOtherFolder
-    override fun createPackMcmeta(): Boolean = createPackMemeta
     override fun enableSelfHost(): Boolean = enableSelfHost
     override fun selfHostPort(): Int = selfHostPort
     override fun numberFormat(): NumberFormat = numberFormat

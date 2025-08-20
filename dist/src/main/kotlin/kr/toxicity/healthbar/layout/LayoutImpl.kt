@@ -18,6 +18,9 @@ abstract class LayoutImpl(
     }
     private val layer = section.getInt("layer", layer).coerceAtLeast(1).coerceAtMost(254)
     private val condition = section.toCondition()
+    private val shadowColor = (section.getString("shadow-color")?.toLongOrNull(16) ?: 0L).run {
+        (this and 0xFFFFFFFF).toInt()
+    }
 
     override fun layer(): Int = layer
     override fun x(): Int = x
@@ -25,5 +28,6 @@ abstract class LayoutImpl(
     override fun groupX(): Int = groupX
     override fun groupY(): Int = groupY
     override fun scale(): Double = scale
+    override fun shadowColor(): Int = shadowColor
     override fun condition(): HealthBarCondition = condition
 }

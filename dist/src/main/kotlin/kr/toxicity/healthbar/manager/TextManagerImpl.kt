@@ -57,9 +57,13 @@ object TextManagerImpl : TextManager, BetterHealthBerManager {
         val fonts = resource.dataFolder.subFolder("fonts")
         resource.dataFolder.subFolder("texts").forEachAllYaml { file, s, configurationSection ->
             runWithHandleException("Unable to read this text: $s in ${file.path}") {
-                val font = Font.createFont(Font.TRUETYPE_FONT, File(fonts, configurationSection.getString("file").ifNull("Unable to find 'file' configuration.").replace('/', File.separatorChar)).apply {
-                    if (!exists()) throw RuntimeException("Unable to find this font: $path")
-                }).deriveFont(configurationSection.getInt("scale", 16).coerceAtLeast(1).toFloat())
+                val font = Font.createFont(Font.TRUETYPE_FONT, File(fonts, configurationSection.getString("file")
+                    .ifNull { "Unable to find 'file' configuration." }
+                    .replace('/', File.separatorChar))
+                    .apply {
+                        if (!exists()) throw RuntimeException("Unable to find this font: $path")
+                    })
+                    .deriveFont(configurationSection.getInt("scale", 16).coerceAtLeast(1).toFloat())
                 val parse = parseFont(file.path, font)
                 textMap.putSync("text", s) {
                     parse
@@ -150,7 +154,7 @@ object TextManagerImpl : TextManager, BetterHealthBerManager {
                     save(list)
                 } else {
                     val sub = list.split(SPLIT_SIZE)
-                    save(sub.subList(0, sub.lastIndex).sum())
+                    save(sub.subList(0, sub.lastIndex).flatten())
                     save(sub.last())
                 }
             }

@@ -1,7 +1,6 @@
 package kr.toxicity.healthbar.layout
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import kr.toxicity.healthbar.api.component.PixelComponent
 import kr.toxicity.healthbar.api.component.WidthComponent
 import kr.toxicity.healthbar.api.event.HealthBarCreateEvent
@@ -36,8 +35,8 @@ class TextLayoutImpl(
     private val property = section.getConfigurationSection("properties")?.let {
         PlaceholderOption.of(it)
     } ?: PlaceholderOption.EMPTY
-    private val text = section.getString("text").ifNull("Unable to find 'text' configuration.").run {
-        TextManagerImpl.text(this).ifNull("Unable to find this text: $this")
+    private val text = section.getString("text").ifNull { "Unable to find 'text' configuration." }.run {
+        TextManagerImpl.text(this).ifNull { "Unable to find this text: $this" }
     }
     private val height = (text.height().toDouble() * scale()).roundToInt().toHeight()
     private val textWidth = Collections.unmodifiableMap(HashMap<Int, Int>().apply {
@@ -46,14 +45,14 @@ class TextLayoutImpl(
             put(it.key, (it.value * div).roundToInt())
         }
     })
-    private val align = section.getString("align").ifNull("Unable to find 'align' command.").run {
+    private val align = section.getString("align").ifNull { "Unable to find 'align' command." }.run {
         TextAlign.valueOf(uppercase())
     }
     private val duration = section.getInt("duration", - 1)
     private val keys = ArrayList<WidthKey>()
     private val pattern = PlaceholderContainer.toString(
         property,
-        section.getString("pattern").ifNull("Unable to find 'pattern' command.")
+        section.getString("pattern").ifNull { "Unable to find 'pattern' command." }
     )
 
     override fun charWidth(): Map<Int, Int> = textWidth
@@ -87,25 +86,19 @@ class TextLayoutImpl(
             val keyName = encodeKey(EncodeManager.EncodeNamespace.FONT, "${parent.name}/$name/${i + 1}")
             keys.add(map.computeIfAbsent(BitmapData(keyName, y, height)) {
                 resource.font.add("$keyName.json") {
-                    JsonObject().apply {
-                        add("providers", JsonArray().apply {
-                            add(JsonObject().apply {
-                                addProperty("type", "space")
-                                add("advances", JsonObject().apply {
-                                    addProperty(" ", 4)
-                                })
-                            })
-                            dataList.forEach {
-                                add(JsonObject().apply {
-                                    addProperty("type", "bitmap")
-                                    addProperty("file", it.file)
-                                    addProperty("ascent", y.toAscent())
-                                    addProperty("height", height)
-                                    add("chars", it.chars)
-                                })
-                            }
-                        })
-                    }.save()
+                    val elements = arrayOf(jsonObjectOf(
+                        "type" to "space",
+                        "advances" to jsonObjectOf(" " to 4)
+                    )) + dataList.map { data ->
+                        jsonObjectOf(
+                            "type" to "bitmap",
+                            "file" to data.file,
+                            "ascent" to y.toAscent(),
+                            "height" to height,
+                            "chars" to data.chars,
+                        )
+                    }
+                    jsonObjectOf("providers" to jsonArrayOf(*elements)).save()
                 }
                 WidthKey(createAdventureKey(keyName), x() + groupX() * i)
             })
@@ -150,7 +143,7 @@ class TextLayoutImpl(
                 length(target),
                 Component.text().append(target.font(key.key))
             )
-            return component.toPixelComponent(key.x + when (align) {
+            return component.shadowColor(shadowColor()).toPixelComponent(key.x + when (align) {
                 TextAlign.LEFT -> 0
                 TextAlign.CENTER -> -component.width / 2
                 TextAlign.RIGHT -> -component.width

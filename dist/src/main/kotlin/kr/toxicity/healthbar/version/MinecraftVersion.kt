@@ -6,11 +6,22 @@ data class MinecraftVersion(
     val first: Int,
     val second: Int,
     val third: Int,
-): Comparable<MinecraftVersion> {
+) : Comparable<MinecraftVersion> {
     companion object {
+        private val comparator = Comparator.comparing { v: MinecraftVersion ->
+            v.first
+        }.thenComparing { v: MinecraftVersion ->
+            v.second
+        }.thenComparing { v: MinecraftVersion ->
+            v.third
+        }
+
         val current = MinecraftVersion(Bukkit.getBukkitVersion()
             .substringBefore('-'))
 
+        val version1_21_8 = MinecraftVersion(1, 21, 8)
+        val version1_21_7 = MinecraftVersion(1, 21, 7)
+        val version1_21_6 = MinecraftVersion(1, 21, 6)
         val version1_21_5 = MinecraftVersion(1, 21, 5)
         val version1_21_4 = MinecraftVersion(1, 21, 4)
         val version1_21_3 = MinecraftVersion(1, 21, 3)
@@ -27,6 +38,9 @@ data class MinecraftVersion(
         val version1_19_4 = MinecraftVersion(1, 19, 4)
 
         private val packVersion = mapOf(
+            version1_21_8 to 64,
+            version1_21_7 to 64,
+            version1_21_6 to 63,
             version1_21_5 to 55,
             version1_21_4 to 46,
             version1_21_3 to 42,
@@ -42,15 +56,9 @@ data class MinecraftVersion(
             version1_20 to 15,
             version1_19_4 to 13,
         )
-
-        private val comparator = Comparator.comparing { v: MinecraftVersion ->
-            v.first
-        }.thenComparing { v: MinecraftVersion ->
-            v.second
-        }.thenComparing { v: MinecraftVersion ->
-            v.third
-        }
     }
+
+    val canUseShadowColor get() = this >= version1_21_4
 
     constructor(string: String): this(string.split('.'))
     constructor(string: List<String>): this(
