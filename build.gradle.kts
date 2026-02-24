@@ -29,7 +29,12 @@ allprojects {
         maven("https://maven.citizensnpcs.co/repo/")
         maven("https://repo.alessiodp.com/releases/")
         maven("https://jitpack.io/")
-        maven("https://mvn.lumine.io/repository/maven-public/")
+        maven("https://mvn.lumine.io/repository/maven-public/") {
+        content {
+            includeGroup("io.lumine")
+            includeGroup("com.ticxo.modelengine")
+        }
+    }
     }
     dependencies {
         implementation("org.bstats:bstats-bukkit:3.1.0")

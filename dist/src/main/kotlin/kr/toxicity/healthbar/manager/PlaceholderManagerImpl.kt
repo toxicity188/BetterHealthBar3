@@ -15,6 +15,9 @@ import org.bukkit.Registry
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffectType
 import java.util.function.Function
+import org.bukkit.entity.LivingEntity
+import org.bukkit.persistence.PersistentDataType
+import io.lumine.mythic.bukkit.MythicBukkit
 
 object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
 
@@ -42,6 +45,50 @@ object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
             }
             addPlaceholder("entity_name") { e: HealthBarCreateEvent ->
                 e.entity.entity().name
+            }
+            addPlaceholder("entity_lmlevel") {
+                e: HealthBarCreateEvent ->
+                val entity = e.entity.entity()
+
+                // Option 1: If BukkitValues are mirrored as metadata
+                val meta = entity.getMetadata("levelledmobs:level").firstOrNull()
+                if (meta != null && meta.value() is Number) {
+                    return@addPlaceholder meta.value().toString()
+                }
+
+                // Option 2: If LevelledMobs uses PersistentDataContainer
+                if (entity is LivingEntity) {
+                    val container = entity.persistentDataContainer
+                    val key = NamespacedKey("levelledmobs", "level")
+                    val level = container.get(key, PersistentDataType.INTEGER)
+                    if (level != null) {
+                        return@addPlaceholder level.toString()
+                    }
+                }
+
+                // Fallback if nothing found
+                "?"
+            }
+            addPlaceholder("level") { e: HealthBarCreateEvent ->
+                val entity = e.entity.entity()
+                var mlevel = "?"
+
+                // Try MythicMobs level first
+                if (entity is LivingEntity) {
+                    mlevel = MythicBukkit.inst()
+                        .mobManager
+                        .getMythicMobInstance(entity)   // <- no .entity()
+                        ?.level
+                        ?.toInt()
+                        ?.toString() ?: "?"
+                }
+
+                // Fallback: player XP level
+                if (entity is Player && mlevel == "?") {
+                    return@addPlaceholder entity.level.toString()   // smart cast in Kotlin
+                }
+
+                return@addPlaceholder mlevel
             }
         }
         PlaceholderContainer.BOOL.run {
