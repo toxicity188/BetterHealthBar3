@@ -1,0 +1,41 @@
+package kr.toxicity.healthbar.nms.v26_R1
+
+import kr.toxicity.healthbar.api.nms.PacketBundler
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
+import net.minecraft.network.protocol.Packet
+import net.minecraft.network.protocol.game.ClientGamePacketListener
+import net.minecraft.network.protocol.game.ClientboundBundlePacket
+import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.entity.Player
+
+internal fun bundlerOf(vararg packets: ClientPacket) = BundlerImpl(if (packets.isEmpty()) arrayListOf() else packets.toMutableList())
+internal typealias ClientPacket = Packet<ClientGamePacketListener>
+internal operator fun PacketBundler.plusAssign(other: ClientPacket) {
+    when (this) {
+        is BundlerImpl -> add(other)
+        else -> throw RuntimeException("unsupported bundler.")
+    }
+}
+
+internal class BundlerImpl(
+    private val list: MutableList<ClientPacket>
+) : PacketBundler, Iterable<ClientPacket> by list, Keyed {
+    private companion object {
+        val KEY = Key.key("betterhealthbar")
+    }
+    
+    private val bundlePacket = ClientboundBundlePacket(this)
+    
+    override fun send(player: Player) {
+        if (list.isEmpty()) return
+        val connection = (player as CraftPlayer).handle.connection
+        connection.send(bundlePacket)
+    }
+    
+    fun add(other: ClientPacket) {
+        list += other
+    }
+
+    override fun key(): Key = KEY
+}

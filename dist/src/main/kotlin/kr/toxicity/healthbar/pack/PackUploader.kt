@@ -3,10 +3,12 @@ package kr.toxicity.healthbar.pack
 import com.google.gson.JsonPrimitive
 import com.sun.net.httpserver.HttpServer
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
+import kr.toxicity.healthbar.util.adventure
 import kr.toxicity.healthbar.util.info
 import kr.toxicity.healthbar.util.save
 import kr.toxicity.healthbar.util.warn
-import kr.toxicity.healthbar.version.MinecraftVersion
+import net.kyori.adventure.resource.ResourcePackInfo
+import net.kyori.adventure.resource.ResourcePackRequest
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.net.InetAddress
@@ -38,7 +40,6 @@ object PackUploader {
 
     fun upload(message: MessageDigest, byteArray: ByteArray) {
         val hash = StringBuilder(40)
-        val useUrl = MinecraftVersion.current >= MinecraftVersion.version1_20_3
         val digest = message.digest()
         for (element in digest) {
             val byte = element.toInt()
@@ -52,12 +53,15 @@ object PackUploader {
         })
         HttpClient.newHttpClient()
             .sendAsync(HttpRequest.newBuilder()
-                .uri(URI.create("http://checkip.amazonaws.com/"))
+                .uri(URI.create("https://checkip.amazonaws.com/"))
                 .GET()
                 .build(), HttpResponse.BodyHandlers.ofString()).thenAccept {
                 val host = ConfigManagerImpl.selfHostPort()
                 val body = it.body()
-                val url = "http://${body.substring(0, body.length - 1)}:$host/$string.zip"
+                val url = URI.create("https://${body.substring(0, body.length - 1)}:$host/$string.zip")
+                val request = ResourcePackRequest.resourcePackRequest()
+                    .packs(ResourcePackInfo.resourcePackInfo(uuid, url, string))
+                    .required(false)
                 runCatching {
                     server?.stop()
                     val http = HttpServer.create(InetSocketAddress(InetAddress.getLocalHost(), host), 0).apply {
@@ -82,19 +86,11 @@ object PackUploader {
                             http.stop(0)
                         }
                         override fun apply(player: Player) {
-                            if (useUrl) {
-                                player.setResourcePack(uuid, url, digest, null, false)
-                            } else {
-                                player.setResourcePack(url, digest, null, false)
-                            }
+                            player.adventure.sendResourcePacks(request)
                         }
                     }
                     Bukkit.getOnlinePlayers().forEach { player ->
-                        if (useUrl) {
-                            player.setResourcePack(uuid, url, digest, null, false)
-                        } else {
-                            player.setResourcePack(url, digest, null, false)
-                        }
+                        player.adventure.sendResourcePacks(request)
                     }
                     info("Resource pack server opened at $url")
                 }.onFailure { e ->

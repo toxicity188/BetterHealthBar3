@@ -16,7 +16,7 @@ private val EMPTY_DECORATION = TextDecoration.entries.associateWith {
 }
 
 val CommandSender.adventure
-    get() = if (this is Audience) this else PLUGIN.audiences().sender(this)
+    get() = this as? Audience ?: PLUGIN.audiences().sender(this)
 
 fun CommandSender.info(component: Component) = adventure.sendMessage(
     Component.text()

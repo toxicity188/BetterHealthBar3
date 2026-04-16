@@ -1,5 +1,6 @@
 package kr.toxicity.healthbar.version
 
+import kr.toxicity.healthbar.util.toSemver
 import org.bukkit.Bukkit
 
 data class MinecraftVersion(
@@ -16,9 +17,12 @@ data class MinecraftVersion(
             v.third
         }
 
-        val current = MinecraftVersion(Bukkit.getBukkitVersion()
+        val current = of(Bukkit.getBukkitVersion()
             .substringBefore('-'))
 
+        val version26_1_2 = MinecraftVersion(26, 1, 2)
+        val version26_1_1 = MinecraftVersion(26, 1, 1)
+        val version26_1 = MinecraftVersion(26, 1, 0)
         val version1_21_11 = MinecraftVersion(1, 21, 11)
         val version1_21_10 = MinecraftVersion(1, 21, 10)
         val version1_21_9 = MinecraftVersion(1, 21, 9)
@@ -33,14 +37,11 @@ data class MinecraftVersion(
         val version1_21 = MinecraftVersion(1, 21, 0)
         val version1_20_6 = MinecraftVersion(1, 20, 6)
         val version1_20_5 = MinecraftVersion(1, 20, 5)
-        val version1_20_4 = MinecraftVersion(1, 20, 4)
-        val version1_20_3 = MinecraftVersion(1, 20, 3)
-        val version1_20_2 = MinecraftVersion(1, 20, 2)
-        val version1_20_1 = MinecraftVersion(1, 20, 1)
-        val version1_20 = MinecraftVersion(1, 20, 0)
-        val version1_19_4 = MinecraftVersion(1, 19, 4)
 
         private val packVersion = mapOf(
+            version26_1_2 to 84,
+            version26_1_1 to 84,
+            version26_1 to 84,
             version1_21_11 to 75,
             version1_21_10 to 69,
             version1_21_9 to 69,
@@ -54,24 +55,16 @@ data class MinecraftVersion(
             version1_21_1 to 34,
             version1_21 to 34,
             version1_20_6 to 32,
-            version1_20_5 to 32,
-            version1_20_4 to 22,
-            version1_20_3 to 22,
-            version1_20_2 to 18,
-            version1_20_1 to 15,
-            version1_20 to 15,
-            version1_19_4 to 13,
+            version1_20_5 to 32
         )
+
+        fun of(target: String) = target.toSemver().run {
+            MinecraftVersion(major, minor, patch)
+        }
     }
 
     val canUseShadowColor get() = this >= version1_21_4
 
-    constructor(string: String): this(string.split('.'))
-    constructor(string: List<String>): this(
-        if (string.isNotEmpty()) string[0].toInt() else 0,
-        if (string.size > 1) string[1].toInt() else 0,
-        if (string.size > 2) string[2].toInt() else 0
-    )
     override fun compareTo(other: MinecraftVersion): Int {
         return comparator.compare(this, other)
     }

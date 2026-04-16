@@ -4,6 +4,7 @@ import kr.toxicity.healthbar.api.BetterHealthBar
 import kr.toxicity.healthbar.manager.ConfigManagerImpl
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
+import org.semver4j.Semver
 
 val PLUGIN
     get() = BetterHealthBar.inst()
@@ -40,3 +41,5 @@ fun debug(vararg message: String) {
 
 fun taskLater(delay: Long, block: () -> Unit) = PLUGIN.scheduler().taskLater(delay, block)
 fun asyncTaskTimer(delay: Long, period: Long, block: () -> Unit) = PLUGIN.scheduler().asyncTaskTimer(delay, period, block)
+
+fun String.toSemver() = Semver.coerce(this).ifNull { "Unable to parse this semver: $this" }

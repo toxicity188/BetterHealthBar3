@@ -9,11 +9,9 @@ import kr.toxicity.healthbar.util.ATTRIBUTE_MAX_HEALTH
 import kr.toxicity.healthbar.util.armor
 import kr.toxicity.healthbar.util.placeholder
 import kr.toxicity.healthbar.util.warn
-import kr.toxicity.healthbar.version.MinecraftVersion
 import org.bukkit.NamespacedKey
 import org.bukkit.Registry
 import org.bukkit.entity.Player
-import org.bukkit.potion.PotionEffectType
 import java.util.function.Function
 
 object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
@@ -46,12 +44,7 @@ object PlaceholderManagerImpl : PlaceholderManager, BetterHealthBerManager {
         }
         PlaceholderContainer.BOOL.run {
             addPlaceholder("has_potion_effect", placeholder(1) {
-                if (MinecraftVersion.current >= MinecraftVersion.version1_20_3) {
-                    Registry.EFFECT.get(NamespacedKey.minecraft(it[0]))
-                } else {
-                    @Suppress("DEPRECATION")
-                    PotionEffectType.getByName(it[0])
-                }?.let { type ->
+                Registry.EFFECT.get(NamespacedKey.minecraft(it[0]))?.let { type ->
                     Function { pair: HealthBarCreateEvent ->
                         pair.entity.entity().hasPotionEffect(type)
                     }

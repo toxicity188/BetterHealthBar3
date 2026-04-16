@@ -3,7 +3,7 @@ package kr.toxicity.healthbar.util
 val OVERLAYS = listOf(
     PackOverlay(
         "betterhealthbar_legacy",
-        VersionRange(13, 41)
+        VersionRange(32, 41)
     ),
     PackOverlay(
         "betterhealthbar_1_21_2",
@@ -11,7 +11,11 @@ val OVERLAYS = listOf(
     ),
     PackOverlay(
         "betterhealthbar_1_21_6",
-        VersionRange(56, 99)
+        VersionRange(56, 83)
+    ),
+    PackOverlay(
+        "betterhealthbar_26_1",
+        VersionRange(84, 99)
     )
 )
 
