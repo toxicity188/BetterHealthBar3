@@ -1,31 +1,50 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: Any issue
-labels: bug, question
+about: Report a bug to help us improve BetterHealthBar
+title: "[Bug] "
+labels: bug
 assignees: toxicity188
 
 ---
 
-**Required**  
-I need some help to provide you correct solution.
+### ✔️ Pre-check
+- [ ] Tested with the **latest version** of BetterHealthBar from [Spigot](https://www.spigotmc.org/resources/116619/)
+- [ ] Confirmed the issue occurs **without** other optional/experimental plugins or clients (see Disclaimer below)
 
-1. Tell me the detail about your problem.
+---
 
-2. Upload some screenshot or text log related your issue. such as:
-- Error log
-- In-game screen
-- Your yml config
-- Your resource
+### 🐞 Problem Description
+Detailed information about your problem.
 
-3. Remember to notice your environment
-- OS(windows/mac/etc)
-- Server version(1.21.1/etc)
-- Server platform(spigot/paper/folia/fabric/etc)
+---
 
-**Disclaimer**  
-I do NOT provide any solution about that.
+### 📜 Server Log
+Your error log if exists.
 
-- Using informal launcher such as Feather client
-- Closed-source plugin/mod such as Optifine and ItemsAdder
-- Usage in hybrid bukkit such as ArcLight
+---
+
+### 🖼️ Screenshot / Video
+Your in-game screenshot.
+
+---
+
+### 🧪 Test Model / Code
+Upload the model, resource pack, or test code that can reproduce the issue if possible.
+
+---
+
+### 🌍 Environment
+- OS: (Windows, Linux, etc.)
+- Server software & version: (Paper 1.20.4, etc.)
+
+---
+
+```
+Disclaimer
+
+The following environments are not supported, and issues occurring under these conditions will not be handled:
+
+- Informal / modified launchers (e.g., Feather client)
+- Closed-source mods/plugins (Optifine, ItemsAdder, Nexo, etc.)
+- Hybrid server platforms (e.g., Arclight)
+```

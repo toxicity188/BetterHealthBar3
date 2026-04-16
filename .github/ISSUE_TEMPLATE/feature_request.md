@@ -1,25 +1,40 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: Any feature
+about: Suggest an idea or enhancement for BetterHealthBar
+title: "[Feature] "
 labels: help wanted
 assignees: toxicity188
 
 ---
 
-**Required**  
-Tell me your feature you want to add.
+### 🐞 Feature Description
+Describe the feature you want to request.  
+Explain **what problem this feature solves**, **why it's needed**, and **how you expect it to work**.
 
-1. The more accurate your explain is, The better quality will be out.
-2. Remember that i can't accept all of your request and demand.
+---
 
-**Disclaimer**  
-I do NOT accept any request about that.
+### 🧪 Example / Mock-up (Optional)
+Provide model files, resource packs, code snippets, or conceptual mock-ups that help illustrate the idea.
 
-- Closed-source mod/plugin support such as Optifine and ItemsAdder
-- Hybrid bukkit such as Arclight
-- Very legacy version such as 1.16.5 or lower
-- Bedrock platform
-- A function can cause some significant performance issue.
-- Your personal issue
-- A function that impossible to implement in server-side such as 144 fps hud.
+---
+
+### 🌍 Environment (Optional but Helpful)
+- Server software & version:
+- BetterHealthBar version:
+- Java version:
+
+---
+
+```
+Disclaimer
+
+The following environments are not supported, and feature requests relying on these conditions will not be considered:
+
+- Informal / modified launchers (e.g., Feather Client)
+- Closed-source mods/plugins (Optifine, ItemsAdder, Nexo, etc.)
+- Hybrid server platforms (e.g., Arclight)
+- Legacy server versions (1.20.1 or lower)
+- Bedrock Edition
+- Extremely outdated CPU / hardware
+- Features fundamentally **impossible on server-side** due to engine or protocol limitations
+```
