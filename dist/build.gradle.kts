@@ -25,15 +25,14 @@ dependencies {
     shade(project(":nms:v1_21_R7", configuration = "reobf")) { isTransitive = false }
     shade(project(":nms:v26_R1")) { isTransitive = false }
 
-    compileOnly("io.lumine:Mythic-Dist:5.11.2")
+    compileOnly("io.lumine:Mythic-Dist:5.12.1")
     compileOnly("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
     compileOnly("me.clip:placeholderapi:2.12.2")
     compileOnly("com.alessiodp.parties:parties-bukkit:3.2.16")
-    compileOnly("io.github.toxicity188:BetterHud-standard-api:1.14.1")
-    compileOnly("io.github.toxicity188:BetterHud-bukkit-api:1.14.1")
+    compileOnly("io.github.toxicity188:BetterHud-bukkit-api:2.0.0")
     compileOnly("io.github.toxicity188:bettermodel-bukkit-api:3.0.0")
     compileOnly("net.citizensnpcs:citizens-main:2.0.42-SNAPSHOT")
-    compileOnly("com.github.SkriptLang:Skript:2.15.0")
+    compileOnly("com.github.SkriptLang:Skript:2.15.3")
 }
 
 val pluginVersion = version.toString()
@@ -47,7 +46,7 @@ val copyDirectory = rootProject.layout.buildDirectory.dir("libs")
 interface FsInjected {
     @get:Inject val fs: FileSystemOperations
 }
-val copyShadowJar by tasks.registering {
+val copyShadowJar = tasks.register("copyShadowJar") {
     val injected = objects.newInstance<FsInjected>()
     val archiveFile = tasks.shadowJar.flatMap { it.archiveFile }
     val copyName = "${rootProject.name}-$pluginVersion.jar"

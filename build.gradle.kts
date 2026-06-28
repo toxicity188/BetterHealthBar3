@@ -5,7 +5,7 @@ plugins {
 
 val minecraft = property("minecraft_version").toString()
 
-val javadocJar by tasks.registering(Jar::class) {
+val javadocJar = tasks.register<Jar>("javadocJar") {
     dependsOn(tasks.dokkaGenerate)
     archiveClassifier = "javadoc"
     from(layout.buildDirectory.dir("dokka/html").orNull?.asFile)
@@ -22,8 +22,8 @@ tasks {
         pluginJars(fileTree("plugins"))
         downloadPlugins {
             hangar("PlaceholderAPI", "2.12.2")
-            hangar("Skript", "2.15.0")
-            hangar("ViaVersion", "5.8.1")
+            hangar("Skript", "2.15.3")
+            hangar("ViaVersion", "5.10.0")
         }
     }
     jar {
