@@ -14,9 +14,5 @@ tasks {
     }
     compileKotlin {
         compilerOptions.jvmTarget = JvmTarget.JVM_21
-        // Paper's CraftLivingEntity.getEquipment() is @NotNull, but returns null at runtime for
-        // entities without equipment (and during unload). Suppress Kotlin's not-null call assertion
-        // so the genuine null passes through to callers (e.g. MythicMobs) that already null-check it.
-        compilerOptions.freeCompilerArgs.add("-Xno-call-assertions")
     }
 }

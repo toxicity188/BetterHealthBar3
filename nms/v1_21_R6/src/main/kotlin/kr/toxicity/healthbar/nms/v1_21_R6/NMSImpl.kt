@@ -42,6 +42,7 @@ import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.craftbukkit.entity.CraftLivingEntity
 import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.craftbukkit.inventory.CraftEntityEquipment
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.util.CraftChatMessage
 import org.bukkit.entity.Entity
@@ -213,7 +214,12 @@ class NMSImpl : NMS {
                 return entity.lookAt(p0, p1, p2, p3)
             }
             override fun getEquipment(): EntityEquipment {
-                return entity.equipment
+                // CraftLivingEntity.getEquipment() is @NotNull but the underlying value can be null
+                // (entities without equipment, or a mob mid-unload). Read it through the @Nullable
+                // Bukkit interface and fall back to an empty equipment so callers never hit an NPE.
+                val src: org.bukkit.entity.LivingEntity = entity
+                val equipment: EntityEquipment? = src.equipment
+                return equipment ?: CraftEntityEquipment(this)
             }
             override fun hasPermission(name: String): Boolean {
                 return entity.hasPermission(name)
