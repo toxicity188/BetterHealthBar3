@@ -159,7 +159,11 @@ class NMSImpl : NMS {
                 return player.gameMode
             }
             override fun getEquipment(): EntityEquipment {
-                return player.equipment
+                // Players always have equipment, but mirror the entity wrapper's null-safe pattern:
+                // read through the @Nullable Bukkit interface and fall back to an empty equipment.
+                val src: org.bukkit.entity.LivingEntity = player
+                val equipment: EntityEquipment? = src.equipment
+                return equipment ?: CraftEntityEquipment(this)
             }
             override fun hasPermission(name: String): Boolean {
                 return player.hasPermission(name)
