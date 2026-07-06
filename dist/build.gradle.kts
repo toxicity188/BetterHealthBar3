@@ -24,6 +24,7 @@ dependencies {
     shade(project(":nms:v1_21_R6", configuration = "reobf")) { isTransitive = false }
     shade(project(":nms:v1_21_R7", configuration = "reobf")) { isTransitive = false }
     shade(project(":nms:v26_R1")) { isTransitive = false }
+    shade(project(":nms:v26_R2")) { isTransitive = false }
 
     compileOnly("io.lumine:Mythic-Dist:5.12.1")
     compileOnly("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
@@ -31,16 +32,21 @@ dependencies {
     compileOnly("com.alessiodp.parties:parties-bukkit:3.2.16")
     compileOnly("io.github.toxicity188:BetterHud-bukkit-api:2.0.0")
     compileOnly("io.github.toxicity188:bettermodel-bukkit-api:3.0.0")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.42-SNAPSHOT")
-    compileOnly("com.github.SkriptLang:Skript:2.15.3")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.43-SNAPSHOT")
+    compileOnly("com.github.SkriptLang:Skript:2.15.4")
 }
 
 val pluginVersion = version.toString()
 val pluginGroup = group.toString()
 val shadeConfig = configurations.shade.get()
-val dependenciesContent: List<String> = libs.bundles.library.download.map {
+val dependenciesContent: List<String> = (libs.bundles.library.download).map {
     it.map(Any::toString)
-}.get()
+}.get() + listOf(
+    libs.adventure.platform.bukkit,
+    libs.adventure.text.minimessage
+).map {
+    it.get().toString()
+}
 val copyDirectory = rootProject.layout.buildDirectory.dir("libs")
 
 interface FsInjected {

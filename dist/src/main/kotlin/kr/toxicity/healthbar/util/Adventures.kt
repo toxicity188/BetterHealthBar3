@@ -8,24 +8,22 @@ import net.kyori.adventure.text.format.ShadowColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 const val NEW_LAYER_INT = 0xA0000
 const val ADVENTURE_START_INT = 0xB0000
 
-val LEGACY = LegacyComponentSerializer.builder()
-    .useUnusualXRepeatedCharacterHexFormat()
-    .build()
-
-val MINI_MESSAGE = MiniMessage.builder()
-    .tags(TagResolver.standard()).postProcessor {
-        val style = it.style()
-        it.style(style.decorations(TextDecoration.entries.associateWith { d ->
-            val deco = style.decoration(d)
-            if (deco == TextDecoration.State.NOT_SET) TextDecoration.State.FALSE else TextDecoration.State.TRUE
-        }))
-    }
-    .build()
+val MINI_MESSAGE by lazy {
+    MiniMessage.builder()
+        .tags(TagResolver.standard())
+        .postProcessor {
+            val style = it.style()
+            it.style(style.decorations(TextDecoration.entries.associateWith { d ->
+                val deco = style.decoration(d)
+                if (deco == TextDecoration.State.NOT_SET) TextDecoration.State.FALSE else TextDecoration.State.TRUE
+            }))
+        }
+        .build()
+}
 
 val SPACE_KEY
     get() = createAdventureKey("space")

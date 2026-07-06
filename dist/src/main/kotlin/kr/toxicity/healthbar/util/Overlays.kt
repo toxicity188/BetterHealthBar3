@@ -15,7 +15,11 @@ val OVERLAYS = listOf(
     ),
     PackOverlay(
         "betterhealthbar_26_1",
-        VersionRange(84, 99)
+        VersionRange(84, 87)
+    ),
+    PackOverlay(
+        "betterhealthbar_26_2",
+        VersionRange(88, 99)
     )
 )
 

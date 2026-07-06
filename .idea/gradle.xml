@@ -38,6 +38,7 @@
             <option value="$PROJECT_DIR$/nms/v1_21_R6" />
             <option value="$PROJECT_DIR$/nms/v1_21_R7" />
             <option value="$PROJECT_DIR$/nms/v26_R1" />
+            <option value="$PROJECT_DIR$/nms/v26_R2" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />
