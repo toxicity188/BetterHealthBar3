@@ -21,7 +21,7 @@ tasks {
         pluginJars(project(":dist").tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
         pluginJars(fileTree("plugins"))
         downloadPlugins {
-            hangar("PlaceholderAPI", "2.12.2")
+            modrinth("placeholderapi", "2.12.3")
             hangar("Skript", "2.15.4")
             hangar("ViaVersion", "5.10.0")
         }

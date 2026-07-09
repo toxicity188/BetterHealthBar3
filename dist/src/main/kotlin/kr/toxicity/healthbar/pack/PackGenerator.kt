@@ -34,11 +34,16 @@ object PackGenerator {
             if (ConfigManagerImpl.shaders().renderTypeJson) PLUGIN.getResource("${overlay.directory}/rendertype_text.json")?.buffered()?.use {
                 consumer("$parent/rendertype_text.json", it.readAllBytes())
             }
-            if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("${overlay.directory}/rendertype_text.fsh")?.buffered()?.use {
-                consumer("$parent/rendertype_text.fsh", it.readAllBytes())
-            }
-            if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("${overlay.directory}/rendertype_text.vsh")?.buffered()?.use {
-                consumer("$parent/rendertype_text.vsh", it.readAllBytes())
+            listOf(
+                "rendertype_text",
+                "text"
+            ).forEach { text ->
+                if (ConfigManagerImpl.shaders().renderTypeFragment) PLUGIN.getResource("${overlay.directory}/$text.fsh")?.buffered()?.use {
+                    consumer("$parent/$text.fsh", it.readAllBytes())
+                }
+                if (ConfigManagerImpl.shaders().renderTypeVertex) PLUGIN.getResource("${overlay.directory}/$text.vsh")?.buffered()?.use {
+                    consumer("$parent/$text.vsh", it.readAllBytes())
+                }
             }
         }
         consumer("pack.mcmeta", PACK_MCMETA_WITH_OVERLAY.save())
