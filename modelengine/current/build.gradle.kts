@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    compileOnly("com.ticxo.modelengine:ModelEngine:R4.1.0")
+    compileOnly("com.ticxo.modelengine:ModelEngine:R4.1.1")
 }

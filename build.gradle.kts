@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.conventions.standard)
-    id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("xyz.jpenilla.run-paper") version "3.1.0"
 }
 
 val minecraft = property("minecraft_version").toString()
@@ -22,8 +22,8 @@ tasks {
         pluginJars(fileTree("plugins"))
         downloadPlugins {
             modrinth("placeholderapi", "2.12.3")
-            hangar("Skript", "2.15.4")
-            hangar("ViaVersion", "5.10.0")
+            hangar("Skript", "2.17.0")
+            hangar("ViaVersion", "5.12.1")
         }
     }
     jar {

@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    compileOnly("org.geysermc.geyser:api:2.9.2-SNAPSHOT")
+    compileOnly("org.geysermc.geyser:api:2.12.0-SNAPSHOT")
 }
