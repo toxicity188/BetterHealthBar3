@@ -25,6 +25,7 @@ dependencies {
     shade(project(":nms:v1_21_R7", configuration = "reobf")) { isTransitive = false }
     shade(project(":nms:v26_R1")) { isTransitive = false }
     shade(project(":nms:v26_R2")) { isTransitive = false }
+    shade(project(":nms:v26_R3")) { isTransitive = false }
 
     compileOnly("io.lumine:Mythic-Dist:5.13.0")
     compileOnly("io.github.arcaneplugins:levelledmobs-plugin:4.0.3.1")
@@ -32,8 +33,8 @@ dependencies {
     compileOnly("com.alessiodp.parties:parties-bukkit:3.2.16")
     compileOnly("io.github.toxicity188:BetterHud-bukkit-api:2.0.0")
     compileOnly("io.github.toxicity188:bettermodel-bukkit-api:3.0.0")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.43-SNAPSHOT")
-    compileOnly("com.github.SkriptLang:Skript:2.17.0")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.44-SNAPSHOT")
+    compileOnly("com.github.SkriptLang:Skript:2.17.1")
 }
 
 val pluginVersion = version.toString()

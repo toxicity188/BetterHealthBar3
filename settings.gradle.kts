@@ -8,7 +8,7 @@ pluginManagement {
 
 buildscript {
     dependencies {
-        classpath("org.jetbrains.kotlinx:kotlinx-serialization-core:1.11.0")
+        classpath("org.jetbrains.kotlinx:kotlinx-serialization-core:1.12.0")
     }
 }
 
@@ -54,4 +54,5 @@ include(
     "nms:v1_21_R7",
     "nms:v26_R1",
     "nms:v26_R2",
+    "nms:v26_R3",
 )

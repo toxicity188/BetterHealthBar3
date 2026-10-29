@@ -22,8 +22,8 @@ tasks {
         pluginJars(fileTree("plugins"))
         downloadPlugins {
             modrinth("placeholderapi", "2.12.3")
-            hangar("Skript", "2.17.0")
-            hangar("ViaVersion", "5.12.1")
+            hangar("Skript", "2.17.1")
+            hangar("ViaVersion", "5.12.2")
         }
     }
     jar {
